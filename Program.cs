@@ -6,7 +6,7 @@ using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
-//Redis 1
+//Redis
 //builder.Services.AddSingleton<IConnectionMultiplexer>(redis =>
 //    ConnectionMultiplexer.Connect(builder.Configuration.GetConnectionString("RedisConnection")));
 
