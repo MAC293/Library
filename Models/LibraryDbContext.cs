@@ -98,7 +98,7 @@ public partial class LibraryDbContext : DbContext
                 .IsFixedLength()
                 .HasColumnName("ID");
             entity.Property(e => e.Password)
-                .HasMaxLength(25)
+                .HasMaxLength(20)
                 .IsFixedLength();
             entity.Property(e => e.Username)
                 .HasMaxLength(12)
