@@ -11,7 +11,6 @@ namespace Library.Services
         private String _Phone;
         private String _Email;
         private int _Age;
-        //Input
         //Background
         //private String _IDReader;
         //private String _IDMemberReader;
@@ -27,7 +26,7 @@ namespace Library.Services
         }
 
         [Required]
-        [MaxLength(12)]
+        [StringLength(13, MinimumLength = 11)]
         public String IDMember
         {
             get { return _IDMember; }
@@ -36,7 +35,6 @@ namespace Library.Services
 
         [Required]
         [MaxLength(35)]
-
         public String Name
         {
             get { return _Name; }
@@ -44,8 +42,7 @@ namespace Library.Services
         }
 
         [Required]
-        [MaxLength(9)]
-        [MinLength(9)]
+        [StringLength(9, MinimumLength = 9)]
         public String Phone
         {
             get { return _Phone; }
@@ -53,7 +50,7 @@ namespace Library.Services
         }
 
         [Required]
-        [MaxLength(20)]
+        [MaxLength(25)]
         public String Email
         {
             get { return _Email; }

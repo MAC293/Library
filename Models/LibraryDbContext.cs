@@ -138,7 +138,7 @@ public partial class LibraryDbContext : DbContext
                 .IsFixedLength()
                 .HasColumnName("ID");
             entity.Property(e => e.Email)
-                .HasMaxLength(20)
+                .HasMaxLength(25)
                 .IsFixedLength();
             entity.Property(e => e.Name)
                 .HasMaxLength(35)
