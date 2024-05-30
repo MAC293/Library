@@ -101,7 +101,7 @@ public partial class LibraryDbContext : DbContext
                 .HasMaxLength(25)
                 .IsFixedLength();
             entity.Property(e => e.Username)
-                .HasMaxLength(25)
+                .HasMaxLength(12)
                 .IsFixedLength();
         });
 

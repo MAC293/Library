@@ -90,7 +90,7 @@ namespace Library.Services
         //}
 
         [Required]
-        [MaxLength(25)]
+        [MaxLength(12)]
         public String Username
         {
             get { return _Username; }
@@ -98,7 +98,7 @@ namespace Library.Services
         }
 
         [Required]
-        [MaxLength(25)]
+        [Range(10, 20)]
         public String Password
         {
             get { return _Password; }
