@@ -1,4 +1,5 @@
-﻿using System.Security.Cryptography;
+﻿using System.ComponentModel.DataAnnotations;
+using System.Security.Cryptography;
 
 namespace Library.Services
 {
@@ -7,7 +8,7 @@ namespace Library.Services
         //Input
         private String _IDMember;
         private String _Name;
-        private int _Phone;
+        private String _Phone;
         private String _Email;
         private int _Age;
         //Input
@@ -25,11 +26,16 @@ namespace Library.Services
                 
         }
 
+        [Required]
+        [MaxLength(12)]
         public String IDMember
         {
             get { return _IDMember; }
             set { _IDMember = value; }
         }
+
+        [Required]
+        [MaxLength(35)]
 
         public String Name
         {
@@ -37,18 +43,25 @@ namespace Library.Services
             set { _Name = value; }
         }
 
-        public int Phone
+        [Required]
+        [MaxLength(9)]
+        [MinLength(9)]
+        public String Phone
         {
             get { return _Phone; }
             set { _Phone = value; }
         }
 
+        [Required]
+        [MaxLength(20)]
         public String Email
         {
             get { return _Email; }
             set { _Email = value; }
         }
 
+        [Required]
+        [Range(18,50)]
         public int Age
         {
             get { return _Age; }
@@ -79,12 +92,16 @@ namespace Library.Services
         //    set { _IDEndUser = value; }
         //}
 
+        [Required]
+        [MaxLength(25)]
         public String Username
         {
             get { return _Username; }
             set { _Username = value; }
         }
 
+        [Required]
+        [MaxLength(25)]
         public String Password
         {
             get { return _Password; }

@@ -43,20 +43,20 @@ namespace Library.Controllers
         }
 
         //Validate the incoming fileds criteria format
-        private Boolean FieldsValidation(String ID, String name, int phone, int age, String username, String password)
-        {
-            if (ID.Length >= 11 && ID.Length <= 12)
-            {
+        //private Boolean FieldsValidation(String ID, String name, int phone, int age, String username, String password)
+        //{
+        //    if (ID.Length >= 11 && ID.Length <= 12)
+        //    {
                 
-            }
+        //    }
 
-        }
+        //}
 
         #endregion
 
-        private Member MappingMember(ReaderService readerService)
-        {
+        //private Member MappingMember(ReaderService readerService)
+        //{
 
-        }
+        //}
     }
 }
