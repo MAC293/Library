@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿//Data Annotation Validation
+using System.ComponentModel.DataAnnotations;
 using System.Security.Cryptography;
 
 namespace Library.Services
@@ -25,40 +26,41 @@ namespace Library.Services
                 
         }
 
-        [Required]
-        [StringLength(13, MinimumLength = 11)]
+        [Required(ErrorMessage = "ID field is required.")]
+        [StringLength(13, MinimumLength = 11, ErrorMessage = "ID must be valid.")]
         public String IDMember
         {
             get { return _IDMember; }
             set { _IDMember = value; }
         }
 
-        [Required]
-        [MaxLength(35)]
+        [Required(ErrorMessage = "Name field is required.")]
+        [MaxLength(35, ErrorMessage = "Name length cannot exceed 35 characters.")]
         public String Name
         {
             get { return _Name; }
             set { _Name = value; }
         }
 
-        [Required]
-        [StringLength(9, MinimumLength = 9)]
+        [Required(ErrorMessage = "Phone field is required.")]
+        [StringLength(9, MinimumLength = 9, ErrorMessage = "Phone must be valid.")]
         public String Phone
         {
             get { return _Phone; }
             set { _Phone = value; }
         }
 
-        [Required]
-        [MaxLength(25)]
+        [Required(ErrorMessage = "Email field is required.")]
+        [MaxLength(25, ErrorMessage = "Email length cannot exceed 25 characters.")]
+        [RegularExpression(@"^([a-zA-Z0-9_\-\.]+)@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.)|(([a-zA-Z0-9\-]+\.)+[a-zA-Z]{2,}))$", ErrorMessage = "Invalid email format.")]
         public String Email
         {
             get { return _Email; }
             set { _Email = value; }
         }
 
-        [Required]
-        [Range(18,50)]
+        [Required(ErrorMessage = "Age field is required.")]
+        [Range(18, 65, ErrorMessage = "Age must be between 18 and 65.")]
         public int Age
         {
             get { return _Age; }
@@ -89,22 +91,20 @@ namespace Library.Services
         //    set { _IDEndUser = value; }
         //}
 
-        [Required]
-        [MaxLength(12)]
+        [Required(ErrorMessage = "Username field is required.")]
+        [MaxLength(12, ErrorMessage = "Username length cannot exceed 12 characters.")]
         public String Username
         {
             get { return _Username; }
             set { _Username = value; }
         }
 
-        [Required]
-        [Range(10, 20)]
+        [Required(ErrorMessage = "Password field is required.")]
+        [Range(10, 20, ErrorMessage = "Password length must be between 10 and 20 characters!")]
         public String Password
         {
             get { return _Password; }
             set { _Password = value; }
         }
-
-
     }
 }

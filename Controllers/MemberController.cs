@@ -14,9 +14,8 @@ namespace Library.Controllers
     public class MemberController : ControllerBase
     {
         #region Sign up
-
-        [Route("SignUp")]
         [HttpPost]
+        [Route("SignUp")]
         public async Task<IActionResult> SignUp([FromBody] ReaderService newReader)
         {
             using (LibraryDbContext context = new LibraryDbContext())
@@ -36,13 +35,14 @@ namespace Library.Controllers
                     return BadRequest("This user already exists!");
                 }
 
+                //New Reader creation on database
 
 
-
+                return default;
             }    
         }
 
-        //Validate the incoming fileds criteria format
+        //Validate the incoming fields criteria format
         //private Boolean FieldsValidation(String ID, String name, int phone, int age, String username, String password)
         //{
         //    if (ID.Length >= 11 && ID.Length <= 12)
@@ -51,7 +51,6 @@ namespace Library.Controllers
         //    }
 
         //}
-
         #endregion
 
         //private Member MappingMember(ReaderService readerService)
