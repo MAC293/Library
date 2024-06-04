@@ -94,7 +94,7 @@ public partial class LibraryDbContext : DbContext
             entity.ToTable("EndUser");
 
             entity.Property(e => e.Id)
-                .HasMaxLength(6)
+                .HasMaxLength(16)
                 .IsFixedLength()
                 .HasColumnName("ID");
             entity.Property(e => e.Password)

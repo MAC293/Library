@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Library.Services;
 //String encoding
 using System.Text;
+using System.Text.RegularExpressions;
 
 
 namespace Library.Controllers
@@ -26,7 +27,7 @@ namespace Library.Controllers
                     return BadRequest();
                 }
 
-                //Validation
+                //Validation occurs on ReaderService.
 
                 var memberDAL = context.Members.FirstOrDefault(member => member.Id == newReader.IDMember);
 
@@ -36,22 +37,35 @@ namespace Library.Controllers
                 }
 
                 //New Reader creation on database
+                
 
 
                 return default;
             }    
         }
-
-        //Validate the incoming fields criteria format
-        //private Boolean FieldsValidation(String ID, String name, int phone, int age, String username, String password)
-        //{
-        //    if (ID.Length >= 11 && ID.Length <= 12)
-        //    {
-                
-        //    }
-
-        //}
         #endregion
+
+        private void BackgroundAttributes()
+        {
+
+        }
+
+        //Clean the coming IDMember from ReaderService to load it into the Reader table ID along with Rea-01
+        private String ReaderID(String memberID)
+        {
+            String cleanedID = memberID.Replace(".", "").Replace("-", "");
+            //String cleanedID = Regex.Replace(memberID, @"[.-]", "");
+
+            String newReaderID = cleanedID + "-Reader";
+
+            return  newReaderID;
+        }
+
+        private String EndUserID()
+        {
+
+        }
+
 
         //private Member MappingMember(ReaderService readerService)
         //{

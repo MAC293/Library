@@ -27,7 +27,7 @@ namespace Library.Services
         }
 
         [Required(ErrorMessage = "ID field is required.")]
-        [StringLength(13, MinimumLength = 11, ErrorMessage = "ID must be valid.")]
+        [StringLength(12, MinimumLength = 11, ErrorMessage = "ID must be valid.")]
         public String IDMember
         {
             get { return _IDMember; }
@@ -58,7 +58,7 @@ namespace Library.Services
             get { return _Email; }
             set { _Email = value; }
         }
-
+        
         [Required(ErrorMessage = "Age field is required.")]
         [Range(18, 65, ErrorMessage = "Age must be between 18 and 65.")]
         public int Age
@@ -100,7 +100,7 @@ namespace Library.Services
         }
 
         [Required(ErrorMessage = "Password field is required.")]
-        [Range(10, 20, ErrorMessage = "Password length must be between 10 and 20 characters!")]
+        [StringLength(20, MinimumLength = 10, ErrorMessage = "Password length must be between 10 and 20 characters.")]
         public String Password
         {
             get { return _Password; }
