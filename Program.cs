@@ -8,14 +8,14 @@ var builder = WebApplication.CreateBuilder(args);
 
 //Redis
 //builder.Services.AddSingleton<IConnectionMultiplexer>(redis =>
-//    ConnectionMultiplexer.Connect(builder.Configuration.GetConnectionString("RedisConnection")));
+//ConnectionMultiplexer.Connect(builder.Configuration.GetConnectionString("RedisConnection")));
 
 //builder.Services.AddScoped<CacheService>();
 
 //JWT
-builder.Configuration.AddJsonFile("appsettings.json");
-var secretKey = builder.Configuration.GetSection("Settings").GetSection("SecretKey").ToString();
-var keyBytes = Encoding.UTF8.GetBytes(secretKey);
+//builder.Configuration.AddJsonFile("appsettings.json");
+//var secretKey = builder.Configuration.GetSection("Settings").GetSection("SecretKey").ToString();
+//var keyBytes = Encoding.UTF8.GetBytes(secretKey);
 
 //builder.Services.AddAuthentication(config =>
 //{
