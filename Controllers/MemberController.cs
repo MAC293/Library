@@ -6,6 +6,7 @@ using Library.Services;
 //String encoding
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Reflection.PortableExecutable;
 
 
 namespace Library.Controllers
@@ -44,28 +45,13 @@ namespace Library.Controllers
                 //Phone from client
                 //Email from client
                 //Age from client
-                context.Members.Add(MappingMember(newMember));
-
-                //Reader
-                Reader newReader = new Reader();
-                //IDReader
-                newReader.Id = ReaderID(newMember.IDMember);
-                //IDMemberReader
-                newReader.Member = newMember.IDMember;
-                //IDEndUserReader
-                newReader.EndUser = EndUserID(newMember.IDMember);
-
-                context.Readers.Add(newReader);
-
-                //EndUSer
-                EndUser newUser = new EndUser();
-                //IDEndUser
-                newUser.Id = EndUserID(newMember.IDMember);
                 //Username from client
                 //Password from client
                 newMember.Password = Hash(newMember.Password);
+                
+                BackgroundAttributes(newMember);
 
-                context.EndUsers.Add(newUser);
+                context.Members.Add(MappingMember(newMember));
 
                 await context.SaveChangesAsync();
 
@@ -91,9 +77,22 @@ namespace Library.Controllers
         }
 
         //Add background attributes to entity
-        private void BackgroundAttributes()
+        private void BackgroundAttributes(ReaderService newMember)
         {
+            using (LibraryDbContext context = new LibraryDbContext())
+            {
+                //EndUSer
+                EndUser newUser = new EndUser();
+                newUser.Id = EndUserID(newMember.IDMember);
+                context.EndUsers.Add(newUser);
 
+                //Reader
+                Reader newReader = new Reader();
+                newReader.Id = ReaderID(newMember.IDMember);
+                newReader.Member = newMember.IDMember;
+                newReader.EndUser = EndUserID(newMember.IDMember);
+                context.Readers.Add(newReader);
+            }
         }
 
         #region ID Cleaned
