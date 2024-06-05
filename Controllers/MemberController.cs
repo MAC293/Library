@@ -7,6 +7,7 @@ using Library.Services;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Reflection.PortableExecutable;
+using Microsoft.EntityFrameworkCore;
 
 
 namespace Library.Controllers
@@ -22,41 +23,69 @@ namespace Library.Controllers
         {
             using (LibraryDbContext context = new LibraryDbContext())
             {
-                //Validate the coming JSON body
-                if (newMember == null || !ModelState.IsValid)
+                try
                 {
-                    return BadRequest();
-                }
+                    //Validate the coming JSON body
+                    if (newMember == null || !ModelState.IsValid)
+                    {
+                        return BadRequest();
+                    }
 
-                //Validation occurs on ReaderService.
+                    //Validation occurs on ReaderService.
 
-                var memberDAL = context.Members.FirstOrDefault(member => member.Id == newMember.IDMember);
+                    var memberDAL = context.Members.FirstOrDefault(member => member.Id == newMember.IDMember);
 
-                if (memberDAL != null)
-                {
-                    return BadRequest("This user already exists!");
-                }
+                    if (memberDAL != null)
+                    {
+                        return BadRequest("This user already exists!");
+                    }
 
-                //New Member-Reader-EndUser creation on database
+                    //New Member-Reader-EndUser creation on database
 
-                //Member
-                //IDMember from client
-                //Name from client
-                //Phone from client
-                //Email from client
-                //Age from client
-                //Username from client
-                //Password from client
-                newMember.Password = Hash(newMember.Password);
+                    //Member
+                    //IDMember from client
+                    //Name from client
+                    //Phone from client
+                    //Email from client
+                    //Age from client
+
+                    //Member
+                    context.Members.Add(MappingMember(newMember));
+
+                    //BackgroundAttributes(newMember);
+
+                    //EndUSer
+                    EndUser newUser = new EndUser();
+                    newUser.Id = EndUserID(newMember.IDMember);
+                    newUser.Username = newMember.Username;
+                    newUser.Password = Hash(newMember.Password);
+                    context.EndUsers.Add(newUser);
+
+                    //Reader
+                    Reader newReader = new Reader();
+                    newReader.Id = ReaderID(newMember.IDMember);
+                    newReader.Member = newMember.IDMember;
+                    newReader.EndUser = EndUserID(newMember.IDMember);
+                    context.Readers.Add(newReader);
+
+
+                    await context.SaveChangesAsync();
+
                 
-                BackgroundAttributes(newMember);
+                    return Created();
+                    //return default;
+                }
 
-                context.Members.Add(MappingMember(newMember));
+                catch (DbUpdateException ex)
+                {
+                    return BadRequest("A DbUpdateException has occured: " + ex);
+                }
 
-                await context.SaveChangesAsync();
-
-                return Created();
-                //return default;
+                catch (Exception ex)
+                {
+                    return BadRequest("An exception has occured: " + ex);
+                    
+                }
             }    
         }
         #endregion
@@ -84,6 +113,8 @@ namespace Library.Controllers
                 //EndUSer
                 EndUser newUser = new EndUser();
                 newUser.Id = EndUserID(newMember.IDMember);
+                newUser.Username = newMember.Username;
+                newUser.Password = Hash(newMember.Password);
                 context.EndUsers.Add(newUser);
 
                 //Reader

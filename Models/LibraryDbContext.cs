@@ -94,11 +94,11 @@ public partial class LibraryDbContext : DbContext
             entity.ToTable("EndUser");
 
             entity.Property(e => e.Id)
-                .HasMaxLength(16)
+                .HasMaxLength(20)
                 .IsFixedLength()
                 .HasColumnName("ID");
             entity.Property(e => e.Password)
-                .HasMaxLength(20)
+                .HasMaxLength(4000)
                 .IsFixedLength();
             entity.Property(e => e.Username)
                 .HasMaxLength(12)
@@ -114,7 +114,7 @@ public partial class LibraryDbContext : DbContext
             entity.HasIndex(e => e.EndUser, "UQ__Libraria__E18F21624C2B349E").IsUnique();
 
             entity.Property(e => e.Id)
-                .HasMaxLength(13)
+                .HasMaxLength(20)
                 .IsFixedLength()
                 .HasColumnName("ID");
             entity.Property(e => e.EndUser)
@@ -134,7 +134,7 @@ public partial class LibraryDbContext : DbContext
             entity.ToTable("Member");
 
             entity.Property(e => e.Id)
-                .HasMaxLength(12)
+                .HasMaxLength(20)
                 .IsFixedLength()
                 .HasColumnName("ID");
             entity.Property(e => e.Email)
@@ -156,7 +156,7 @@ public partial class LibraryDbContext : DbContext
             entity.HasIndex(e => e.EndUser, "UQ__Reader__E18F2162F1FFB626").IsUnique();
 
             entity.Property(e => e.Id)
-                .HasMaxLength(16)
+                .HasMaxLength(20)
                 .IsFixedLength()
                 .HasColumnName("ID");
             entity.Property(e => e.EndUser)
