@@ -10,7 +10,6 @@ using System.Reflection.PortableExecutable;
 using Microsoft.EntityFrameworkCore;
 using System;
 
-
 namespace Library.Controllers
 {
     [Route("api/[controller]")]
@@ -53,47 +52,44 @@ namespace Library.Controllers
                     //Member
                     context.Members.Add(MappingMember(newMember));
 
-                    //BackgroundAttributes(newMember);
+                    BackgroundAttributes(newMember, context);
 
                     //EndUSer
-                    EndUser newUser = new EndUser();
-                    newUser.Id = EndUserID(newMember.IDMember);
-                    newUser.Username = newMember.Username;
-                    newUser.Password = Hash(newMember.Password);
-                    context.EndUsers.Add(newUser);
+                    //EndUser newUser = new EndUser();
+                    //newUser.Id = EndUserID(newMember.IDMember);
+                    //newUser.Username = newMember.Username;
+                    //newUser.Password = Hash(newMember.Password);
+                    //context.EndUsers.Add(newUser);
 
                     //Reader
-                    Reader newReader = new Reader();
-                    newReader.Id = ReaderID(newMember.IDMember);
-                    newReader.Member = newMember.IDMember;
-                    newReader.EndUser = EndUserID(newMember.IDMember);
-                    context.Readers.Add(newReader);
-
+                    //Reader newReader = new Reader();
+                    //newReader.Id = ReaderID(newMember.IDMember);
+                    //newReader.Member = newMember.IDMember;
+                    //newReader.EndUser = EndUserID(newMember.IDMember);
+                    //context.Readers.Add(newReader);
 
                     await context.SaveChangesAsync();
 
-                    var uri = new Uri($"{Request.Scheme}://{Request.Host}{Request.Path}/{newMember.IDMember}");
-                    //return Created("Congratulations! Your account has been succesfully created.");
-                    return Created(uri, "Congratulations! Your account has been successfully created.");
-
-                    //return CreatedAtAction(nameof(GET), new { id = item.Id }, item);
+                    //var uri = new Uri($"{Request.Scheme}://{Request.Host}{Request.Path}/{newMember.IDMember}");
+                    //return Created(uri, "Congratulations! Your account has been successfully created.");
+                    //return StatusCode(StatusCodes.Status201Created, "Congratulations! Your account has been successfully created.");
+                    return Created("", "Congratulations! Your account has been successfully created.");
 
                     //return default;
                 }
 
                 catch (DbUpdateException ex)
                 {
-                    return BadRequest("A DbUpdateException has occured: " + ex);
+                    return BadRequest("A DbUpdateException has occurred: " + ex);
                 }
 
                 catch (Exception ex)
                 {
-                    return BadRequest("An exception has occured: " + ex);
-                    
+                    return BadRequest("An exception has occurred: " + ex);
+
                 }
-            }    
+            }
         }
-        #endregion
 
         private Member MappingMember(ReaderService readerService)
         {
@@ -110,25 +106,24 @@ namespace Library.Controllers
             return newMember;
         }
 
-        //Add background attributes to entity
-        private void BackgroundAttributes(ReaderService newMember)
+        //Add background attributes to EndUser, and Reader entities
+        private void BackgroundAttributes(ReaderService newMember, LibraryDbContext context)
         {
-            using (LibraryDbContext context = new LibraryDbContext())
-            {
-                //EndUSer
-                EndUser newUser = new EndUser();
-                newUser.Id = EndUserID(newMember.IDMember);
-                newUser.Username = newMember.Username;
-                newUser.Password = Hash(newMember.Password);
-                context.EndUsers.Add(newUser);
 
-                //Reader
-                Reader newReader = new Reader();
-                newReader.Id = ReaderID(newMember.IDMember);
-                newReader.Member = newMember.IDMember;
-                newReader.EndUser = EndUserID(newMember.IDMember);
-                context.Readers.Add(newReader);
-            }
+            //EndUSer
+            EndUser newUser = new EndUser();
+            newUser.Id = EndUserID(newMember.IDMember);
+            newUser.Username = newMember.Username;
+            newUser.Password = Hash(newMember.Password);
+            context.EndUsers.Add(newUser);
+
+            //Reader
+            Reader newReader = new Reader();
+            newReader.Id = ReaderID(newMember.IDMember);
+            newReader.Member = newMember.IDMember;
+            newReader.EndUser = EndUserID(newMember.IDMember);
+            context.Readers.Add(newReader);
+
         }
 
         #region ID Cleaned
@@ -157,6 +152,7 @@ namespace Library.Controllers
             return cleanedID;
 
         }
+        #endregion
         #endregion
 
         //Password hashing
