@@ -8,6 +8,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Reflection.PortableExecutable;
 using Microsoft.EntityFrameworkCore;
+using System;
 
 
 namespace Library.Controllers
@@ -71,8 +72,12 @@ namespace Library.Controllers
 
                     await context.SaveChangesAsync();
 
-                
-                    return Created();
+                    var uri = new Uri($"{Request.Scheme}://{Request.Host}{Request.Path}/{newMember.IDMember}");
+                    //return Created("Congratulations! Your account has been succesfully created.");
+                    return Created(uri, "Congratulations! Your account has been successfully created.");
+
+                    //return CreatedAtAction(nameof(GET), new { id = item.Id }, item);
+
                     //return default;
                 }
 
