@@ -16,7 +16,7 @@ namespace Library.Controllers
     [ApiController]
     public class MemberController : ControllerBase
     {
-        #region Sign up
+        #region Sign up Member
         [HttpPost]
         [Route("SignUp")]
         public async Task<IActionResult> SignUp([FromBody] ReaderService newMember)
@@ -52,7 +52,7 @@ namespace Library.Controllers
                     //Member
                     context.Members.Add(MappingMember(newMember));
 
-                    BackgroundAttributes(newMember, context);
+                    EndUserReader(newMember, context);
 
                     //EndUSer
                     //EndUser newUser = new EndUser();
@@ -107,7 +107,7 @@ namespace Library.Controllers
         }
 
         //Add background attributes to EndUser, and Reader entities
-        private void BackgroundAttributes(ReaderService newMember, LibraryDbContext context)
+        private void EndUserReader(ReaderService newMember, LibraryDbContext context)
         {
 
             //EndUSer
@@ -123,8 +123,52 @@ namespace Library.Controllers
             newReader.Member = newMember.IDMember;
             newReader.EndUser = EndUserID(newMember.IDMember);
             context.Readers.Add(newReader);
-
         }
+        #endregion
+
+        #region Sign Up Librarian
+        [Route("Hire")]
+        public async Task<IActionResult> SignUp([FromBody] LibrarianService librarianService)
+        {
+            using (LibraryDbContext context = new LibraryDbContext())
+            {
+                //Validate the coming JSON body
+                if (librarianService == null || !ModelState.IsValid)
+                {
+                    return BadRequest();
+                }
+
+                var librarianDAL = context.Librarians.FirstOrDefault(librarian => librarian.Id == librarianService.IDLibrarian);
+
+                if (librarianDAL != null)
+                {
+                    return BadRequest();
+                }
+
+                EndUserLibrarian(librarianService, context);
+
+                await context.SaveChangesAsync();
+
+                return Created("", "Congratulations! You're a new Librarian.");
+            }
+        }
+
+        private void EndUserLibrarian(LibrarianService librarianService, LibraryDbContext context)
+        {
+            //EndUSer
+            EndUser newEndUser = new EndUser();
+            newEndUser.Id = IDLibrarian(librarianService.IDLibrarian);
+            newEndUser.Username = librarianService.Username;
+            newEndUser.Password = Hash(librarianService.Password);
+            context.EndUsers.Add(newEndUser);
+
+            //Librarian
+            Librarian newLibrarian = new Librarian();
+            newLibrarian.Id = librarianService.IDLibrarian;
+            newLibrarian.EndUser = IDLibrarian(librarianService.IDLibrarian);
+            context.Librarians.Add(newLibrarian);
+        }
+        #endregion
 
         #region ID Cleaned
         //ReaderID cleaned for Sign Up
@@ -143,7 +187,15 @@ namespace Library.Controllers
             return newEndUserID;
         }
 
-        //Clean the coming IDMember from ReaderService
+        //IDEndUser and IDEndUserLibrarian cleaned for Hire
+        private String IDLibrarian(String librarianID)
+        {
+            String newEndUserID = IDCleaner(librarianID) + "-EndUser";
+
+            return newEndUserID;
+        }
+
+        //Clean the coming ID
         private String IDCleaner(String memberID)
         {
             String cleanedID = memberID.Replace(".", "").Replace("-", "");
@@ -152,7 +204,6 @@ namespace Library.Controllers
             return cleanedID;
 
         }
-        #endregion
         #endregion
 
         //Password hashing

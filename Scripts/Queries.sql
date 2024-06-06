@@ -3,9 +3,10 @@ SELECT * FROM Reader;
 SELECT * FROM EndUser;
 SELECT * FROM Librarian;
 
+DELETE Member;
 DELETE Reader;
 DELETE EndUser;
-DELETE Member;
+DELETE Librarian;
 
 INSERT INTO EndUser(ID, Username, Password)
 VALUES ('L20258624K-EndUser', 'Lib1','Lib12024');

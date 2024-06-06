@@ -6,9 +6,7 @@
   "age": 25,
   "username": "JD2024",
   "password": "SuperPassword2024"
-}
-
-{
+}{
   "idMember": "8.847.632-9",
   "name": "Janw Doe",
   "phone": "785412563",
@@ -16,4 +14,10 @@
   "age": 30,
   "username": "JD2023",
   "password": "SuperPassword2000"
+}
+
+{
+  "idLibrarian": "L8.847.632-9",
+  "username": "Jane Doe",
+  "password": "SuperLib2024"
 }
