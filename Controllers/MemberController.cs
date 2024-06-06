@@ -9,6 +9,9 @@ using System.Text.RegularExpressions;
 using System.Reflection.PortableExecutable;
 using Microsoft.EntityFrameworkCore;
 using System;
+using Microsoft.IdentityModel.Tokens;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
 
 namespace Library.Controllers
 {
@@ -16,6 +19,15 @@ namespace Library.Controllers
     [ApiController]
     public class MemberController : ControllerBase
     {
+        //Token
+        private readonly String secretKey;
+
+        //Token
+        public MemberController(IConfiguration config)
+        {
+            secretKey = config.GetSection("Settings").GetSection("SecretKey").ToString();
+        }
+
         #region Sign up Member
         [HttpPost]
         [Route("SignUp")]
@@ -170,6 +182,18 @@ namespace Library.Controllers
         }
         #endregion
 
+        #region Log In
+        [HttpPost]
+        [Route("LogIn")]
+        private async Task<IActionResult> LogIn([FromBody] UserService newUser)
+        {
+            using (LibraryDbContext context = new LibraryDbContext())
+            {
+                
+            }
+        }
+        #endregion
+
         #region ID Cleaned
         //ReaderID cleaned for Sign Up
         private String ReaderID(String memberID)
@@ -206,13 +230,58 @@ namespace Library.Controllers
         }
         #endregion
 
-        //Password hashing
+        #region Hashing
+        //Hash the password
         private String Hash(String plainPassword)
         {
             String hashedPassword = BCrypt.Net.BCrypt.HashPassword(plainPassword);
 
             return hashedPassword;
         }
+
+        //Verify password
+        private Boolean HashVerifier(String plainPassword, String hashedPassword)
+        {
+            Boolean validPassword = BCrypt.Net.BCrypt.Verify(plainPassword, hashedPassword);
+
+            return validPassword;
+        }
+        #endregion
+
+        //Compare incoming and stored username
+        private Boolean UsernameComparison(String input, String source)
+        {
+            if (String.Equals(input, source, StringComparison.CurrentCulture))
+            {
+                return true;
+            }
+
+            return false;
+        }
+
+        //Create token based on incoming ID
+        private String CreateToken(String ID)
+        {
+            var keyBytes = Encoding.ASCII.GetBytes(secretKey);
+            var claims = new ClaimsIdentity();
+
+            claims.AddClaim(new Claim(ClaimTypes.NameIdentifier, ID));
+
+            var tokenDescriptor = new SecurityTokenDescriptor()
+            {
+                Subject = claims,
+                Expires = DateTime.Now.AddDays(1),
+                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(keyBytes), SecurityAlgorithms.HmacSha256Signature),
+            };
+
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var tokenConfig = tokenHandler.CreateToken(tokenDescriptor);
+
+            String createdToken = tokenHandler.WriteToken(tokenConfig);
+
+            return createdToken;
+        }
+
 
     }
 }
