@@ -185,7 +185,7 @@ namespace Library.Controllers
         #region Log In
         [HttpPost]
         [Route("LogIn")]
-        private async Task<IActionResult> LogIn([FromBody] UserService newUser)
+        public async Task<IActionResult> LogIn([FromBody] UserService newUser)
         {
             using (LibraryDbContext context = new LibraryDbContext())
             {
