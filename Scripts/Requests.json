@@ -1,23 +1,30 @@
+//Reader sign up
 {
   "idMember": "18.852.157-K",
   "name": "John Doe",
   "phone": "994251987",
   "email": "example@gmail.com",
   "age": 25,
-  "username": "JD2024",
-  "password": "SuperPassword2024"
-}{
-  "idMember": "8.847.632-9",
-  "name": "Janw Doe",
-  "phone": "785412563",
-  "email": "example@hotmail.com",
-  "age": 30,
-  "username": "JD2023",
-  "password": "SuperPassword2000"
+  "username": "JoD2024",
+  "password": "SuperRea2024"
 }
 
+//Reader login
+{
+  "username": "JoD2024",
+  "password": "SuperRea2024"
+}
+
+
+//Librarian sign up
 {
   "idLibrarian": "L8.847.632-9",
-  "username": "Jane Doe",
+  "username": "JaD2024",
+  "password": "SuperLib2024"
+}
+
+//Librarian login
+{
+  "username": "JaD2024",
   "password": "SuperLib2024"
 }

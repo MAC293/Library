@@ -161,7 +161,7 @@ namespace Library.Controllers
 
                 await context.SaveChangesAsync();
 
-                return Created("", "Congratulations! You're a new Librarian.");
+                return Created("", "Your new librarian account has been created.");
             }
         }
 
@@ -189,7 +189,28 @@ namespace Library.Controllers
         {
             using (LibraryDbContext context = new LibraryDbContext())
             {
-                
+                if (newUser == null || !ModelState.IsValid)
+                {
+                    return BadRequest();
+                }
+
+                var userDAL = context.EndUsers.FirstOrDefault(user => user.Username == newUser.Username && 
+                                                                   user.Password == newUser.Password);
+
+                Boolean equalUsername = UsernameComparison(newUser.Username, userDAL.Username);
+                Boolean equalPassword = HashVerifier(newUser.Password, userDAL.Password);
+
+                if (equalUsername && equalPassword)
+                {
+                    if (userDAL != null)
+                    {
+                        return Ok(CreateToken(userDAL.Id));
+                    }
+                    
+                }
+
+                return NotFound("This user doesn't exist.");
+
             }
         }
         #endregion
@@ -242,7 +263,7 @@ namespace Library.Controllers
         //Verify password
         private Boolean HashVerifier(String plainPassword, String hashedPassword)
         {
-            Boolean validPassword = BCrypt.Net.BCrypt.Verify(plainPassword, hashedPassword);
+            Boolean validPassword = BCrypt.Net.BCrypt.Verify(plainPassword.Trim(), hashedPassword.Trim());
 
             return validPassword;
         }
@@ -251,7 +272,7 @@ namespace Library.Controllers
         //Compare incoming and stored username
         private Boolean UsernameComparison(String input, String source)
         {
-            if (String.Equals(input, source, StringComparison.CurrentCulture))
+            if (String.Equals(input.Trim(), source.Trim(), StringComparison.CurrentCulture))
             {
                 return true;
             }
@@ -281,7 +302,6 @@ namespace Library.Controllers
 
             return createdToken;
         }
-
 
     }
 }
