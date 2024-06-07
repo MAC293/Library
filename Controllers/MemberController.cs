@@ -284,6 +284,7 @@ namespace Library.Controllers
         }
         #endregion
 
+        #region Others
         //Compare incoming and stored username
         private Boolean UsernameComparison(String input, String source)
         {
@@ -317,6 +318,7 @@ namespace Library.Controllers
 
             return createdToken;
         }
+        #endregion
 
     }
 }

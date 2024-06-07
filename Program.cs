@@ -1,16 +1,17 @@
 ﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
+using StackExchange.Redis;
 using System.Text;
-//using StackExchange.Redis;
+using Library.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
 //Redis
-//builder.Services.AddSingleton<IConnectionMultiplexer>(redis =>
-//ConnectionMultiplexer.Connect(builder.Configuration.GetConnectionString("RedisConnection")));
+builder.Services.AddSingleton<IConnectionMultiplexer>(redis =>
+ConnectionMultiplexer.Connect(builder.Configuration.GetConnectionString("RedisConnection")));
 
 //CacheService is the class that handles the cache
-//builder.Services.AddScoped<CacheService>();
+builder.Services.AddScoped<CacheService>();
 
 //JWT
 builder.Configuration.AddJsonFile("appsettings.json");
