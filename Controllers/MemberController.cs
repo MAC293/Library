@@ -187,29 +187,44 @@ namespace Library.Controllers
         [Route("LogIn")]
         public async Task<IActionResult> LogIn([FromBody] UserService newUser)
         {
-            using (LibraryDbContext context = new LibraryDbContext())
+            try
             {
-                if (newUser == null || !ModelState.IsValid)
+                using (LibraryDbContext context = new LibraryDbContext())
                 {
-                    return BadRequest();
-                }
+                    if (newUser == null || !ModelState.IsValid)
+                    {
+                        return BadRequest();
+                    }
 
-                var userDAL = context.EndUsers.FirstOrDefault(user => user.Username == newUser.Username && 
-                                                                   user.Password == newUser.Password);
+                    var users = context.EndUsers
+                        .Where(user => user.Username == newUser.Username)
+                        .ToList();
 
-                Boolean equalUsername = UsernameComparison(newUser.Username, userDAL.Username);
-                Boolean equalPassword = HashVerifier(newUser.Password, userDAL.Password);
+                    var userDAL = users.FirstOrDefault(user => HashVerifier(newUser.Password, user.Password) 
+                                                               && UsernameComparison(newUser.Username, user.Username));
 
-                if (equalUsername && equalPassword)
-                {
                     if (userDAL != null)
                     {
                         return Ok(CreateToken(userDAL.Id));
                     }
-                    
-                }
 
-                return NotFound("This user doesn't exist.");
+                    return NotFound("This user doesn't exist.");
+
+                }
+            }
+            catch (DbUpdateException ex)
+            {
+                return BadRequest("A DbUpdateException has occurred: " + ex);
+            }
+
+            catch (InvalidOperationException ex)
+            {
+                return BadRequest("An exception has occurred: " + ex);
+            }
+
+            catch (Exception ex)
+            {
+                return BadRequest("An exception has occurred: " + ex);
 
             }
         }
