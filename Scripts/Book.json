@@ -1,0 +1,20 @@
+//Creation
+{
+  "id": "ThePowerOfNow-EckhartTolle-2010-Wellbeing-N°1",
+  "title": "The Power Of Now",
+  "author": "Eckhart Tolle",
+  "genre": "Self Help",
+  "year": 2010,
+  "editorial": "Wellbeing",
+  "available": true
+}
+
+{
+  "id": "Think&GrowRich-NapoleonHill-1965-Wealth-N°1",
+  "title": "Think & Grow Rich",
+  "author": "Napoleon Hill",
+  "genre": "Self Help",
+  "year": 1965,
+  "editorial": "Wealth",
+  "available": true
+}

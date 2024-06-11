@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
+using Microsoft.EntityFrameworkCore;
 
 namespace Library.Controllers
 {
@@ -67,7 +68,7 @@ namespace Library.Controllers
         [Route("AddBook")]
         //This ensures that the JWT token is validated before the method is executed.
         [Authorize]
-        public async Task<IActionResult> POST(Book newBook)
+        public async Task<IActionResult> CreateBook([FromBody] Book newBook)
         {
             try
             {
@@ -77,30 +78,33 @@ namespace Library.Controllers
                     {
                         return Unauthorized("This user doesn't exist.");
                     }
-                    else
+
+                    if (ClaimID.StartsWith('L'))
                     {
-                        if (ClaimID.StartsWith('L'))
+                        if (newBook == null || !ModelState.IsValid)
                         {
-                            
+                            return BadRequest();
                         }
-                        else if (Char.IsDigit(ClaimID[0]))
+
+                        var bookDAL = await context.Books.FirstOrDefaultAsync(book => book.Id == newBook.Id);
+
+                        if (bookDAL != null)
                         {
-                            return Unauthorized("This user has no authorization to perform this action.");
+                            return BadRequest();
                         }
+
+                        context.Books.Add(bookDAL);
+                        await context.SaveChangesAsync();
+
+                        return Created();
+                    }
+                    if (Char.IsDigit(ClaimID[0]))
+                    {
+                        return Unauthorized("This user has no authorization to perform this action.");
                     }
 
-                    var vehicleDAL = await context.Vehicles.FirstOrDefaultAsync(vehicle => vehicle.Patent == newVehicleService.Patent && vehicle.Driver == ClaimID);
+                    return BadRequest("Invalid request.");
 
-                    if (vehicleDAL != null)
-                    {
-                        return BadRequest();
-                    }
-
-                    context.Vehicles.Add(MappingPOST(newVehicleService, ClaimID));
-                    await context.SaveChangesAsync();
-
-                    //return CreatedAtAction(nameof(GET), new { patent = newCar.Patent }, newCar);
-                    return Created();
                 }
             }
             catch (Exception ex)
