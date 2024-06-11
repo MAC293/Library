@@ -1,14 +1,9 @@
 ﻿using Library.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-//Supportive classes
 using Library.Services;
-//String encoding
 using System.Text;
-using System.Text.RegularExpressions;
-using System.Reflection.PortableExecutable;
 using Microsoft.EntityFrameworkCore;
-using System;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
@@ -19,16 +14,16 @@ namespace Library.Controllers
     [ApiController]
     public class MemberController : ControllerBase
     {
-        //Token
+        #region Attributes
         private readonly String secretKey;
 
-        //Token
         public MemberController(IConfiguration config)
         {
             secretKey = config.GetSection("Settings").GetSection("SecretKey").ToString();
         }
+        #endregion
 
-        #region Sign up Member
+        #region Sign Up Member
         [HttpPost]
         [Route("SignUp")]
         public async Task<IActionResult> SignUp([FromBody] ReaderService newMember)

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Text.Json.Serialization;
 
 namespace Library.Models;
 
@@ -21,5 +22,6 @@ public partial class Book
 
     public bool? Available { get; set; }
 
+    [JsonIgnore]
     public virtual ICollection<Borrow> Borrows { get; set; } = new List<Borrow>();
 }
