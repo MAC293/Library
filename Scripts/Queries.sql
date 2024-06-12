@@ -2,6 +2,7 @@ SELECT * FROM Member;
 SELECT * FROM Reader;
 SELECT * FROM EndUser;
 SELECT * FROM Librarian;
+SELECT * FROM Book;
 
 DELETE Member;
 DELETE Reader;

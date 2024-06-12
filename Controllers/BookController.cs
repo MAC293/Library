@@ -68,7 +68,8 @@ namespace Library.Controllers
         [Route("AddBook")]
         //This ensures that the JWT token is validated before the method is executed.
         [Authorize]
-        public async Task<IActionResult> CreateBook([FromBody] Book newBook)
+        //public async Task<IActionResult> CreateBook([FromBody] Book newBook)
+        public async Task<IActionResult> CreateBook([FromForm] Book newBook, [FromForm] IFormFile cover)
         {
             try
             {
@@ -93,10 +94,14 @@ namespace Library.Controllers
                             return BadRequest();
                         }
 
-                        context.Books.Add(bookDAL);
+                        //Image to Byte[]
+                        newBook.Cover = ImageToByte(cover);
+
+                        context.Books.Add(newBook);
                         await context.SaveChangesAsync();
 
-                        return Created();
+                        return Created("",  newBook.Title + "has been added to the Library.");
+
                     }
                     if (Char.IsDigit(ClaimID[0]))
                     {
@@ -112,6 +117,12 @@ namespace Library.Controllers
                 return BadRequest("An exception has occurred: " + ex);
 
             }
+        }
+
+        //Convert the uploaded image to a varbinary
+        private Byte[] ImageToByte(IFormFile uploadedFile)
+        {
+
         }
         #endregion
     }

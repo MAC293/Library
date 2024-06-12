@@ -35,7 +35,7 @@ namespace Library.Services
         }
 
         [Required(ErrorMessage = "Name field is required.")]
-        [MaxLength(35, ErrorMessage = "Name length cannot exceed 35 characters.")]
+        [MaxLength(35, ErrorMessage = "Name cannot exceed 35 characters.")]
         public String Name
         {
             get { return _Name; }
@@ -51,7 +51,7 @@ namespace Library.Services
         }
 
         [Required(ErrorMessage = "Email field is required.")]
-        [MaxLength(25, ErrorMessage = "Email length cannot exceed 25 characters.")]
+        [MaxLength(25, ErrorMessage = "Email cannot exceed 25 characters.")]
         [RegularExpression(@"^([a-zA-Z0-9_\-\.]+)@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.)|(([a-zA-Z0-9\-]+\.)+[a-zA-Z]{2,}))$", ErrorMessage = "Invalid email format.")]
         public String Email
         {
@@ -92,7 +92,7 @@ namespace Library.Services
         //}
 
         [Required(ErrorMessage = "Username field is required.")]
-        [MaxLength(12, ErrorMessage = "Username length cannot exceed 12 characters.")]
+        [MaxLength(12, ErrorMessage = "Username cannot exceed 12 characters.")]
         public String Username
         {
             get { return _Username; }
