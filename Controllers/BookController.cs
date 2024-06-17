@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
+using System.Xml;
 using Microsoft.EntityFrameworkCore;
 
 namespace Library.Controllers
@@ -80,6 +81,11 @@ namespace Library.Controllers
                         return Unauthorized("This user doesn't exist.");
                     }
 
+                    if (newBook == null || !ModelState.IsValid)
+                    {
+                        return BadRequest();
+                    }
+
                     if (ClaimID.StartsWith('L'))
                     {
                         if (newBook == null || !ModelState.IsValid)
@@ -95,7 +101,7 @@ namespace Library.Controllers
                         }
 
                         //Image to Byte[]
-                        newBook.Cover = ImageToByte(cover);
+                        //newBook.Cover = ImageToByte(cover);
 
                         context.Books.Add(newBook);
                         await context.SaveChangesAsync();
@@ -122,7 +128,17 @@ namespace Library.Controllers
         //Convert the uploaded image to a varbinary
         private Byte[] ImageToByte(IFormFile uploadedFile)
         {
+            if (uploadedFile.Length == 0)
+            {
+                return null; 
+            }
 
+            using (var memoryStream = new MemoryStream())
+            {
+                uploadedFile.CopyTo(memoryStream);
+
+                return memoryStream.ToArray();
+            }
         }
         #endregion
     }
