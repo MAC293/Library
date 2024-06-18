@@ -6,6 +6,8 @@ using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 using System.Xml;
 using Microsoft.EntityFrameworkCore;
+using BrunoZell.ModelBinding;
+using System.Text.Json.Nodes;
 
 namespace Library.Controllers
 {
@@ -70,7 +72,8 @@ namespace Library.Controllers
         //This ensures that the JWT token is validated before the method is executed.
         [Authorize]
         //public async Task<IActionResult> CreateBook([FromBody] Book newBook)
-        public async Task<IActionResult> CreateBook([FromForm] Book newBook, [FromForm] IFormFile cover)
+        //public async Task<IActionResult> CreateBook([FromForm] Book newBook, [FromForm] IFormFile cover)
+        public async Task<IActionResult> CreateBook([ModelBinder(BinderType = typeof(JsonModelBinder))] [FromForm] Book newBook, [FromForm] IFormFile cover)
         {
             try
             {
@@ -101,7 +104,7 @@ namespace Library.Controllers
                         }
 
                         //Image to Byte[]
-                        //newBook.Cover = ImageToByte(cover);
+                        newBook.Cover = ImageToByte(cover);
 
                         context.Books.Add(newBook);
                         await context.SaveChangesAsync();
