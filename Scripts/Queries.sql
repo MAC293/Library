@@ -8,6 +8,7 @@ DELETE Member;
 DELETE Reader;
 DELETE EndUser;
 DELETE Librarian;
+DELETE Book;
 
 INSERT INTO EndUser(ID, Username, Password)
 VALUES ('L20258624K-EndUser', 'Lib1','Lib12024');

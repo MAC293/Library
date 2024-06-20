@@ -109,7 +109,7 @@ namespace Library.Controllers
                         context.Books.Add(newBook);
                         await context.SaveChangesAsync();
 
-                        return Created("",  newBook.Title + "has been added to the Library.");
+                        return Created("",  newBook.Title +" has been added to the Library.");
 
                     }
                     if (Char.IsDigit(ClaimID[0]))
