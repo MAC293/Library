@@ -104,12 +104,12 @@ namespace Library.Controllers
                             return BadRequest();
                         }
 
-                        if (!ValidateCoverExtension(cover))
-                        {
-                            return BadRequest("Book cover is required.");
-                        }
+                        //if (!ValidateCoverExtension(cover))
+                        //{
+                        //    return BadRequest("Book cover is required.");
+                        //}
 
-                        //Image to Byte[]
+                        //Image to Byte[]                       
                         newBook.Cover = ImageToByte(cover);
 
                         context.Books.Add(newBook);
