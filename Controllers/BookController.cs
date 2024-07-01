@@ -158,6 +158,7 @@ namespace Library.Controllers
             }
 
             var allowedExtensions = new string[] { ".jpg", ".jpeg", ".png" };
+
             var extension = Path.GetExtension(cover.FileName).ToLowerInvariant();
 
             if (allowedExtensions.Contains(extension))

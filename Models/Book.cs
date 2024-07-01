@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Library.CustomDataAnnotations;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
@@ -35,11 +36,14 @@ public partial class Book
     //[Required]
     public bool Available { get; set; }
 
-    //[Required(ErrorMessage = "Book cover is required.")]
+    [Required(ErrorMessage = "Book cover is required.")]
     //[FileExtensions(Extensions = ".jpg,.jpeg,.png", ErrorMessage = "Upload a valid image file type (jpg, jpeg, png).")]
     //public byte[]? Cover { get; set; }
     //public byte[] Cover { get; set; } = new Byte[0];
     //Initialize with an empty array
+    [AllowedExtensions(new String[]{ ".jpg", ".jpeg", ".png" })]
+    //[FileExtensionService]
+    //public IFormFile Cover { get; set; }
     public byte[] Cover { get; set; } = Array.Empty<Byte>();
 
     [JsonIgnore]
