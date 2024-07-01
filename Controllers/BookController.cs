@@ -110,7 +110,7 @@ namespace Library.Controllers
                         //}
 
                         //Image to Byte[]                       
-                        newBook.Cover = ImageToByte(cover);
+                        //newBook.Cover = ImageToByte(cover);
 
                         context.Books.Add(newBook);
                         await context.SaveChangesAsync();
