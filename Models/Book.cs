@@ -44,8 +44,8 @@ public partial class Book
     [AllowedExtensions(new String[]{ ".jpg", ".jpeg", ".png" })]
     //[FileExtensionService]
     //public IFormFile Cover { get; set; }
-    //public byte[] Cover { get; set; } = Array.Empty<Byte>();
-    public IFormFile Cover { get; set; }
+    public byte[] Cover { get; set; } = Array.Empty<Byte>();
+    //public IFormFile Cover { get; set; }
 
     [JsonIgnore]
     public virtual ICollection<Borrow> Borrows { get; set; } = new List<Borrow>();

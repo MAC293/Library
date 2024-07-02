@@ -74,7 +74,7 @@ namespace Library.Controllers
         [Authorize]
         //public async Task<IActionResult> CreateBook([FromBody] Book newBook)
         //public async Task<IActionResult> CreateBook([FromForm] Book newBook, [FromForm] IFormFile cover)
-        public async Task<IActionResult> CreateBook([ModelBinder(BinderType = typeof(JsonModelBinder))][FromForm] Book newBook, [FromForm] IFormFile cover)
+        public async Task<IActionResult> CreateBook([ModelBinder(BinderType = typeof(JsonModelBinder))][FromForm] BookService newBook, [FromForm] IFormFile cover)
         {
             try
             {
@@ -112,7 +112,7 @@ namespace Library.Controllers
                         //Image to Byte[]                       
                         //newBook.Cover = ImageToByte(cover);
 
-                        context.Books.Add(newBook);
+                        //context.Books.Add(newBook);
                         await context.SaveChangesAsync();
 
                         return Created("", newBook.Title + " has been added to the Library.");
@@ -134,7 +134,7 @@ namespace Library.Controllers
             }
         }
 
-        //Convert the uploaded image to a varbinary
+        //Convert the uploaded byte[] image to a varbinary
         private Byte[] ImageToByte(IFormFile uploadedFile)
         {
             if (uploadedFile.Length == 0)
