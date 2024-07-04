@@ -1,4 +1,5 @@
-//Creation
+//Create Book
+
 {
   "id": "ThePowerOfNow-EckhartTolle-2010-Wellbeing-N�1",
   "title": "The Power Of Now",
@@ -10,7 +11,7 @@
 }
 
 {
-"id": "Think&GrowRich-NapoleonHill-1965-Wealth-N�1",
+  "id": "Think&GrowRich-NapoleonHill-1965-Wealth-N�1",
   "title": "Think & Grow Rich",
   "author": "Napoleon Hill",
   "genre": "Self Help",
@@ -27,5 +28,8 @@
   "year": 1965,
   "editorial": "Wealth",
   "available": true,
-  "cover": "" 
+  "cover": ""
 }
+
+//Book Update
+

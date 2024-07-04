@@ -9,6 +9,8 @@ using Microsoft.EntityFrameworkCore;
 using BrunoZell.ModelBinding;
 using System.Text.Json.Nodes;
 using System.Linq;
+using System.ComponentModel.DataAnnotations;
+using Library.CustomDataAnnotations;
 
 namespace Library.Controllers
 {
@@ -74,7 +76,8 @@ namespace Library.Controllers
         [Authorize]
         //public async Task<IActionResult> CreateBook([FromBody] Book newBook)
         //public async Task<IActionResult> CreateBook([FromForm] Book newBook, [FromForm] IFormFile cover)
-        public async Task<IActionResult> CreateBook([ModelBinder(BinderType = typeof(JsonModelBinder))][FromForm] BookService newBook, [FromForm] IFormFile cover)
+        public async Task<IActionResult> CreateBook([ModelBinder(BinderType = typeof(JsonModelBinder))][FromForm] Book newBook, [FromForm] IFormFile cover)
+        //public async Task<IActionResult> CreateBook([ModelBinder(BinderType = typeof(JsonModelBinder))][FromForm] BookService newBook, [FromForm] IFormFile cover)
         {
             try
             {
@@ -85,10 +88,24 @@ namespace Library.Controllers
                         return Unauthorized("This user doesn't exist.");
                     }
 
+                    //newBook.Cover = cover;
+
                     if (newBook == null || !ModelState.IsValid)
                     {
                         return BadRequest();
                     }
+
+                    //newBook.Cover = ImageToByte(cover);
+
+                    //Assign IFormFile to byte[] Cover property
+                    //newBook.Cover = ImageToByte(cover);
+                    //Trigger cover data validation
+
+                    //newBook.Cover = ImageToByte(cover);
+                    
+                    //Validate the cover file using the custom attribute
+
+                    //newBook.Cover = cover;
 
                     if (ClaimID.StartsWith('L'))
                     {
@@ -112,7 +129,7 @@ namespace Library.Controllers
                         //Image to Byte[]                       
                         //newBook.Cover = ImageToByte(cover);
 
-                        //context.Books.Add(newBook);
+                        context.Books.Add(newBook);
                         await context.SaveChangesAsync();
 
                         return Created("", newBook.Title + " has been added to the Library.");
@@ -168,6 +185,39 @@ namespace Library.Controllers
 
             return false;
         }
+        #endregion
+
+        #region Update a Book (PUT)
+        [HttpPost]
+        [Route("UpdateBook")]
+        [Authorize]
+        public async Task<IActionResult> EditBook([FromBody] Book updateBook)
+        {
+            try
+            {
+                using (LibraryDbContext context = new LibraryDbContext())
+                {
+                    if (!hasClaim())
+                    {
+                        return Unauthorized("This user doesn't exist.");
+                    }
+
+                    if (updateBook == null || !ModelState.IsValid)
+                    {
+                        return BadRequest();
+                    }
+                }
+
+
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
+        }
+
+
         #endregion
     }
 }

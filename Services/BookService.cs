@@ -1,14 +1,18 @@
 ﻿using Library.CustomDataAnnotations;
+using System.ComponentModel.DataAnnotations;
 using System.Security.Cryptography;
 
 namespace Library.Services
 {
     public class BookService
     {
-        //private IFormFile _Cover;
-        private Byte[] _Cover;
+        private IFormFile _Cover;
+        //private Byte[] _Cover;
 
-        public BookService() { }
+        public BookService()
+        {
+            //Cover = Array.Empty<Byte>();
+        }
 
         public string? Id { get; set; } = null!;
         public string? Title { get; set; }
@@ -18,19 +22,22 @@ namespace Library.Services
         public string? Editorial { get; set; }
         public bool? Available { get; set; }
 
-
-        [AllowedExtensions(new String[] { ".jpg", ".jpeg", ".png" })]
+        //[Required(ErrorMessage = "Book cover is required.")]
+        //[AllowedExtensions(new String[] { ".jpg", ".jpeg", ".png" })]
+        //[AllowedExtensions]
+        [AllowedExtensions(new String[] { ".jpg", ".png", ".jpeg" })]
         //public byte[] Cover { get; set; } = Array.Empty<Byte>();
 
-        //public IFormFile Cover
-        //{
-        //    get { return _Cover; }
-        //    set { _Cover = value; }
-        //}
-        public Byte[] Cover
+        public IFormFile Cover
         {
             get { return _Cover; }
             set { _Cover = value; }
         }
+
+        //public Byte[] Cover
+        //{
+        //    get { return _Cover; }
+        //    set { _Cover = value; }
+        //}
     }
 }
