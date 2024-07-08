@@ -10,6 +10,9 @@ DELETE EndUser;
 DELETE Librarian;
 DELETE Book;
 
+DELETE FROM EndUser
+WHERE ID = 'L88476329-EndUser';
+
 INSERT INTO EndUser(ID, Username, Password)
 VALUES ('L20258624K-EndUser', 'Lib1','Lib12024');
 

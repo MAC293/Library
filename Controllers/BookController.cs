@@ -40,7 +40,8 @@ namespace Library.Controllers
         #endregion
 
         #region Claim
-        private Boolean hasClaim()
+        //Check if Token has a Claim
+        private Boolean HasClaim()
         {
             var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
 
@@ -56,16 +57,23 @@ namespace Library.Controllers
             return true;
         }
 
-        private String validClaim(String claimID)
+        //Check if Claim is valid (L/0)
+        private String ValidClaim(String claimID)
         {
             if (claimID.StartsWith('L') || Char.IsDigit(claimID[0]))
             {
-                ClaimID = claimID;
+                //ClaimID = claimID;
+                AssignClaim(claimID);
 
                 return claimID;
             }
 
             return String.Empty;
+        }
+
+        private void AssignClaim(String claimID)
+        {
+            ClaimID = claimID;
         }
         #endregion
 
@@ -83,7 +91,7 @@ namespace Library.Controllers
             {
                 using (LibraryDbContext context = new LibraryDbContext())
                 {
-                    if (!hasClaim())
+                    if (!HasClaim())
                     {
                         return Unauthorized("This user doesn't exist.");
                     }
@@ -102,12 +110,13 @@ namespace Library.Controllers
                     //Trigger cover data validation
 
                     //newBook.Cover = ImageToByte(cover);
-                    
+
                     //Validate the cover file using the custom attribute
 
                     //newBook.Cover = cover;
 
-                    if (ClaimID.StartsWith('L'))
+                    //if (ClaimID.StartsWith('L'))
+                    if (ValidClaim(ClaimID).StartsWith('L'))
                     {
                         if (newBook == null || !ModelState.IsValid)
                         {
@@ -135,7 +144,8 @@ namespace Library.Controllers
                         return Created("", newBook.Title + " has been added to the Library.");
 
                     }
-                    if (Char.IsDigit(ClaimID[0]))
+                    //if (Char.IsDigit(ClaimID[0]))
+                    if (Char.IsDigit(ValidClaim(ClaimID)[0]))
                     {
                         return Unauthorized("This user has no authorization to perform this action.");
                     }
@@ -197,7 +207,7 @@ namespace Library.Controllers
             {
                 using (LibraryDbContext context = new LibraryDbContext())
                 {
-                    if (!hasClaim())
+                    if (!HasClaim())
                     {
                         return Unauthorized("This user doesn't exist.");
                     }
@@ -206,6 +216,17 @@ namespace Library.Controllers
                     {
                         return BadRequest();
                     }
+
+                    if (ClaimID.StartsWith('L'))
+                    {
+
+                    }
+                    if (Char.IsDigit(ClaimID[0]))
+                    {
+                        return Unauthorized("This user has no authorization to perform this action.");
+                    }
+
+                    return BadRequest("Invalid request.");
                 }
 
 
