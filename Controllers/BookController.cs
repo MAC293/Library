@@ -52,8 +52,6 @@ namespace Library.Controllers
 
             ClaimID = userIdClaim.Value;
 
-            //validClaim(userIdClaim.Value);
-
             return true;
         }
 
