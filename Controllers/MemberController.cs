@@ -80,7 +80,7 @@ namespace Library.Controllers
                     //var uri = new Uri($"{Request.Scheme}://{Request.Host}{Request.Path}/{newMember.IDMember}");
                     //return Created(uri, "Congratulations! Your account has been successfully created.");
                     //return StatusCode(StatusCodes.Status201Created, "Congratulations! Your account has been successfully created.");
-                    return Created("", "Congratulations! Your account has been successfully created.");
+                    return Created("", "Your account has been successfully created.");
 
                     //return default;
                 }
@@ -163,19 +163,20 @@ namespace Library.Controllers
         private void EndUserLibrarian(LibrarianService librarianService, LibraryDbContext context)
         {
             //EndUSer
-            //EndUser newEndUser = new EndUser();
-            //newEndUser.Id = IDLibrarian(librarianService.IDLibrarian);
-            //newEndUser.Username = librarianService.Username;
-            //newEndUser.Password = Hash(librarianService.Password);
-            //context.EndUsers.Add(newEndUser);
-            AddLibrarian(librarianService, context);
+            EndUser newEndUser = new EndUser();
+            newEndUser.Id = IDLibrarian(librarianService.IDLibrarian);
+            newEndUser.Username = librarianService.Username;
+            newEndUser.Password = Hash(librarianService.Password);
+            context.EndUsers.Add(newEndUser);
+            //AddEndUser(librarianService, context);
 
             //Librarian
-            //Librarian newLibrarian = new Librarian();
-            //newLibrarian.Id = librarianService.IDLibrarian;
-            //newLibrarian.EndUser = IDLibrarian(librarianService.IDLibrarian);
-            //context.Librarians.Add(newLibrarian);
-            AddEndUser(librarianService, context);
+            Librarian newLibrarian = new Librarian();
+            newLibrarian.Id = librarianService.IDLibrarian;
+            newLibrarian.EndUser = IDLibrarian(librarianService.IDLibrarian);
+            context.Librarians.Add(newLibrarian);
+            //AddLibrarian(librarianService, context);
+
         }
 
         private void AddEndUser(LibrarianService librarianService, LibraryDbContext context)

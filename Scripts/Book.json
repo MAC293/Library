@@ -1,7 +1,6 @@
 //Create Book
-
 {
-  "id": "ThePowerOfNow-EckhartTolle-2010-Wellbeing-N�1",
+  "id": "ThePowerOfNow-EckhartTolle-2010-Wellbeing-N°1",
   "title": "The Power Of Now",
   "author": "Eckhart Tolle",
   "genre": "Self Help",
@@ -11,17 +10,17 @@
 }
 
 {
-  "id": "Think&GrowRich-NapoleonHill-1965-Wealth-N�1",
+  "id": "Think&GrowRich-NapoleonHill-1965-Wealth-N°1",
   "title": "Think & Grow Rich",
   "author": "Napoleon Hill",
   "genre": "Self Help",
   "year": 1965,
   "editorial": "Wealth",
   "available": true
-}
+} 
 
 {
-  "id": "Think&GrowRich-NapoleonHill-1965-Wealth-N�1",
+  "id": "Think&GrowRich-NapoleonHill-1965-Wealth-N°1",
   "title": "Think & Grow Rich",
   "author": "Napoleon Hill",
   "genre": "Self Help",
@@ -32,4 +31,12 @@
 }
 
 //Book Update
-
+{
+  "id": "Think&GrowRich-NapoleonHill-1965-Wealth-N°1",
+  "title": "Think & Grow Rich",
+  "author": "Napoleon Hill",
+  "genre": "Self Help",
+  "year": 1965,
+  "editorial": "Wealth",
+  "available": true
+}

@@ -89,7 +89,7 @@ namespace Library.Controllers
         [Authorize]
         //public async Task<IActionResult> CreateBook([FromBody] Book newBook)
         //public async Task<IActionResult> CreateBook([FromForm] Book newBook, [FromForm] IFormFile cover)
-        public async Task<IActionResult> CreateBook([ModelBinder(BinderType = typeof(JsonModelBinder))][FromForm] Book newBook, [FromForm] IFormFile cover)
+        public async Task<IActionResult> CreateBook([ModelBinder(BinderType = typeof(JsonModelBinder))][FromForm] Book newBook, [FromForm] IFormFile newCover)
         //public async Task<IActionResult> CreateBook([ModelBinder(BinderType = typeof(JsonModelBinder))][FromForm] BookService newBook, [FromForm] IFormFile cover)
         {
             try
@@ -142,6 +142,8 @@ namespace Library.Controllers
 
                         //Image to Byte[]                       
                         //newBook.Cover = ImageToByte(cover);
+
+                        newBook.Cover = ImageToByte(newCover);
 
                         context.Books.Add(newBook);
                         await context.SaveChangesAsync();
@@ -206,7 +208,7 @@ namespace Library.Controllers
         [HttpPut]
         [Route("UpdateBook")]
         [Authorize]
-        public async Task<IActionResult> EditBook([FromBody] Book updateBook)
+        public async Task<IActionResult> EditBook([ModelBinder(BinderType = typeof(JsonModelBinder))][FromForm] Book updateBook, [FromForm] IFormFile updateCover)
         {
             try
             {
@@ -219,22 +221,27 @@ namespace Library.Controllers
 
                     if (ClaimID.StartsWith('L'))
                     {
-                        if (newBook == null || !ModelState.IsValid)
+                        if (updateBook == null || !ModelState.IsValid)
                         {
                             return BadRequest();
                         }
 
-                        var bookDAL = await context.Books.FirstOrDefaultAsync(book => book.Id == newBook.Id);
+                        var bookDAL = await context.Books.FirstOrDefaultAsync(book => book.Id == updateBook.Id);
 
-                        if (bookDAL != null)
+
+                        if (bookDAL == null)
                         {
-                            return BadRequest();
+                            return Conflict();
                         }
 
-                        context.Books.Add(newBook);
+                        MappingPUT(bookDAL, updateBook, updateCover);
+
                         await context.SaveChangesAsync();
 
-                        return Created("", newBook.Title + " has been added to the Library.");
+                        //Check cache for updated book
+
+                        //return NoContent();
+                        return new ObjectResult("The book was updated successfully.") { StatusCode = 204 };
 
                     }
                     if (Char.IsDigit(ClaimID[0]))
@@ -244,8 +251,8 @@ namespace Library.Controllers
 
                     return BadRequest("Invalid request.");
 
-                }
 
+                }
 
             }
             catch (Exception ex)
@@ -255,7 +262,17 @@ namespace Library.Controllers
             }
         }
 
-
+        private void MappingPUT(Book bookDAL, Book updateBook, IFormFile updateCover)
+        {
+            //bookDAL.Id = updateBook.Id;
+            bookDAL.Title = updateBook.Title;
+            bookDAL.Author = updateBook.Author;
+            bookDAL.Genre = updateBook.Genre;
+            bookDAL.Year = updateBook.Year;
+            bookDAL.Editorial = updateBook.Editorial;
+            bookDAL.Available = updateBook.Available;
+            bookDAL.Cover = ImageToByte(updateCover);
+        }
         #endregion
     }
 }
