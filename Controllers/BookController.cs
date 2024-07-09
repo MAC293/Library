@@ -40,38 +40,45 @@ namespace Library.Controllers
         #endregion
 
         #region Claim
-        //Check if Token has a Claim
-        private Boolean HasClaim()
+        private Boolean ClaimValidation()
+        {
+            AssignClaim();
+
+            if (HasClaim())
+            {
+                return true;
+            }
+
+            return false;
+        }
+        private void AssignClaim()
         {
             var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
 
-            if (userIdClaim == null)
+            ClaimID = userIdClaim.Value;
+        }
+
+        private Boolean HasClaim()
+        {
+            //var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
+
+            if (ClaimID == String.Empty)
             {
                 return false;
             }
-
-            ClaimID = userIdClaim.Value;
-
+            //ClaimID = userIdClaim.Value;
             return true;
         }
 
         //Check if Claim is valid (L/0)
-        private String ValidClaim(String claimID)
+        private Boolean ValidClaim()
         {
-            if (claimID.StartsWith('L') || Char.IsDigit(claimID[0]))
+            if (ClaimID.StartsWith('L') || Char.IsDigit(ClaimID[0]))
             {
-                //ClaimID = claimID;
-                AssignClaim(claimID);
-
-                return claimID;
+                return true;
             }
 
-            return String.Empty;
-        }
-
-        private void AssignClaim(String claimID)
-        {
-            ClaimID = claimID;
+            return false;
         }
         #endregion
 
@@ -89,17 +96,17 @@ namespace Library.Controllers
             {
                 using (LibraryDbContext context = new LibraryDbContext())
                 {
-                    if (!HasClaim())
+                    if (!ClaimValidation())
                     {
                         return Unauthorized("This user doesn't exist.");
                     }
 
                     //newBook.Cover = cover;
 
-                    if (newBook == null || !ModelState.IsValid)
-                    {
-                        return BadRequest();
-                    }
+                    //if (newBook == null || !ModelState.IsValid)
+                    //{
+                    //    return BadRequest();
+                    //}
 
                     //newBook.Cover = ImageToByte(cover);
 
@@ -114,7 +121,7 @@ namespace Library.Controllers
                     //newBook.Cover = cover;
 
                     //if (ClaimID.StartsWith('L'))
-                    if (ValidClaim(ClaimID).StartsWith('L'))
+                    if (ClaimID.StartsWith('L'))
                     {
                         if (newBook == null || !ModelState.IsValid)
                         {
@@ -143,7 +150,7 @@ namespace Library.Controllers
 
                     }
                     //if (Char.IsDigit(ClaimID[0]))
-                    if (Char.IsDigit(ValidClaim(ClaimID)[0]))
+                    if (Char.IsDigit(ClaimID[0]))
                     {
                         return Unauthorized("This user has no authorization to perform this action.");
                     }
@@ -196,7 +203,7 @@ namespace Library.Controllers
         #endregion
 
         #region Update a Book (PUT)
-        [HttpPost]
+        [HttpPut]
         [Route("UpdateBook")]
         [Authorize]
         public async Task<IActionResult> EditBook([FromBody] Book updateBook)
@@ -205,18 +212,29 @@ namespace Library.Controllers
             {
                 using (LibraryDbContext context = new LibraryDbContext())
                 {
-                    if (!HasClaim())
+                    if (!ClaimValidation())
                     {
                         return Unauthorized("This user doesn't exist.");
                     }
 
-                    if (updateBook == null || !ModelState.IsValid)
-                    {
-                        return BadRequest();
-                    }
-
                     if (ClaimID.StartsWith('L'))
                     {
+                        if (newBook == null || !ModelState.IsValid)
+                        {
+                            return BadRequest();
+                        }
+
+                        var bookDAL = await context.Books.FirstOrDefaultAsync(book => book.Id == newBook.Id);
+
+                        if (bookDAL != null)
+                        {
+                            return BadRequest();
+                        }
+
+                        context.Books.Add(newBook);
+                        await context.SaveChangesAsync();
+
+                        return Created("", newBook.Title + " has been added to the Library.");
 
                     }
                     if (Char.IsDigit(ClaimID[0]))
@@ -225,14 +243,15 @@ namespace Library.Controllers
                     }
 
                     return BadRequest("Invalid request.");
+
                 }
 
 
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
-                Console.WriteLine(e);
-                throw;
+                return BadRequest("An exception has occurred: " + ex);
+
             }
         }
 
