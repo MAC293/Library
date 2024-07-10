@@ -163,7 +163,7 @@ namespace Library.Controllers
             }
             catch (Exception ex)
             {
-                return BadRequest("An exception has occurred: " + ex);
+                return BadRequest("An exception has occurred: " +ex);
 
             }
         }
@@ -240,8 +240,8 @@ namespace Library.Controllers
 
                         //Check cache for updated book
 
-                        //return NoContent();
-                        return new ObjectResult("The book was updated successfully.") { StatusCode = 204 };
+                        return NoContent();
+                        //return new ObjectResult("The book was updated successfully.") { StatusCode = 204 };
 
                     }
                     if (Char.IsDigit(ClaimID[0]))
@@ -257,7 +257,7 @@ namespace Library.Controllers
             }
             catch (Exception ex)
             {
-                return BadRequest("An exception has occurred: " + ex);
+                return BadRequest("An exception has occurred: " +ex);
 
             }
         }
@@ -272,6 +272,96 @@ namespace Library.Controllers
             bookDAL.Editorial = updateBook.Editorial;
             bookDAL.Available = updateBook.Available;
             bookDAL.Cover = ImageToByte(updateCover);
+        }
+        #endregion
+
+        #region Remove a Book (DELETE)
+        [HttpDelete("DeleteBook/{ID}")]
+        [Authorize]
+        public async Task<IActionResult> DeleteBook([FromRoute] String ID)
+        {
+            try
+            {
+                using (LibraryDbContext context = new LibraryDbContext())
+                {
+                    if (!ClaimValidation())
+                    {
+                        return Unauthorized("This user doesn't exist.");
+                    }
+
+                    if (ClaimID.StartsWith('L'))
+                    {
+                        var bookDAL = await context.Books.FirstOrDefaultAsync(book => book.Id == ID);
+
+                        if (bookDAL != null)
+                        {
+                            //Check cache for deleted book
+
+                            context.Books.Remove(bookDAL);
+                            await context.SaveChangesAsync();
+
+                            //return new ObjectResult("The book was removed successfully.") { StatusCode = 204 };
+                            return NoContent();
+                        }
+
+                        return NotFound();
+                    }
+                    if (Char.IsDigit(ClaimID[0]))
+                    {
+                        return Unauthorized("This user has no authorization to perform this action.");
+                    }
+
+                    return BadRequest();
+                }
+            }
+            catch (Exception ex)
+            {
+                return BadRequest("An exception has occurred: " +ex);
+
+            }
+        }
+        #endregion
+
+        #region Read a Book (GET)
+        [HttpGet("ViewBook/{ID}")]
+        [Authorize]
+        public async Task<ActionResult<Book>> DisplayBook([FromRoute] String ID)
+        {
+            try
+            {
+                using (LibraryDbContext context = new LibraryDbContext())
+                {
+                    if (!ClaimValidation())
+                    {
+                        return Unauthorized("This user doesn't exist.");
+                    }
+
+                    if (ClaimID.StartsWith('L'))
+                    {
+                        //Check cache for obtained book
+
+                        var bookDAL = await context.Books.FirstOrDefaultAsync(book => book.Id == ID);
+
+                        if (bookDAL != null)
+                        {
+                            return bookDAL;
+                        }
+
+                        return NotFound();
+                    }
+                    if (Char.IsDigit(ClaimID[0]))
+                    {
+                        return Unauthorized("This user has no authorization to perform this action.");
+                    }
+
+                    return BadRequest();
+                }
+            }
+            catch (Exception ex)
+            {
+                return BadRequest("An exception has occurred: " + ex);
+
+            }
         }
         #endregion
     }
