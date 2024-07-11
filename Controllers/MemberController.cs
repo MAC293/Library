@@ -216,6 +216,7 @@ namespace Library.Controllers
                         .Where(user => user.Username == newUser.Username)
                         .ToList();
 
+                    //HashVerifier cannot be performed inside the database, hast to be out if it
                     var userDAL = users.FirstOrDefault(user => HashVerifier(newUser.Password, user.Password) 
                                                                && UsernameComparison(newUser.Username, user.Username));
 

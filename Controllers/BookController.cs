@@ -21,6 +21,7 @@ namespace Library.Controllers
         #region Attributes
         private CacheService _CacheService;
         private String _ClaimID;
+        //private LibraryDbContext context;
 
         public BookController(CacheService cacheService)
         {
@@ -143,6 +144,11 @@ namespace Library.Controllers
                         //Image to Byte[]                       
                         //newBook.Cover = ImageToByte(cover);
 
+                        if (!CheckBooksQuantity(newBook.Title))
+                        {
+                            return BadRequest("You can't add more than 3 books.");
+                        }
+
                         newBook.Cover = ImageToByte(newCover);
 
                         context.Books.Add(newBook);
@@ -164,6 +170,22 @@ namespace Library.Controllers
             catch (Exception ex)
             {
                 return BadRequest("An exception has occurred: " +ex);
+
+            }
+        }
+
+        private Boolean CheckBooksQuantity(String name)
+        {
+            using (LibraryDbContext context = new LibraryDbContext())
+            {
+                int matchingName = context.Books.Count(book => book.Title == name.Trim());
+
+                if (matchingName < 3)
+                {
+                    return true;
+                }
+
+                return false;
 
             }
         }
@@ -365,6 +387,8 @@ namespace Library.Controllers
         }
         #endregion
 
-
+        #region Borrow a Book (GET)
+        
+        #endregion
     }
 }

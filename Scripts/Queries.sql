@@ -3,12 +3,14 @@ SELECT * FROM Reader;
 SELECT * FROM EndUser;
 SELECT * FROM Librarian;
 SELECT * FROM Book;
+SELECT * FROM Borrow;
 
 DELETE Member;
 DELETE Reader;
 DELETE EndUser;
 DELETE Librarian;
 DELETE Book;
+DELETE Borrow;
 
 DELETE FROM EndUser
 WHERE ID = 'L88476329-EndUser';
