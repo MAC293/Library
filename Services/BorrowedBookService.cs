@@ -1,4 +1,5 @@
 ﻿using Library.CustomDataAnnotations;
+using Microsoft.VisualBasic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Security.Cryptography;
@@ -12,12 +13,14 @@ namespace Library.Services
         private String _Genre;
         private int _Year;
         private String _Editorial;
+        private String _BorrowDate;
+        private String _DueDate;
         private Byte[] _Cover;
-        private BorrowInformationService _Information;
+        //private BorrowInformationService _Information;
 
         public BorrowedBookService()
         {
-            Information = new BorrowInformationService();
+            //Information = new BorrowInformationService();
         }
 
         public String Title
@@ -50,10 +53,22 @@ namespace Library.Services
             set { _Editorial = value; }
         }
 
-        public BorrowInformationService Information
+        //public BorrowInformationService Information
+        //{
+        //    get { return _Information; }
+        //    set { _Information = value; }
+        //}
+
+        public String BorrowDate
         {
-            get { return _Information; }
-            set { _Information = value; }
+            get { return _BorrowDate; }
+            set { _BorrowDate = value; }
+        }
+
+        public String DueDate
+        {
+            get { return _DueDate; }
+            set { _DueDate = value; }
         }
 
         public Byte[] Cover

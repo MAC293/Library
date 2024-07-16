@@ -410,7 +410,7 @@ namespace Library.Controllers
                             //context.Borrows.Add(newBook);
                             //await context.SaveChangesAsync();
 
-                            return MapDALToServiceBook(bookDAL, MapDALToBorrowInformationService());
+                            return MapDALToServiceBook(bookDAL);
                         }
 
                         return NotFound(titleToBorrow +"is not available. You have to wait until a reader returns a copy.");
@@ -431,7 +431,7 @@ namespace Library.Controllers
             }
         }
 
-        private BorrowedBookService MapDALToServiceBook(Book availableBook, BorrowInformationService borrowInformation)
+        private BorrowedBookService MapDALToServiceBook(Book availableBook)
         {
             BorrowedBookService borrowedBook = new BorrowedBookService()
             {
@@ -441,7 +441,9 @@ namespace Library.Controllers
                 Year = (int)availableBook.Year,
                 Editorial = availableBook.Editorial,
                 Cover = availableBook.Cover,
-                Information = borrowInformation
+                BorrowDate = BorrowDate(),
+                DueDate = DueDate()
+                //Information = borrowInformation
 
             };
 
