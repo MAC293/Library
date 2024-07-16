@@ -11,6 +11,7 @@ using System.Text.Json.Nodes;
 using System.Linq;
 using System.ComponentModel.DataAnnotations;
 using Library.CustomDataAnnotations;
+using System.Globalization;
 
 namespace Library.Controllers
 {
@@ -144,7 +145,7 @@ namespace Library.Controllers
                         //Image to Byte[]                       
                         //newBook.Cover = ImageToByte(cover);
 
-                        if (!CheckBooksQuantity(newBook.Title))
+                        if (CheckBookStorage(newBook.Title) < 3)
                         {
                             return BadRequest("You can't add more than 3 books.");
                         }
@@ -169,24 +170,18 @@ namespace Library.Controllers
             }
             catch (Exception ex)
             {
-                return BadRequest("An exception has occurred: " +ex);
+                return BadRequest("An exception has occurred: " + ex);
 
             }
         }
 
-        private Boolean CheckBooksQuantity(String name)
+        private int CheckBookStorage(String title)
         {
             using (LibraryDbContext context = new LibraryDbContext())
             {
-                int matchingName = context.Books.Count(book => book.Title == name.Trim());
+                int matchQuantity = context.Books.Count(book => book.Title == title.Trim());
 
-                if (matchingName < 3)
-                {
-                    return true;
-                }
-
-                return false;
-
+                return matchQuantity;
             }
         }
 
@@ -279,7 +274,7 @@ namespace Library.Controllers
             }
             catch (Exception ex)
             {
-                return BadRequest("An exception has occurred: " +ex);
+                return BadRequest("An exception has occurred: " + ex);
 
             }
         }
@@ -338,7 +333,7 @@ namespace Library.Controllers
             }
             catch (Exception ex)
             {
-                return BadRequest("An exception has occurred: " +ex);
+                return BadRequest("An exception has occurred: " + ex);
 
             }
         }
@@ -388,7 +383,133 @@ namespace Library.Controllers
         #endregion
 
         #region Borrow a Book (GET)
+        [HttpGet("BorrowBook/{titleToBorrow}")]
+        [Authorize]
+        public async Task<ActionResult<BorrowedBookService>> AcquireBook(String titleToBorrow)
+        {
+            try
+            {
+                using (LibraryDbContext context = new LibraryDbContext())
+                {
+                    if (!ClaimValidation())
+                    {
+                        return Unauthorized("This user doesn't exist.");
+                    }
+
+                    if (Char.IsDigit(ClaimID[0]))
+                    {
+                        if (CheckBookStorage(titleToBorrow.Trim()) == 0)
+                        {
+                            return NotFound("This book is not available in the library, yet.");
+                        }
+
+                        var bookDAL = await context.Books.FirstOrDefaultAsync(book => book.Title == titleToBorrow);
+
+                        if (bookDAL.Available)
+                        {
+                            //context.Borrows.Add(newBook);
+                            //await context.SaveChangesAsync();
+
+                            return MapDALToServiceBook(bookDAL, MapDALToBorrowInformationService());
+                        }
+
+                        return NotFound(titleToBorrow +"is not available. You have to wait until a reader returns a copy.");
+
+                    }
+                    if (ClaimID.StartsWith('L'))
+                    {
+                        return Unauthorized("Only readers can borrow books.");
+                    }
+
+                    return BadRequest();
+                }
+            }
+            catch (Exception ex)
+            {
+                return BadRequest("An exception has occurred: " + ex);
+
+            }
+        }
+
+        private BorrowedBookService MapDALToServiceBook(Book availableBook, BorrowInformationService borrowInformation)
+        {
+            BorrowedBookService borrowedBook = new BorrowedBookService()
+            {
+                Title = availableBook.Title,
+                Author = availableBook.Author,
+                Genre = availableBook.Genre,
+                Year = (int)availableBook.Year,
+                Editorial = availableBook.Editorial,
+                Cover = availableBook.Cover,
+                Information = borrowInformation
+
+            };
+
+            return borrowedBook;
+        }
+
+        private BorrowInformationService MapDALToBorrowInformationService()
+        {
+            BorrowInformationService borrowInformation = new BorrowInformationService()
+            {
+                BorrowDate = BorrowDate(),
+                DueDate = DueDate()
+            };
+
+            return borrowInformation;
+        }
+
+        //private DateTime BorrowDate()
+        //{
+        //    DateTime borrowDate = Convert.ToDateTime(DateTime.Now.ToString("dd/MM/yyyy"), CultureInfo.InvariantCulture);
+
+        //    return  borrowDate;
+        //}
         
+        private String BorrowDate()
+        {
+            //String borrowDate = Convert.ToDateTime(DateTime.Now.ToString("dd/MM/yyyy"), CultureInfo.InvariantCulture);
+
+            String borrowDate = DateTime.Now.ToString("dd/MM/yyyy", CultureInfo.InvariantCulture);
+
+            return borrowDate;
+        }
+
+        //private DateTime DueDate()
+        //{
+        //    DateTime borrowDate = BorrowDate();
+        //    DateTime dueDate = borrowDate.AddDays(10);
+
+        //    return  dueDate;
+        //}
+        
+        private String DueDate()
+        {
+
+            DateTime dtDate = StrToDate(BorrowDate());
+            var dueDate = dtDate.AddDays(10);
+            String strDate = DateToStr(dueDate);
+
+            return  strDate;
+        }
+
+        private DateTime StrToDate(String date)
+        {
+            return DateTime.ParseExact(date, "dd/MM/yyyy", CultureInfo.InvariantCulture);
+
+             
+        }
+
+        public String DateToStr(DateTime date)
+        {
+            return date.ToString("dd/MM/yyyy", CultureInfo.InvariantCulture);
+        }
+
+        private void LoadBorrowInformation(Book book)
+        {
+
+        }
+
         #endregion
     }
 }
