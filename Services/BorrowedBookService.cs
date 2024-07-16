@@ -1,4 +1,5 @@
 ﻿using Library.CustomDataAnnotations;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Security.Cryptography;
 
@@ -49,18 +50,16 @@ namespace Library.Services
             set { _Editorial = value; }
         }
 
-        public Byte[] Cover
-        {
-            get { return _Cover; }
-            set { _Cover = value; }
-        }
-
         public BorrowInformationService Information
         {
             get { return _Information; }
             set { _Information = value; }
         }
 
-
+        public Byte[] Cover
+        {
+            get { return _Cover; }
+            set { _Cover = value; }
+        }
     }
 }

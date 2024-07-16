@@ -1,4 +1,6 @@
-﻿namespace Library.Services
+﻿using System.ComponentModel;
+
+namespace Library.Services
 {
     public class BorrowInformationService
     {
@@ -23,13 +25,15 @@
         //    get { return _DueDate; }
         //    set { _DueDate = value; }
         //}
-        
+
+        //[DisplayName("Borrow Date")]
         public String BorrowDate
         {
             get { return _BorrowDate; }
             set { _BorrowDate = value; }
         }
 
+        //[DisplayName("Due Date")]
         public String DueDate
         {
             get { return _DueDate; }

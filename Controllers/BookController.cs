@@ -485,19 +485,16 @@ namespace Library.Controllers
         
         private String DueDate()
         {
-
             DateTime dtDate = StrToDate(BorrowDate());
-            var dueDate = dtDate.AddDays(10);
+            var dueDate = dtDate.AddDays(7);
             String strDate = DateToStr(dueDate);
 
-            return  strDate;
+            return strDate;
         }
 
         private DateTime StrToDate(String date)
         {
             return DateTime.ParseExact(date, "dd/MM/yyyy", CultureInfo.InvariantCulture);
-
-             
         }
 
         public String DateToStr(DateTime date)
