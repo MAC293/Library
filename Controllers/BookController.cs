@@ -410,10 +410,14 @@ namespace Library.Controllers
                             //context.Borrows.Add(newBook);
                             //await context.SaveChangesAsync();
 
+                            LoadBorrowInformation(bookDAL, context);
+
+                            bookDAL.Available = false;
+
                             return MapDALToServiceBook(bookDAL);
                         }
 
-                        return NotFound(titleToBorrow +"is not available. You have to wait until a reader returns a copy.");
+                        return NotFound(titleToBorrow + "is not available. You have to wait until a reader returns a copy.");
 
                     }
                     if (ClaimID.StartsWith('L'))
@@ -467,7 +471,7 @@ namespace Library.Controllers
 
         //    return  borrowDate;
         //}
-        
+
         private String BorrowDate()
         {
             //String borrowDate = Convert.ToDateTime(DateTime.Now.ToString("dd/MM/yyyy"), CultureInfo.InvariantCulture);
@@ -484,7 +488,7 @@ namespace Library.Controllers
 
         //    return  dueDate;
         //}
-        
+
         private String DueDate()
         {
             DateTime dtDate = StrToDate(BorrowDate());
@@ -504,11 +508,64 @@ namespace Library.Controllers
             return date.ToString("dd/MM/yyyy", CultureInfo.InvariantCulture);
         }
 
-        private void LoadBorrowInformation(Book book)
+        private void LoadBorrowInformation(Book book, LibraryDbContext context)
         {
+            //using (LibraryDbContext context = new LibraryDbContext())
+            //{
+
+            //var bookDAL = await context.Borrows.FirstOrDefaultAsync(book => true);
+            Borrow borrowDAL = context.Borrows.FirstOrDefault(borrow => borrow.Book == book.Id);
+
+            //var borrowDAL = context.Borrows.FirstOrDefault(borrow => borrow.Book == book.Id);
+
+            if (borrowDAL == null)
+            {
+                Borrow borrow = new Borrow();
+
+
+                borrow.Id = BorrowID(book);
+                borrow.BorrowDate = DateTime.Now;
+                borrow.DueDate = DateTime.Now;
+                borrow.ReturnDate = null;
+                borrow.Reader = ClaimID;
+                borrow.Book = book.Id;
+
+                context.Borrows.Add(borrow);
+                context.SaveChanges();
+
+            }
+
+
+            //}
 
         }
 
+        //Extract from Think&GrowRich-NapoleonHill-1965-Wealth-N°1, to Think&GrowRich-N°1                  
+        private String BorrowID(Book book)
+        {
+            //String bookName = book.Id.Substring(0, book.Id.IndexOf('-'));
+            //String bookCopy = book.Id.Substring(0, book.Id.LastIndexOf('-') + 1);
+
+            //return bookName + "-" + bookCopy;
+
+            int firstHyphenIndex = book.Id.IndexOf("-");
+            String bookTitle = book.Id.Substring(0, firstHyphenIndex).Trim();
+
+            int lastHyphenIndex = book.Id.LastIndexOf("-");
+            String copyNumber = book.Id.Substring(lastHyphenIndex + 1).Trim();
+
+            return $"{bookTitle}-{copyNumber}";
+        }
+
+        //private String BorrowReader()
+        //{
+
+        //}
+
+        //private  String BorrowBook(Book book)
+        //{
+
+        //}
         #endregion
     }
 }
