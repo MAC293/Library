@@ -517,6 +517,7 @@ namespace Library.Controllers
             //{
 
             //var bookDAL = await context.Borrows.FirstOrDefaultAsync(book => true);
+            
             Borrow borrowDAL = context.Borrows.FirstOrDefault(borrow => borrow.Book == book.Id);
 
             //var borrowDAL = context.Borrows.FirstOrDefault(borrow => borrow.Book == book.Id);
