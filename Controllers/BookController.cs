@@ -413,7 +413,9 @@ namespace Library.Controllers
                             LoadBorrowInformation(bookDAL, context);
 
                             bookDAL.Available = false;
-                            Console.WriteLine(bookDAL.Available);
+                            context.SaveChanges();
+
+                            //Console.WriteLine(bookDAL.Available);
 
                             return MapDALToServiceBook(bookDAL);
                         }
@@ -533,12 +535,7 @@ namespace Library.Controllers
 
                 context.Borrows.Add(borrow);
                 context.SaveChanges();
-
-               
-
             }
-
-
             //}
 
         }
