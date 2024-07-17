@@ -413,6 +413,7 @@ namespace Library.Controllers
                             LoadBorrowInformation(bookDAL, context);
 
                             bookDAL.Available = false;
+                            Console.WriteLine(bookDAL.Available);
 
                             return MapDALToServiceBook(bookDAL);
                         }
@@ -454,16 +455,16 @@ namespace Library.Controllers
             return borrowedBook;
         }
 
-        private BorrowInformationService MapDALToBorrowInformationService()
-        {
-            BorrowInformationService borrowInformation = new BorrowInformationService()
-            {
-                BorrowDate = BorrowDate(),
-                DueDate = DueDate()
-            };
+        //private BorrowInformationService MapDALToBorrowInformationService()
+        //{
+        //    BorrowInformationService borrowInformation = new BorrowInformationService()
+        //    {
+        //        BorrowDate = BorrowDate(),
+        //        DueDate = DueDate()
+        //    };
 
-            return borrowInformation;
-        }
+        //    return borrowInformation;
+        //}
 
         //private DateTime BorrowDate()
         //{
@@ -527,11 +528,13 @@ namespace Library.Controllers
                 borrow.BorrowDate = DateTime.Now;
                 borrow.DueDate = DateTime.Now;
                 borrow.ReturnDate = null;
-                borrow.Reader = ClaimID;
+                borrow.Reader = ReaderID(ClaimID);
                 borrow.Book = book.Id;
 
                 context.Borrows.Add(borrow);
                 context.SaveChanges();
+
+               
 
             }
 
@@ -555,6 +558,13 @@ namespace Library.Controllers
             String copyNumber = book.Id.Substring(lastHyphenIndex + 1).Trim();
 
             return $"{bookTitle}-{copyNumber}";
+        }
+
+        private String ReaderID(String claim)
+        {
+            String endUserIDCleaned = claim.Replace("EndUser", "Reader");
+
+            return endUserIDCleaned;
         }
 
         //private String BorrowReader()
