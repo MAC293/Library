@@ -20,4 +20,8 @@ VALUES ('L20258624K-EndUser', 'Lib1','Lib12024');
 
 INSERT INTO Librarian(ID, EndUser)
 VALUES ('L20.258.624-K', 'L20258624K-EndUser');
+
+UPDATE Book
+SET Available = 1
+WHERE ID = 'Think&GrowRich-NapoleonHill-1965-Wealth-N°1';
 		

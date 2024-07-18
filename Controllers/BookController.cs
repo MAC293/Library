@@ -407,10 +407,9 @@ namespace Library.Controllers
                         var bookDAL = await context.Books.FirstOrDefaultAsync(book => book.Title.Trim() == bookToBorrow.Trim() && book.Available);
 
                         //bool isAnyBookAvailable = await context.Books.AnyAsync(book => book.Title == bookToBorrow && book.Available);
-
                         //var anyAvailable = await context.Books.AnyAsync(book => book.Title == bookToBorrow && book.Available);
 
-                        if (bookDAL != null && bookDAL.Available)
+                        if (bookDAL.Available)
                         {
                             //context.Borrows.Add(newBook);
                             //await context.SaveChangesAsync();
@@ -510,18 +509,6 @@ namespace Library.Controllers
             return date.ToString("dd/MM/yyyy", CultureInfo.InvariantCulture);
         }
 
-        //private DateTime BorrowDateBorrow()
-        //{
-        //    return DateTime.Now.ToString("dd/MM/yyyy", CultureInfo.InvariantCulture);
-        //}
-
-        //private DateTime DueDateBorrow()
-        //{
-
-        //}
-
-
-
         private void LoadBorrowInformation(Book book, LibraryDbContext context)
         {
             //using (LibraryDbContext context = new LibraryDbContext())
@@ -539,8 +526,8 @@ namespace Library.Controllers
 
 
                 borrow.Id = BorrowID(book);
-                borrow.BorrowDate = DateTime.Now;
-                borrow.DueDate = DateTime.Now;
+                borrow.BorrowDate = BorrowDateBorrow();
+                borrow.DueDate = DueDateBorrow();
                 borrow.ReturnDate = null;
                 borrow.Reader = ReaderID(ClaimID);
                 borrow.Book = book.Id;
@@ -549,6 +536,22 @@ namespace Library.Controllers
                 context.SaveChanges();
             }
             //}
+        }
+
+        private DateTime BorrowDateBorrow()
+        {
+            String strDate = DateTime.Today.ToString("dd/MM/yyyy", CultureInfo.InvariantCulture);
+            return StrToDate(strDate);
+
+        }
+
+        private DateTime DueDateBorrow()
+        {
+            DateTime dtDate = StrToDate(BorrowDate());
+            var dueDate = dtDate.AddDays(7);
+
+            return dueDate;
+
         }
 
         //Extract from Think&GrowRich-NapoleonHill-1965-Wealth-N°1, to Think&GrowRich-N°1                  
@@ -580,10 +583,12 @@ namespace Library.Controllers
 
         //}
 
-        //private  String BorrowBook(Book book)
+        //private String BorrowBook(Book book)
         //{
 
         //}
         #endregion
+
+
     }
 }
