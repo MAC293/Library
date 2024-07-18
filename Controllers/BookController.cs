@@ -145,9 +145,9 @@ namespace Library.Controllers
                         //Image to Byte[]                       
                         //newBook.Cover = ImageToByte(cover);
 
-                        if (CheckBookStorage(newBook.Title) < 3)
+                        if (CheckBookStorage(newBook.Title.Trim()) >= 3)
                         {
-                            return BadRequest("You can't add more than 3 books.");
+                            return BadRequest("The library is limited to 3 copies per book.");
                         }
 
                         newBook.Cover = ImageToByte(newCover);
@@ -180,6 +180,7 @@ namespace Library.Controllers
             using (LibraryDbContext context = new LibraryDbContext())
             {
                 int matchQuantity = context.Books.Count(book => book.Title == title.Trim());
+                //Console.WriteLine(matchQuantity);
 
                 return matchQuantity;
             }
@@ -383,9 +384,9 @@ namespace Library.Controllers
         #endregion
 
         #region Borrow a Book (GET)
-        [HttpGet("BorrowBook/{titleToBorrow}")]
+        [HttpGet("BorrowBook/{bookToBorrow}")]
         [Authorize]
-        public async Task<ActionResult<BorrowedBookService>> AcquireBook(String titleToBorrow)
+        public async Task<ActionResult<BorrowedBookService>> AcquireBook(String bookToBorrow)
         {
             try
             {
@@ -398,14 +399,18 @@ namespace Library.Controllers
 
                     if (Char.IsDigit(ClaimID[0]))
                     {
-                        if (CheckBookStorage(titleToBorrow.Trim()) == 0)
+                        if (CheckBookStorage(bookToBorrow.Trim()) == 0)
                         {
                             return NotFound("This book is not available in the library, yet.");
                         }
 
-                        var bookDAL = await context.Books.FirstOrDefaultAsync(book => book.Title == titleToBorrow);
+                        var bookDAL = await context.Books.FirstOrDefaultAsync(book => book.Title.Trim() == bookToBorrow.Trim() && book.Available);
 
-                        if (bookDAL.Available)
+                        //bool isAnyBookAvailable = await context.Books.AnyAsync(book => book.Title == bookToBorrow && book.Available);
+
+                        //var anyAvailable = await context.Books.AnyAsync(book => book.Title == bookToBorrow && book.Available);
+
+                        if (bookDAL != null && bookDAL.Available)
                         {
                             //context.Borrows.Add(newBook);
                             //await context.SaveChangesAsync();
@@ -420,7 +425,9 @@ namespace Library.Controllers
                             return MapDALToServiceBook(bookDAL);
                         }
 
-                        return NotFound(titleToBorrow + "is not available. You have to wait until a reader returns a copy.");
+                        //return NotFound(bookToBorrow + "is not available. You have to wait until a reader returns a copy.");
+                        //'{bookToBorrow}'
+                        return NotFound($"\"{bookToBorrow}\" is not available. You have to wait until a reader returns a copy.");
 
                     }
                     if (ClaimID.StartsWith('L'))
@@ -484,14 +491,6 @@ namespace Library.Controllers
             return borrowDate;
         }
 
-        //private DateTime DueDate()
-        //{
-        //    DateTime borrowDate = BorrowDate();
-        //    DateTime dueDate = borrowDate.AddDays(10);
-
-        //    return  dueDate;
-        //}
-
         private String DueDate()
         {
             DateTime dtDate = StrToDate(BorrowDate());
@@ -510,6 +509,18 @@ namespace Library.Controllers
         {
             return date.ToString("dd/MM/yyyy", CultureInfo.InvariantCulture);
         }
+
+        //private DateTime BorrowDateBorrow()
+        //{
+        //    return DateTime.Now.ToString("dd/MM/yyyy", CultureInfo.InvariantCulture);
+        //}
+
+        //private DateTime DueDateBorrow()
+        //{
+
+        //}
+
+
 
         private void LoadBorrowInformation(Book book, LibraryDbContext context)
         {
@@ -538,7 +549,6 @@ namespace Library.Controllers
                 context.SaveChanges();
             }
             //}
-
         }
 
         //Extract from Think&GrowRich-NapoleonHill-1965-Wealth-N°1, to Think&GrowRich-N°1                  
