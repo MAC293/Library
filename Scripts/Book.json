@@ -10,14 +10,24 @@
 }
 
 {
-  "id": "Think&GrowRich-NapoleonHill-1965-Wealth-N°1",
-  "title": "Think & Grow Rich",
-  "author": "Napoleon Hill",
+  "id": "ThePowerOfNow-EckhartTolle-2010-Wellbeing-N°2", 
+  "title": "The Power Of Now",
+  "author": "Eckhart Tolle",
   "genre": "Self Help",
-  "year": 1965,
-  "editorial": "Wealth",
+  "year": 2010,
+  "editorial": "Wellbeing",
   "available": true
-} 
+}
+
+{
+  "id": "ThePowerOfNow-EckhartTolle-2010-Wellbeing-N°3",
+  "title": "The Power Of Now",
+  "author": "Eckhart Tolle",
+  "genre": "Self Help",
+  "year": 2010,
+  "editorial": "Wellbeing",
+  "available": true
+}
 
 {
   "id": "Think&GrowRich-NapoleonHill-1965-Wealth-N°1",
@@ -26,8 +36,57 @@
   "genre": "Self Help",
   "year": 1965,
   "editorial": "Wealth",
-  "available": true,
-  "cover": ""
+  "available": true
+}
+
+{
+  "id": "Think&GrowRich-NapoleonHill-1965-Wealth-N°2",
+  "title": "Think & Grow Rich",
+  "author": "Napoleon Hill",
+  "genre": "Self Help",
+  "year": 1965,
+  "editorial": "Wealth",
+  "available": true
+}
+
+{
+  "id": "UNSCRIPTED-MJDeMarco-2023-TheReal1%-N°1",
+  "title": "UNSCRIPTED",
+  "author": "MJ DeMarco",
+  "genre": "Money",
+  "year": 2023,
+  "editorial": "The Real 1%",
+  "available": true
+}
+
+{
+  "id": "Can'tHurtMe-DavidGoggins-2018-Toughness-N°1",
+  "title": "Can't Hurt Me",
+  "author": "David Goggins",
+  "genre": "Mental Power",
+  "year": 2018,
+  "editorial": "Toughness",
+  "available": true
+}
+
+{
+  "id": "Can'tHurtMe-DavidGoggins-2018-Toughness-N°2",
+  "title": "Can't Hurt Me",
+  "author": "David Goggins",
+  "genre": "Mental Power",
+  "year": 2018,
+  "editorial": "Toughness",
+  "available": true
+}
+
+{
+  "id": "NoMoreMr.NiceGuy-RobertGlover-2003-HackLife-N°1",
+  "title": "No More Mr.Nice Guy",
+  "author": "RobertGlover",
+  "genre": "Mental Hack",
+  "year": 2003,
+  "editorial": "Hack Life",
+  "available": true
 }
 
 //Book Update

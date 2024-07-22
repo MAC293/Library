@@ -155,7 +155,8 @@ namespace Library.Controllers
                         context.Books.Add(newBook);
                         await context.SaveChangesAsync();
 
-                        return Created("", newBook.Title + " has been added to the Library.");
+                        //return Created("", newBook.Title + " has been added to the Library.");
+                        return Created("",$"\"{newBook.Title}\" has been added to the Library.");
 
                     }
                     //if (Char.IsDigit(ClaimID[0]))
@@ -515,7 +516,7 @@ namespace Library.Controllers
             //{
 
             //var bookDAL = await context.Borrows.FirstOrDefaultAsync(book => true);
-            
+
             Borrow borrowDAL = context.Borrows.FirstOrDefault(borrow => borrow.Book == book.Id);
 
             //var borrowDAL = context.Borrows.FirstOrDefault(borrow => borrow.Book == book.Id);
@@ -587,6 +588,106 @@ namespace Library.Controllers
         //{
 
         //}
+        #endregion
+
+        #region Read Books (GET)
+        [HttpGet]
+        [Route("ViewBooks")]
+        [Authorize]
+        public async Task<ActionResult<List<BooKService>>> DisplayBooks()
+        {
+            try
+            {
+                using (LibraryDbContext context = new LibraryDbContext())
+                {
+                    if (!ClaimValidation())
+                    {
+                        return Unauthorized("This user doesn't exist.");
+                    }
+
+                    if (Char.IsDigit(ClaimID[0]))
+                    {
+
+                        var allBooks = await context.Books.ToListAsync();
+
+                        if (allBooks.Any())
+                        {
+                            var allBooksList = MappingAllBooks(allBooks);
+                            return allBooksList;
+
+                        }
+
+                        return NotFound();
+                    }
+                    if (ClaimID.StartsWith('L'))
+                    {
+                        return Unauthorized("This user has no authorization to perform this action.");
+                    }
+
+                    return BadRequest();
+                }
+            }
+            catch (Exception ex)
+            {
+                return BadRequest("An exception has occurred: " + ex);
+
+            }
+        }
+
+        private List<BooKService> MappingAllBooks(List<Book> aBooks)
+        //private ActionResult<List<BooKService>> MappingAllBooks(List<Book> aBooks)
+        {
+            var bookServiceList = aBooks.Select(book => new BooKService()
+            {
+                Title = book.Title.Trim(),
+                Author = book.Author.Trim(),
+                Genre = book.Genre.Trim(),
+                Year = (int)book.Year,
+                Editorial = book.Editorial.Trim(),
+                Available = book.Available,
+                Cover = book.Cover
+
+            }).ToList();
+
+            return bookServiceList;
+        }
+
+
+        #endregion
+
+        #region Search Books (GET)
+        [HttpGet("GETVehicles/{type}")]
+        [Authorize]
+        public async Task<ActionResult<List<VehicleService>>> GETCars(String type)
+        {
+            using (RestdatabaseContext context = new RestdatabaseContext())
+            {
+                if (!hasClaim())
+                {
+                    return Unauthorized();
+                }
+
+                var cachedVehicles = CacheService.GetAlt<List<VehicleService>>($"user:{ClaimID}:vehicle:{type}");
+
+                if (cachedVehicles != null)
+                {
+                    return cachedVehicles;
+                }
+
+                var carDAL = await context.Vehicles.Where(car => car.Type == type && car.Driver == ClaimID).ToListAsync();
+
+                if (carDAL.Any())
+                {
+                    var vehicleServiceList = MappingGETAllAlt(carDAL);
+
+                    CacheService.Set(ClaimID, type, vehicleServiceList);
+
+                    return vehicleServiceList;
+                }
+
+                return NotFound();
+            }
+        }
         #endregion
 
 
