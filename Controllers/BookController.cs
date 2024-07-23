@@ -12,6 +12,7 @@ using System.Linq;
 using System.ComponentModel.DataAnnotations;
 using Library.CustomDataAnnotations;
 using System.Globalization;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace Library.Controllers
 {
@@ -156,7 +157,7 @@ namespace Library.Controllers
                         await context.SaveChangesAsync();
 
                         //return Created("", newBook.Title + " has been added to the Library.");
-                        return Created("",$"\"{newBook.Title}\" has been added to the Library.");
+                        return Created("", $"\"{newBook.Title}\" has been added to the Library.");
 
                     }
                     //if (Char.IsDigit(ClaimID[0]))
@@ -651,42 +652,87 @@ namespace Library.Controllers
 
             return bookServiceList;
         }
-
-
         #endregion
 
-        #region Search Books (GET)
-        [HttpGet("GETVehicles/{type}")]
+        #region Search a Book (GET)
+        [HttpGet("FindBook/{toSearch}")]
         [Authorize]
-        public async Task<ActionResult<List<VehicleService>>> GETCars(String type)
+        public async Task<ActionResult<List<BooKService>>> SearchBook(String toSearch)
         {
-            using (RestdatabaseContext context = new RestdatabaseContext())
+            try
             {
-                if (!hasClaim())
+                using (LibraryDbContext context = new LibraryDbContext())
                 {
-                    return Unauthorized();
+                    if (!ClaimValidation())
+                    {
+                        return Unauthorized("This user doesn't exist.");
+                    }
+
+                    if (Char.IsDigit(ClaimID[0]))
+                    {
+
+                        var allBooks = context.Books.AsQueryable();
+
+                        if (allBooks.Any())
+                        {
+                            allBooks = allBooks.Where(book =>
+                                book.Title.Contains(toSearch) ||
+                                book.Author.Contains(toSearch) ||
+                                book.Genre.Contains(toSearch) ||
+                                book.Editorial.Contains(toSearch));
+
+                            //var bookServiceList = allBooks.Select(book => new BooKService
+                            //{
+                            //    Title = book.Title.Trim(),
+                            //    Author = book.Author.Trim(),
+                            //    Genre = book.Genre.Trim(),
+                            //    Year = (int)book.Year,
+                            //    Editorial = book.Editorial.Trim(),
+                            //    Available = book.Available,
+                            //    Cover = book.Cover
+                            //}).ToList();
+
+                            //return bookServiceList;
+
+                            var allBooksList = MappingAllBooksSearch(allBooks);
+                            return allBooksList;
+
+                        }
+
+                        return NotFound();
+                    }
+                    if (ClaimID.StartsWith('L'))
+                    {
+                        return Unauthorized("This user has no authorization to perform this action.");
+                    }
+
+                    return BadRequest();
                 }
-
-                var cachedVehicles = CacheService.GetAlt<List<VehicleService>>($"user:{ClaimID}:vehicle:{type}");
-
-                if (cachedVehicles != null)
-                {
-                    return cachedVehicles;
-                }
-
-                var carDAL = await context.Vehicles.Where(car => car.Type == type && car.Driver == ClaimID).ToListAsync();
-
-                if (carDAL.Any())
-                {
-                    var vehicleServiceList = MappingGETAllAlt(carDAL);
-
-                    CacheService.Set(ClaimID, type, vehicleServiceList);
-
-                    return vehicleServiceList;
-                }
-
-                return NotFound();
             }
+            catch (Exception ex)
+            {
+                return BadRequest("An exception has occurred: " + ex);
+
+            }
+        }
+
+        //private List<BooKService> MappingAllBooksSearch(List<Book> aBooks) 
+        //List<Book> aBooks
+        private ActionResult<List<BooKService>> MappingAllBooksSearch(IQueryable<Book> aBooks)
+        {
+            var bookServiceList = aBooks.Select(book => new BooKService()
+            {
+                Title = book.Title.Trim(),
+                Author = book.Author.Trim(),
+                Genre = book.Genre.Trim(),
+                Year = (int)book.Year,
+                Editorial = book.Editorial.Trim(),
+                Available = book.Available,
+                Cover = book.Cover
+
+            }).ToList();
+
+            return bookServiceList;
         }
         #endregion
 
