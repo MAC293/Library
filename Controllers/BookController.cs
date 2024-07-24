@@ -736,6 +736,101 @@ namespace Library.Controllers
         }
         #endregion
 
+        #region Read Loans (GET)
+        [HttpGet]
+        [Route("ViewLoans")]
+        [Authorize]
+        public async Task<ActionResult<List<BorrowInformationService>>> DisplayLoans()
+        {
+            try
+            {
+                using (LibraryDbContext context = new LibraryDbContext())
+                {
+                    if (!ClaimValidation())
+                    {
+                        return Unauthorized("This user doesn't exist.");
+                    }
+
+                    if (ClaimID.StartsWith('L'))
+                    {
+                        var allLoans = await context.Borrows.ToListAsync();
+
+                        if (allLoans.Any())
+                        {
+                            var allBooksLoan = MappingAllLoans(allLoans);
+                            return allBooksLoan;
+
+                        }
+
+                        return NotFound("Readers haven't requested a book.");
+                    }
+                    if (Char.IsDigit(ClaimID[0]))
+                    {
+                        return Unauthorized("This user has no authorization to perform this action.");
+                    }
+
+                    return BadRequest();
+                }
+            }
+            catch (InvalidOperationException ex)
+            {
+                return BadRequest("An InvalidOperationException has occurred: " + ex);
+
+            }
+
+            catch (Exception ex)
+            {
+                return BadRequest("An exception has occurred: " + ex);
+
+            }
+        }
+
+        private List<BorrowInformationService> MappingAllLoans(List<Borrow> aLoans)
+        {
+            var loansServiceList = aLoans.Select(loan => new BorrowInformationService
+            {
+                ID = loan.Id.Trim(),
+                BorrowDate = loan.BorrowDate,
+                DueDate = loan.DueDate,
+                ReturnDate = DateTime.MinValue,
+                Reader = loan.Reader.Trim(),
+                Book = loan.Book.Trim()
+
+
+            }).ToList();
+
+            return loansServiceList;
+        }
+
+        private Boolean IsNull(DateTime returnDate)
+        {
+            if (returnDate == null)
+            {
+                return true;
+            }
+
+            return false;
+        }
+        
+        private DateTime NotReturnedYet(DateTime returnDate)
+        {
+            return returnDate = DateTime.MinValue;
+        }
+
+        private DateTime NoBookYet(DateTime returnDate)
+        {
+            if (IsNull(returnDate))
+            {
+                return NotReturnedYet(returnDate);
+            }
+
+            return returnDate;
+        }
+
+
+
+        #endregion
+
 
     }
 }
