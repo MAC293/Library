@@ -811,7 +811,7 @@ namespace Library.Controllers
 
             return false;
         }
-        
+
         private DateTime NotReturnedYet(DateTime returnDate)
         {
             return returnDate = DateTime.MinValue;
@@ -847,12 +847,13 @@ namespace Library.Controllers
 
                     if (ClaimID.StartsWith('L'))
                     {
-                        var borrowDAL = await context.Borrows.FirstOrDefaultAsync(book => book.Id == BorrowID(bookReturned, reader + "-Reader").Trim() 
+                        var borrowDAL = await context.Borrows.FirstOrDefaultAsync(book => book.Id == BorrowID(bookReturned, reader + "-Reader").Trim()
                             && book.Reader == reader + "-Reader".Trim());
 
                         if (borrowDAL != null)
                         {
                             borrowDAL.ReturnDate = DateTime.Now;
+                            BookContains(borrowDAL.Id).Available = true;
                             await context.SaveChangesAsync();
 
                             return NoContent();
@@ -883,26 +884,23 @@ namespace Library.Controllers
 
         private String BookReturned(String bookReturned, String readerBorrower)
         {
-            //List<Borrow> bookToReturnList = new List<Borrow>();
-
             var bookToReturn = ReaderLoans(readerBorrower.Trim()).FirstOrDefault(borrow =>
-                borrow.Id == bookReturned + "-N°1".Trim() ||
-                borrow.Id == bookReturned + "-N°2".Trim() || borrow.Id == bookReturned + "-N°3".Trim());
+                borrow.Id.Trim() == bookReturned + "-N°1".Trim() ||
+                borrow.Id.Trim() == bookReturned + "-N°2".Trim() || borrow.Id.Trim() == bookReturned + "-N°3".Trim());
 
-            if (bookToReturn != null && bookToReturn.Reader.Trim() == readerBorrower.Trim())
+            if (bookToReturn != null)
             {
                 return bookToReturn.Id.Trim();
             }
 
             return String.Empty;
+
         }
 
         private List<Borrow> ReaderLoans(String reader)
         {
             using (LibraryDbContext context = new LibraryDbContext())
             {
-                //var allBooks = await context.Books.ToListAsync();
-                
                 var readerBooks = context.Borrows.Where(borrow => borrow.Reader.Trim() == reader.Trim()).ToList();
 
                 return readerBooks;
@@ -910,17 +908,57 @@ namespace Library.Controllers
             }
         }
 
-        //private void MappingPUT(Book bookDAL, Book updateBook, IFormFile updateCover)
-        //{
-        //    //bookDAL.Id = updateBook.Id;
-        //    bookDAL.Title = updateBook.Title;
-        //    bookDAL.Author = updateBook.Author;
-        //    bookDAL.Genre = updateBook.Genre;
-        //    bookDAL.Year = updateBook.Year;
-        //    bookDAL.Editorial = updateBook.Editorial;
-        //    bookDAL.Available = updateBook.Available;
-        //    bookDAL.Cover = ImageToByte(updateCover);
-        //}
+        private List<Book> Books()
+        {
+            using (LibraryDbContext context = new LibraryDbContext())
+            {
+                var allBooks = context.Books.ToList();
+
+                return allBooks;
+            }
+        }
+
+        private Book BookContains(String borrowID)
+        {
+            var bookAvailable = Books().FirstOrDefault(book => book.Id.Contains(CleanedBorrowID(borrowID)));
+
+            if (bookAvailable != null)
+            {
+                return bookAvailable;
+            }
+
+            return bookAvailable;
+
+
+            //foreach (var book in Books())
+            //{
+            //    if (book.Id.Trim().Contains(CleanedBorrowID(borrowID).Trim()))
+            //    {
+            //        if (book != null)
+            //        {
+            //            return book;
+            //        }
+            //    }
+            //}
+
+            //return null;
+
+            //using (LibraryDbContext context = new LibraryDbContext())
+            //{
+            //    var bookHas = context.Books.FirstOrDefault(book => book.Id.Contains(CleanedBorrowID(borrowID).Trim()));
+
+            //    return bookHas;
+            //}
+        }
+
+        private String CleanedBorrowID(String borrowID)
+        {
+            String cleanedBorrowID = borrowID.Trim().Replace("-", " ").Trim();
+
+            return cleanedBorrowID;
+        }
+
+
         #endregion
     }
 }
