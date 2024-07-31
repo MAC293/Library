@@ -920,7 +920,7 @@ namespace Library.Controllers
 
         private Book BookContains(String borrowID)
         {
-            var bookAvailable = Books().FirstOrDefault(book => book.Id.Contains(CleanedBorrowID(borrowID)));
+            var bookAvailable = Books().FirstOrDefault(book => book.Id.Contains(CleanedBorrowID(borrowID).Trim()));
 
             if (bookAvailable != null)
             {
