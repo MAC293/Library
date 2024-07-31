@@ -853,7 +853,9 @@ namespace Library.Controllers
                         if (borrowDAL != null)
                         {
                             borrowDAL.ReturnDate = DateTime.Now;
-                            BookContains(borrowDAL.Id).Available = true;
+                            //BookContains(borrowDAL.Id).Available = true;
+                            AvailableAgain(ReadyBookAvailable(borrowDAL.Id), context);
+
                             await context.SaveChangesAsync();
 
                             return NoContent();
@@ -958,7 +960,46 @@ namespace Library.Controllers
             return cleanedBorrowID;
         }
 
+        private Book ReadyBookAvailable(String borrowID)
+        {
+            foreach (var book in Books())
+            {
+                if (IsSubWithinMain(book.Id.Trim(), borrowID.Trim()))
+                {
+                    if (book != null)
+                    {
+                        return book;
+                    }
+                }
+            }
 
+            return new Book();
+        }
+        
+        private void AvailableAgain(Book book, LibraryDbContext context)
+        {
+            //using (LibraryDbContext context = new LibraryDbContext())
+            //{
+                var availableAgain = context.Books.FirstOrDefault(book => book.Id == book.Id);
+
+                availableAgain.Available = true;
+                //context.SaveChanges();
+            //}
+        }
+
+        private Boolean IsSubWithinMain(String bookID, String borrowID)
+        {
+
+            bool firstHyphenEqual = bookID.Split('-')[0] == borrowID.Split('-')[0];
+            bool secondHyphenEqual = bookID.Split('-').Last() == borrowID.Split('-').Last();
+
+            if (firstHyphenEqual && secondHyphenEqual)
+            {
+                return true;
+            }
+
+            return false;
+        }
         #endregion
     }
 }
