@@ -854,7 +854,7 @@ namespace Library.Controllers
                         {
                             borrowDAL.ReturnDate = DateTime.Now;
                             //BookContains(borrowDAL.Id).Available = true;
-                            AvailableAgain(ReadyBookAvailable(borrowDAL.Id), context);
+                            AvailableAgain(ReadyBookAvailable(borrowDAL.Id));
 
                             await context.SaveChangesAsync();
 
@@ -920,16 +920,16 @@ namespace Library.Controllers
             }
         }
 
-        private Book BookContains(String borrowID)
-        {
-            var bookAvailable = Books().FirstOrDefault(book => book.Id.Contains(CleanedBorrowID(borrowID).Trim()));
+        //private Book BookContains(String borrowID)
+        //{
+        //    var bookAvailable = Books().FirstOrDefault(book => book.Id.Contains(CleanedBorrowID(borrowID).Trim()));
 
-            if (bookAvailable != null)
-            {
-                return bookAvailable;
-            }
+        //    if (bookAvailable != null)
+        //    {
+        //        return bookAvailable;
+        //    }
 
-            return bookAvailable;
+        //    return bookAvailable;
 
 
             //foreach (var book in Books())
@@ -951,14 +951,14 @@ namespace Library.Controllers
 
             //    return bookHas;
             //}
-        }
+        //}
 
-        private String CleanedBorrowID(String borrowID)
-        {
-            String cleanedBorrowID = borrowID.Trim().Replace("-", " ").Trim();
+        //private String CleanedBorrowID(String borrowID)
+        //{
+        //    String cleanedBorrowID = borrowID.Trim().Replace("-", " ").Trim();
 
-            return cleanedBorrowID;
-        }
+        //    return cleanedBorrowID;
+        //}
 
         private Book ReadyBookAvailable(String borrowID)
         {
@@ -976,15 +976,15 @@ namespace Library.Controllers
             return new Book();
         }
         
-        private void AvailableAgain(Book book, LibraryDbContext context)
+        private void AvailableAgain(Book bookToChange)
         {
-            //using (LibraryDbContext context = new LibraryDbContext())
-            //{
-                var availableAgain = context.Books.FirstOrDefault(book => book.Id == book.Id);
+            using (LibraryDbContext context = new LibraryDbContext())
+            {
+                var availableAgain = context.Books.FirstOrDefault(book => book.Id == bookToChange.Id);
 
                 availableAgain.Available = true;
-                //context.SaveChanges();
-            //}
+                context.SaveChanges();
+            }
         }
 
         private Boolean IsSubWithinMain(String bookID, String borrowID)
@@ -1000,6 +1000,56 @@ namespace Library.Controllers
 
             return false;
         }
+        #endregion
+
+        #region Remove Reader
+        [HttpDelete("DeleteReader/{ID}")]
+        [Authorize]
+        public async Task<IActionResult> DeleteReader([FromRoute] String ID)
+        {
+            try
+            {
+                using (LibraryDbContext context = new LibraryDbContext())
+                {
+                    if (!ClaimValidation())
+                    {
+                        return Unauthorized("This user doesn't exist.");
+                    }
+
+                    if (ClaimID.StartsWith('L'))
+                    {
+                        var bookDAL = await context.Books.FirstOrDefaultAsync(book => book.Id == ID);
+
+                        if (bookDAL != null)
+                        {
+                            //Check cache for deleted book
+
+                            context.Books.Remove(bookDAL);
+                            await context.SaveChangesAsync();
+
+                            //return new ObjectResult("The book was removed successfully.") { StatusCode = 204 };
+                            return NoContent();
+                        }
+
+                        return NotFound();
+                    }
+                    if (Char.IsDigit(ClaimID[0]))
+                    {
+                        return Unauthorized("This user has no authorization to perform this action.");
+                    }
+
+                    return BadRequest();
+                }
+            }
+            catch (Exception ex)
+            {
+                return BadRequest("An exception has occurred: " + ex);
+
+            }
+        }
+
+
+
         #endregion
     }
 }
