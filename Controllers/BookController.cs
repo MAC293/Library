@@ -960,7 +960,7 @@ namespace Library.Controllers
         }
         #endregion
 
-        #region Remove Reader
+        #region Remove Reader (DELETE)
         [HttpDelete("DeleteReader/{ID}")]
         [Authorize]
         public async Task<IActionResult> DeleteReader([FromRoute] String ID)
@@ -978,8 +978,8 @@ namespace Library.Controllers
                     {
 
                         RemoveBorrows(ID + "-Reader");
-                        RemoveEndUser(ID + "-EndUser");
                         RemoveReader(ID + "-Reader");
+                        RemoveEndUser(ID + "-EndUser");
                         RemoveMember(MemberIDClear(ID));
 
                         return NoContent();
@@ -994,6 +994,12 @@ namespace Library.Controllers
                     return BadRequest();
                 }
             }
+            catch (DbUpdateException ex)
+            {
+                return BadRequest("A DbUpdateException has occurred: " + ex);
+
+            }
+
             catch (InvalidOperationException ex)
             {
                 return BadRequest("An InvalidOperationException has occurred: " + ex);
@@ -1002,7 +1008,7 @@ namespace Library.Controllers
 
             catch (Exception ex)
             {
-                return BadRequest("An exception has occurred: " + ex);
+                return BadRequest("An Exception has occurred: " + ex);
 
             }
         }
@@ -1013,7 +1019,8 @@ namespace Library.Controllers
             {
                 var borrowsDeletion = context.Borrows.Where(borrow => borrow.Reader.Trim() == borrowReader.Trim()).ToList();
 
-                context.Remove(borrowsDeletion);
+                //context.Remove(borrowsDeletion);
+                context.RemoveRange(borrowsDeletion);
 
                 context.SaveChanges();
             }
