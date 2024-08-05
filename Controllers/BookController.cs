@@ -13,6 +13,7 @@ using System.ComponentModel.DataAnnotations;
 using Library.CustomDataAnnotations;
 using System.Globalization;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
+using System.Reflection.PortableExecutable;
 
 namespace Library.Controllers
 {
@@ -826,9 +827,6 @@ namespace Library.Controllers
 
             return returnDate;
         }
-
-
-
         #endregion
 
         #region UpdateLoan (PUT)
@@ -920,45 +918,16 @@ namespace Library.Controllers
             }
         }
 
-        //private Book BookContains(String borrowID)
-        //{
-        //    var bookAvailable = Books().FirstOrDefault(book => book.Id.Contains(CleanedBorrowID(borrowID).Trim()));
+        private void AvailableAgain(Book bookToChange)
+        {
+            using (LibraryDbContext context = new LibraryDbContext())
+            {
+                var availableAgain = context.Books.FirstOrDefault(book => book.Id == bookToChange.Id);
 
-        //    if (bookAvailable != null)
-        //    {
-        //        return bookAvailable;
-        //    }
-
-        //    return bookAvailable;
-
-
-            //foreach (var book in Books())
-            //{
-            //    if (book.Id.Trim().Contains(CleanedBorrowID(borrowID).Trim()))
-            //    {
-            //        if (book != null)
-            //        {
-            //            return book;
-            //        }
-            //    }
-            //}
-
-            //return null;
-
-            //using (LibraryDbContext context = new LibraryDbContext())
-            //{
-            //    var bookHas = context.Books.FirstOrDefault(book => book.Id.Contains(CleanedBorrowID(borrowID).Trim()));
-
-            //    return bookHas;
-            //}
-        //}
-
-        //private String CleanedBorrowID(String borrowID)
-        //{
-        //    String cleanedBorrowID = borrowID.Trim().Replace("-", " ").Trim();
-
-        //    return cleanedBorrowID;
-        //}
+                availableAgain.Available = true;
+                context.SaveChanges();
+            }
+        }
 
         private Book ReadyBookAvailable(String borrowID)
         {
@@ -974,17 +943,6 @@ namespace Library.Controllers
             }
 
             return new Book();
-        }
-        
-        private void AvailableAgain(Book bookToChange)
-        {
-            using (LibraryDbContext context = new LibraryDbContext())
-            {
-                var availableAgain = context.Books.FirstOrDefault(book => book.Id == bookToChange.Id);
-
-                availableAgain.Available = true;
-                context.SaveChanges();
-            }
         }
 
         private Boolean IsSubWithinMain(String bookID, String borrowID)
@@ -1018,20 +976,15 @@ namespace Library.Controllers
 
                     if (ClaimID.StartsWith('L'))
                     {
-                        var bookDAL = await context.Books.FirstOrDefaultAsync(book => book.Id == ID);
 
-                        if (bookDAL != null)
-                        {
-                            //Check cache for deleted book
+                        RemoveBorrows(ID + "-Reader");
+                        RemoveEndUser(ID + "-EndUser");
+                        RemoveReader(ID + "-Reader");
+                        RemoveMember(MemberIDClear(ID));
 
-                            context.Books.Remove(bookDAL);
-                            await context.SaveChangesAsync();
+                        return NoContent();
 
-                            //return new ObjectResult("The book was removed successfully.") { StatusCode = 204 };
-                            return NoContent();
-                        }
-
-                        return NotFound();
+                        //return NotFound();
                     }
                     if (Char.IsDigit(ClaimID[0]))
                     {
@@ -1041,6 +994,12 @@ namespace Library.Controllers
                     return BadRequest();
                 }
             }
+            catch (InvalidOperationException ex)
+            {
+                return BadRequest("An InvalidOperationException has occurred: " + ex);
+
+            }
+
             catch (Exception ex)
             {
                 return BadRequest("An exception has occurred: " + ex);
@@ -1048,8 +1007,72 @@ namespace Library.Controllers
             }
         }
 
+        private void RemoveBorrows(String borrowReader)
+        {
+            using (LibraryDbContext context = new LibraryDbContext())
+            {
+                var borrowsDeletion = context.Borrows.Where(borrow => borrow.Reader.Trim() == borrowReader.Trim()).ToList();
 
+                context.Remove(borrowsDeletion);
 
+                context.SaveChanges();
+            }
+        }
+
+        private void RemoveEndUser(String endUserReader)
+        {
+            using (LibraryDbContext context = new LibraryDbContext())
+            {
+                var endUserDeletion = context.EndUsers.FirstOrDefault(user => user.Id == endUserReader);
+
+                context.Remove(endUserDeletion);
+
+                context.SaveChanges();
+            }
+        }
+
+        private void RemoveReader(String readerTo)
+        {
+            using (LibraryDbContext context = new LibraryDbContext())
+            {
+                var readerDeletion = context.Readers.FirstOrDefault(user => user.Id == readerTo);
+
+                context.Remove(readerDeletion);
+
+                context.SaveChanges();
+            }
+        }
+
+        private String MemberIDClear(String memberID)
+        {
+            String withoutK = memberID.TrimEnd('K');
+
+            String formatted = withoutK;
+
+            if (formatted.Length == 8)
+            {
+                
+                formatted = $"{formatted.Substring(0, 2)}.{formatted.Substring(2, 3)}.{formatted.Substring(5, 3)}";
+            }
+            else if (formatted.Length == 7)
+            {
+                
+                formatted = $"{formatted.Substring(0, 1)}.{formatted.Substring(1, 3)}.{formatted.Substring(4, 3)}";
+            }
+
+            return formatted + "-K";
+        }
+
+        private void RemoveMember(String memberTo)
+        {
+            using (LibraryDbContext context = new LibraryDbContext())
+            {
+                var memberDeletion = context.Members.FirstOrDefault(member => member.Id == memberTo);
+
+                context.Remove(memberDeletion);
+                context.SaveChanges();
+            }
+        }
         #endregion
     }
 }
