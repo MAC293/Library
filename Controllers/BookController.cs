@@ -829,7 +829,7 @@ namespace Library.Controllers
         }
         #endregion
 
-        #region UpdateLoan (PUT)
+        #region Update Loan (PUT)
         [HttpPut("UpdateLoan/{bookReturned}, {reader}")]
         [Authorize]
         public async Task<IActionResult> ReturnBook([FromRoute] String bookReturned, [FromRoute] String reader)
