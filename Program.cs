@@ -10,7 +10,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddSingleton<IConnectionMultiplexer>(redis =>
 ConnectionMultiplexer.Connect(builder.Configuration.GetConnectionString("RedisConnection")));
 
-//<CacheService> points to the class that handles the cache
+//<CacheService> points to the class that handles the cache as Scoped
 builder.Services.AddScoped<CacheService>();
 
 //JWT
