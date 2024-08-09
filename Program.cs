@@ -8,11 +8,11 @@ using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
-//Redis connection
+//Redis connection as Singleton
 builder.Services.AddSingleton<IConnectionMultiplexer>(redis =>
 ConnectionMultiplexer.Connect(builder.Configuration.GetConnectionString("RedisConnection")));
 
-//<CacheService> as Scoped
+//CacheService as Scoped
 builder.Services.AddScoped<CacheService>();
 
 //Context as Scoped
@@ -50,7 +50,7 @@ builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
-//Configure the HTTP requests pipeline
+//Configure the HTTP requests
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();

@@ -16,10 +16,18 @@ namespace Library.Controllers
     {
         #region Attributes
         private readonly String secretKey;
+        private LibraryDbContext _Context;
 
-        public MemberController(IConfiguration config)
+        public MemberController(IConfiguration config, LibraryDbContext ctx)
         {
             secretKey = config.GetSection("Settings").GetSection("SecretKey").ToString();
+            Context = ctx;
+        }
+
+        public LibraryDbContext Context
+        {
+            get { return _Context; }
+            set { _Context = value; }
         }
         #endregion
 
@@ -28,74 +36,51 @@ namespace Library.Controllers
         [Route("SignUp")]
         public async Task<IActionResult> SignUp([FromBody] ReaderService newMember)
         {
-            using (LibraryDbContext context = new LibraryDbContext())
+
+            try
             {
-                try
+                //Validate the coming JSON body
+                if (newMember == null || !ModelState.IsValid)
                 {
-                    //Validate the coming JSON body
-                    if (newMember == null || !ModelState.IsValid)
-                    {
-                        return BadRequest();
-                    }
-
-                    //Validation occurs on ReaderService.
-
-                    var memberDAL = context.Members.FirstOrDefault(member => member.Id == newMember.IDMember);
-
-                    if (memberDAL != null)
-                    {
-                        return BadRequest("This user already exists!");
-                    }
-
-                    //New Member-Reader-EndUser creation on database
-
-                    //Member
-                    //IDMember from client
-                    //Name from client
-                    //Phone from client
-                    //Email from client
-                    //Age from client
-
-                    //Member
-                    context.Members.Add(MappingMember(newMember));
-
-                    EndUserReader(newMember, context);
-
-                    //EndUSer
-                    //EndUser newUser = new EndUser();
-                    //newUser.Id = EndUserID(newMember.IDMember);
-                    //newUser.Username = newMember.Username;
-                    //newUser.Password = Hash(newMember.Password);
-                    //context.EndUsers.Add(newUser);
-
-                    //Reader
-                    //Reader newReader = new Reader();
-                    //newReader.Id = ReaderID(newMember.IDMember);
-                    //newReader.Member = newMember.IDMember;
-                    //newReader.EndUser = EndUserID(newMember.IDMember);
-                    //context.Readers.Add(newReader);
-
-                    await context.SaveChangesAsync();
-
-                    //var uri = new Uri($"{Request.Scheme}://{Request.Host}{Request.Path}/{newMember.IDMember}");
-                    //return Created(uri, "Congratulations! Your account has been successfully created.");
-                    //return StatusCode(StatusCodes.Status201Created, "Congratulations! Your account has been successfully created.");
-                    return Created("", "Your account has been successfully created.");
-
-                    //return default;
+                    return BadRequest();
                 }
 
-                catch (DbUpdateException ex)
+                //Validation occurs on ReaderService.
+
+                var memberDAL = Context.Members.FirstOrDefault(member => member.Id == newMember.IDMember);
+
+                if (memberDAL != null)
                 {
-                    return BadRequest("A DbUpdateException has occurred: " + ex);
+                    return BadRequest("This user already exists!");
                 }
 
-                catch (Exception ex)
-                {
-                    return BadRequest("An exception has occurred: " + ex);
 
-                }
+                //Member
+                Context.Members.Add(MappingMember(newMember));
+
+                EndUserReader(newMember, Context);
+
+                await Context.SaveChangesAsync();
+
+                //var uri = new Uri($"{Request.Scheme}://{Request.Host}{Request.Path}/{newMember.IDMember}");
+                //return Created(uri, "Congratulations! Your account has been successfully created.");
+                //return StatusCode(StatusCodes.Status201Created, "Congratulations! Your account has been successfully created.");
+                return Created("", "Your account has been successfully created.");
+
+                //return default;
             }
+
+            catch (DbUpdateException ex)
+            {
+                return BadRequest("A DbUpdateException has occurred: " + ex);
+            }
+
+            catch (Exception ex)
+            {
+                return BadRequest("An exception has occurred: " + ex);
+
+            }
+
         }
 
         private Member MappingMember(ReaderService readerService)
@@ -186,8 +171,8 @@ namespace Library.Controllers
             newEndUser.Username = librarianService.Username;
             newEndUser.Password = Hash(librarianService.Password);
             context.EndUsers.Add(newEndUser);
-        } 
-        
+        }
+
         private void AddLibrarian(LibrarianService librarianService, LibraryDbContext context)
         {
             EndUser newEndUser = new EndUser();
@@ -217,7 +202,7 @@ namespace Library.Controllers
                         .ToList();
 
                     //HashVerifier cannot be performed inside the database, hast to be out if it
-                    var userDAL = users.FirstOrDefault(user => HashVerifier(newUser.Password, user.Password) 
+                    var userDAL = users.FirstOrDefault(user => HashVerifier(newUser.Password, user.Password)
                                                                && UsernameComparison(newUser.Username, user.Username));
 
                     if (userDAL != null)
