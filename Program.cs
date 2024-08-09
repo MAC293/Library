@@ -16,7 +16,7 @@ ConnectionMultiplexer.Connect(builder.Configuration.GetConnectionString("RedisCo
 builder.Services.AddScoped<CacheService>();
 
 //Context as Scoped
-builder.Services.AddDbContext<LibraryDbContext>(options =>
+builder.Services.AddDbContext<LibraryDbContext>(options => 
     options.UseSqlServer(builder.Configuration.GetConnectionString("Server=TUF293;Database=LibraryDB;Trusted_Connection=True;TrustServerCertificate=True;")));
 
 //JWT
