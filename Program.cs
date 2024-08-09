@@ -3,15 +3,21 @@ using Microsoft.IdentityModel.Tokens;
 using StackExchange.Redis;
 using System.Text;
 using Library.Services;
+using Library.Models;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
-//Redis
+//Redis connection
 builder.Services.AddSingleton<IConnectionMultiplexer>(redis =>
 ConnectionMultiplexer.Connect(builder.Configuration.GetConnectionString("RedisConnection")));
 
-//<CacheService> points to the class that handles the cache as Scoped
+//<CacheService> as Scoped
 builder.Services.AddScoped<CacheService>();
+
+//Context as Scoped
+builder.Services.AddDbContext<LibraryDbContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("Server=TUF293;Database=LibraryDB;Trusted_Connection=True;TrustServerCertificate=True;")));
 
 //JWT
 builder.Configuration.AddJsonFile("appsettings.json");
