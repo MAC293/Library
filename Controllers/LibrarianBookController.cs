@@ -221,42 +221,38 @@ namespace Library.Controllers
         {
             try
             {
-                using (LibraryDbContext context = new LibraryDbContext())
+                if (!ClaimVerifier.ClaimValidation())
                 {
-                    if (!ClaimVerifier.ClaimValidation())
-                    {
-                        return Unauthorized("This user doesn't exist.");
-                    }
-
-                    if (ClaimVerifier.ClaimID.StartsWith('L'))
-                    {
-                        var bookDAL = await context.Books.FirstOrDefaultAsync(book => book.Id == ID);
-
-                        if (bookDAL != null)
-                        {
-                            //Check cache for deleted book
-
-                            context.Books.Remove(bookDAL);
-                            await context.SaveChangesAsync();
-
-                            //return new ObjectResult("The book was removed successfully.") { StatusCode = 204 };
-                            return NoContent();
-                        }
-
-                        return NotFound();
-                    }
-                    if (Char.IsDigit(ClaimVerifier.ClaimID[0]))
-                    {
-                        return Unauthorized("This user has no authorization to perform this action.");
-                    }
-
-                    return BadRequest();
+                    return Unauthorized("This user doesn't exist.");
                 }
+
+                if (ClaimVerifier.ClaimID.StartsWith('L'))
+                {
+                    var bookDAL = await Context.Books.FirstOrDefaultAsync(book => book.Id == ID);
+
+                    if (bookDAL != null)
+                    {
+                        //Check cache for deleted book
+
+                        Context.Books.Remove(bookDAL);
+                        await Context.SaveChangesAsync();
+
+                        //return new ObjectResult("The book was removed successfully.") { StatusCode = 204 };
+                        return NoContent();
+                    }
+
+                    return NotFound();
+                }
+                if (Char.IsDigit(ClaimVerifier.ClaimID[0]))
+                {
+                    return Unauthorized("This user has no authorization to perform this action.");
+                }
+
+                return BadRequest();
             }
             catch (Exception)
             {
                 return StatusCode(500, "An unexpected error occurred. Please try again.");
-
             }
         }
         #endregion
