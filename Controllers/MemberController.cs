@@ -70,14 +70,17 @@ namespace Library.Controllers
                 //return default;
             }
 
-            catch (DbUpdateException ex)
+            catch (DbUpdateException)
             {
-                return BadRequest("A DbUpdateException has occurred: " + ex);
+                //return BadRequest("A DbUpdateException has occurred: " + ex);
+                //return Unauthorized(ex.Message);
+                return StatusCode(500, "A database error occurred. Please try again later.");
             }
 
-            catch (Exception ex)
+            catch (Exception)
             {
-                return BadRequest("An exception has occurred: " + ex);
+                //return BadRequest("An exception has occurred: " + ex);
+                return StatusCode(500, "An unexpected error occurred. Please try again later.");
 
             }
 
@@ -161,7 +164,6 @@ namespace Library.Controllers
             newLibrarian.EndUser = IDLibrarian(librarianService.IDLibrarian);
             context.Librarians.Add(newLibrarian);
             //AddLibrarian(librarianService, context);
-
         }
 
         private void AddEndUser(LibrarianService librarianService, LibraryDbContext context)
