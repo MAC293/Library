@@ -23,16 +23,23 @@ namespace Library.Controllers
     public class LibrarianBookController : ControllerBase
     {
         #region Attributes
-
         private readonly ClaimVerifierService _ClaimVerifier;
+        private LibraryDbContext _Context;
 
-        public LibrarianBookController(ClaimVerifierService claimVerifier)
+        public LibrarianBookController(ClaimVerifierService claimVerifier, LibraryDbContext ctx)
         {
             _ClaimVerifier = claimVerifier;
+            Context = ctx;
         }
         public ClaimVerifierService ClaimVerifier
         {
             get { return _ClaimVerifier; }
+        }
+
+        public LibraryDbContext Context
+        {
+            get { return _Context; }
+            set { _Context = value; }
         }
         #endregion
 
@@ -48,82 +55,51 @@ namespace Library.Controllers
         {
             try
             {
-                using (LibraryDbContext context = new LibraryDbContext())
+                if (!ClaimVerifier.ClaimValidation())
                 {
-                    if (!ClaimValidation())
+                    return Unauthorized("This user doesn't exist.");
+                }
+
+
+                if (ClaimVerifier.ClaimID.StartsWith('L'))
+                {
+                    if (newBook == null || !ModelState.IsValid)
                     {
-                        return Unauthorized("This user doesn't exist.");
+                        return BadRequest();
                     }
 
-                    //newBook.Cover = cover;
+                    var bookDAL = await Context.Books.FirstOrDefaultAsync(book => book.Id == newBook.Id);
 
-                    //if (newBook == null || !ModelState.IsValid)
-                    //{
-                    //    return BadRequest();
-                    //}
-
-                    //newBook.Cover = ImageToByte(cover);
-
-                    //Assign IFormFile to byte[] Cover property
-                    //newBook.Cover = ImageToByte(cover);
-                    //Trigger cover data validation
-
-                    //newBook.Cover = ImageToByte(cover);
-
-                    //Validate the cover file using the custom attribute
-
-                    //newBook.Cover = cover;
-
-                    //if (ClaimID.StartsWith('L'))
-                    if (ClaimID.StartsWith('L'))
+                    if (bookDAL != null)
                     {
-                        if (newBook == null || !ModelState.IsValid)
-                        {
-                            return BadRequest();
-                        }
-
-                        var bookDAL = await context.Books.FirstOrDefaultAsync(book => book.Id == newBook.Id);
-
-                        if (bookDAL != null)
-                        {
-                            return BadRequest();
-                        }
-
-                        //if (!ValidateCoverExtension(cover))
-                        //{
-                        //    return BadRequest("Book cover is required.");
-                        //}
-
-                        //Image to Byte[]                       
-                        //newBook.Cover = ImageToByte(cover);
-
-                        if (CheckBookStorage(newBook.Title.Trim()) >= 3)
-                        {
-                            return BadRequest("The library is limited to 3 copies per book.");
-                        }
-
-                        newBook.Cover = ImageToByte(newCover);
-
-                        context.Books.Add(newBook);
-                        await context.SaveChangesAsync();
-
-                        //return Created("", newBook.Title + " has been added to the Library.");
-                        return Created("", $"\"{newBook.Title}\" has been added to the Library.");
-
-                    }
-                    //if (Char.IsDigit(ClaimID[0]))
-                    if (Char.IsDigit(ClaimID[0]))
-                    {
-                        return Unauthorized("This user has no authorization to perform this action.");
+                        return BadRequest();
                     }
 
-                    return BadRequest("Invalid request.");
+                    if (CheckBookStorage(newBook.Title.Trim()) >= 3)
+                    {
+                        return BadRequest("The library is limited to 3 copies per book.");
+                    }
+
+                    newBook.Cover = ImageToByte(newCover);
+
+                    Context.Books.Add(newBook);
+                    await Context.SaveChangesAsync();
+
+                    return Created("", $"\"{newBook.Title}\" has been added to the Library.");
 
                 }
+                if (Char.IsDigit(ClaimVerifier.ClaimID[0]))
+                {
+                    return Unauthorized("This user has no authorization to perform this action.");
+                }
+
+                return BadRequest("Invalid request.");
+
+
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                return BadRequest("An exception has occurred: " + ex);
+                return StatusCode(500, "An unexpected error occurred. Please try again.");
 
             }
         }
@@ -1008,12 +984,12 @@ namespace Library.Controllers
 
         //    if (formatted.Length == 8)
         //    {
-                
+
         //        formatted = $"{formatted.Substring(0, 2)}.{formatted.Substring(2, 3)}.{formatted.Substring(5, 3)}";
         //    }
         //    else if (formatted.Length == 7)
         //    {
-                
+
         //        formatted = $"{formatted.Substring(0, 1)}.{formatted.Substring(1, 3)}.{formatted.Substring(4, 3)}";
         //    }
 

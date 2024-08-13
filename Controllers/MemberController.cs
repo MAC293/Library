@@ -15,12 +15,12 @@ namespace Library.Controllers
     public class MemberController : ControllerBase
     {
         #region Attributes
-        private readonly String secretKey;
+        private readonly String _SecretKey;
         private LibraryDbContext _Context;
 
         public MemberController(IConfiguration config, LibraryDbContext ctx)
         {
-            secretKey = config.GetSection("Settings").GetSection("SecretKey").ToString();
+            _SecretKey = config.GetSection("Settings").GetSection("SecretKey").ToString();
             Context = ctx;
         }
 
@@ -74,13 +74,13 @@ namespace Library.Controllers
             {
                 //return BadRequest("A DbUpdateException has occurred: " + ex);
                 //return Unauthorized(ex.Message);
-                return StatusCode(500, "A database error occurred. Please try again later.");
+                return StatusCode(500, "A database error occurred. Please try again.");
             }
 
             catch (Exception)
             {
                 //return BadRequest("An exception has occurred: " + ex);
-                return StatusCode(500, "An unexpected error occurred. Please try again later.");
+                return StatusCode(500, "An unexpected error occurred. Please try again.");
 
             }
 
@@ -303,7 +303,7 @@ namespace Library.Controllers
         //Create token based on incoming ID
         private String CreateToken(String ID)
         {
-            var keyBytes = Encoding.ASCII.GetBytes(secretKey);
+            var keyBytes = Encoding.ASCII.GetBytes(_SecretKey);
             var claims = new ClaimsIdentity();
 
             claims.AddClaim(new Claim(ClaimTypes.NameIdentifier, ID));

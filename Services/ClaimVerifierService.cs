@@ -26,7 +26,7 @@ namespace Library.Services
             //set { _HttpCTX = value; }
         }
 
-        private Boolean ClaimValidation()
+        public Boolean ClaimValidation()
         {
             AssignClaim();
 
@@ -37,14 +37,14 @@ namespace Library.Services
 
             return false;
         }
-        private void AssignClaim()
+        public void AssignClaim()
         {
             var userIdClaim = _HttpCTXA.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier);
 
             ClaimID = userIdClaim.Value;
         }
 
-        private Boolean HasClaim()
+        public Boolean HasClaim()
         {
             if (ClaimID == String.Empty)
             {
@@ -54,7 +54,7 @@ namespace Library.Services
         }
 
         //Check if Claim is valid (L/0)
-        private Boolean ValidClaim()
+        public Boolean ValidClaim()
         {
             if (ClaimID.StartsWith('L') || Char.IsDigit(ClaimID[0]))
             {
