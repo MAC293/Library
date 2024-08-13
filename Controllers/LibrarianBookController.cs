@@ -148,123 +148,118 @@ namespace Library.Controllers
         }
         #endregion
 
-        //#region Update a Book (PUT)
-        //[HttpPut]
-        //[Route("UpdateBook")]
-        //[Authorize]
-        //public async Task<IActionResult> EditBook([ModelBinder(BinderType = typeof(JsonModelBinder))][FromForm] Book updateBook, [FromForm] IFormFile updateCover)
-        //{
-        //    try
-        //    {
-        //        using (LibraryDbContext context = new LibraryDbContext())
-        //        {
-        //            if (!ClaimValidation())
-        //            {
-        //                return Unauthorized("This user doesn't exist.");
-        //            }
+        #region Update a Book (PUT)
+        [HttpPut]
+        [Route("UpdateBook")]
+        [Authorize]
+        public async Task<IActionResult> EditBook([ModelBinder(BinderType = typeof(JsonModelBinder))][FromForm] Book updateBook, [FromForm] IFormFile updateCover)
+        {
+            try
+            {
+                if (!ClaimVerifier.ClaimValidation())
+                {
+                    return Unauthorized("This user doesn't exist.");
+                }
 
-        //            if (ClaimID.StartsWith('L'))
-        //            {
-        //                if (updateBook == null || !ModelState.IsValid)
-        //                {
-        //                    return BadRequest();
-        //                }
+                if (ClaimVerifier.ClaimID.StartsWith('L'))
+                {
+                    if (updateBook == null || !ModelState.IsValid)
+                    {
+                        return BadRequest();
+                    }
 
-        //                var bookDAL = await context.Books.FirstOrDefaultAsync(book => book.Id == updateBook.Id);
+                    var bookDAL = await Context.Books.FirstOrDefaultAsync(book => book.Id == updateBook.Id);
 
 
-        //                if (bookDAL == null)
-        //                {
-        //                    return Conflict();
-        //                }
+                    if (bookDAL == null)
+                    {
+                        return Conflict();
+                    }
 
-        //                MappingPUT(bookDAL, updateBook, updateCover);
+                    MappingPUT(bookDAL, updateBook, updateCover);
 
-        //                await context.SaveChangesAsync();
+                    await Context.SaveChangesAsync();
 
-        //                //Check cache for updated book
+                    //Check cache for updated book
 
-        //                return NoContent();
-        //                //return new ObjectResult("The book was updated successfully.") { StatusCode = 204 };
+                    return NoContent();
+                    //return new ObjectResult("The book was updated successfully.") { StatusCode = 204 };
 
-        //            }
-        //            if (Char.IsDigit(ClaimID[0]))
-        //            {
-        //                return Unauthorized("This user has no authorization to perform this action.");
-        //            }
+                }
+                if (Char.IsDigit(ClaimVerifier.ClaimID[0]))
+                {
+                    return Unauthorized("This user has no authorization to perform this action.");
+                }
 
-        //            return BadRequest("Invalid request.");
+                return BadRequest("Invalid request.");
 
+            }
+            catch (Exception)
+            {
+                return StatusCode(500, "An unexpected error occurred. Please try again.");
 
-        //        }
+            }
+        }
 
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        return BadRequest("An exception has occurred: " + ex);
+        private void MappingPUT(Book bookDAL, Book updateBook, IFormFile updateCover)
+        {
+            //bookDAL.Id = updateBook.Id;
+            bookDAL.Title = updateBook.Title;
+            bookDAL.Author = updateBook.Author;
+            bookDAL.Genre = updateBook.Genre;
+            bookDAL.Year = updateBook.Year;
+            bookDAL.Editorial = updateBook.Editorial;
+            bookDAL.Available = updateBook.Available;
+            bookDAL.Cover = ImageToByte(updateCover);
+        }
+        #endregion
 
-        //    }
-        //}
+        #region Remove a Book (DELETE)
+        [HttpDelete("DeleteBook/{ID}")]
+        [Authorize]
+        public async Task<IActionResult> DeleteBook([FromRoute] String ID)
+        {
+            try
+            {
+                using (LibraryDbContext context = new LibraryDbContext())
+                {
+                    if (!ClaimVerifier.ClaimValidation())
+                    {
+                        return Unauthorized("This user doesn't exist.");
+                    }
 
-        //private void MappingPUT(Book bookDAL, Book updateBook, IFormFile updateCover)
-        //{
-        //    //bookDAL.Id = updateBook.Id;
-        //    bookDAL.Title = updateBook.Title;
-        //    bookDAL.Author = updateBook.Author;
-        //    bookDAL.Genre = updateBook.Genre;
-        //    bookDAL.Year = updateBook.Year;
-        //    bookDAL.Editorial = updateBook.Editorial;
-        //    bookDAL.Available = updateBook.Available;
-        //    bookDAL.Cover = ImageToByte(updateCover);
-        //}
-        //#endregion
+                    if (ClaimVerifier.ClaimID.StartsWith('L'))
+                    {
+                        var bookDAL = await context.Books.FirstOrDefaultAsync(book => book.Id == ID);
 
-        //#region Remove a Book (DELETE)
-        //[HttpDelete("DeleteBook/{ID}")]
-        //[Authorize]
-        //public async Task<IActionResult> DeleteBook([FromRoute] String ID)
-        //{
-        //    try
-        //    {
-        //        using (LibraryDbContext context = new LibraryDbContext())
-        //        {
-        //            if (!ClaimValidation())
-        //            {
-        //                return Unauthorized("This user doesn't exist.");
-        //            }
+                        if (bookDAL != null)
+                        {
+                            //Check cache for deleted book
 
-        //            if (ClaimID.StartsWith('L'))
-        //            {
-        //                var bookDAL = await context.Books.FirstOrDefaultAsync(book => book.Id == ID);
+                            context.Books.Remove(bookDAL);
+                            await context.SaveChangesAsync();
 
-        //                if (bookDAL != null)
-        //                {
-        //                    //Check cache for deleted book
+                            //return new ObjectResult("The book was removed successfully.") { StatusCode = 204 };
+                            return NoContent();
+                        }
 
-        //                    context.Books.Remove(bookDAL);
-        //                    await context.SaveChangesAsync();
+                        return NotFound();
+                    }
+                    if (Char.IsDigit(ClaimVerifier.ClaimID[0]))
+                    {
+                        return Unauthorized("This user has no authorization to perform this action.");
+                    }
 
-        //                    //return new ObjectResult("The book was removed successfully.") { StatusCode = 204 };
-        //                    return NoContent();
-        //                }
+                    return BadRequest();
+                }
+            }
+            catch (Exception)
+            {
+                return StatusCode(500, "An unexpected error occurred. Please try again.");
 
-        //                return NotFound();
-        //            }
-        //            if (Char.IsDigit(ClaimID[0]))
-        //            {
-        //                return Unauthorized("This user has no authorization to perform this action.");
-        //            }
-
-        //            return BadRequest();
-        //        }
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        return BadRequest("An exception has occurred: " + ex);
-
-        //    }
-        //}
-        //#endregion
+            }
+        }
+        #endregion
 
         //#region Read a Book (GET)
         //[HttpGet("ViewBook/{ID}")]
