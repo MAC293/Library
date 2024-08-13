@@ -19,6 +19,12 @@ builder.Services.AddScoped<CacheService>();
 builder.Services.AddDbContext<LibraryDbContext>(options => 
     options.UseSqlServer(builder.Configuration.GetConnectionString("Server=TUF293;Database=LibraryDB;Trusted_Connection=True;TrustServerCertificate=True;")));
 
+//ClaimVerifierService as Scoped
+builder.Services.AddScoped<ClaimVerifierService>();
+
+//Adding HttpContext allowing ClaimVerifierService to use User outside controller
+builder.Services.AddHttpContextAccessor();
+
 //JWT
 builder.Configuration.AddJsonFile("appsettings.json");
 var secretKey = builder.Configuration.GetSection("Settings").GetSection("SecretKey").ToString();

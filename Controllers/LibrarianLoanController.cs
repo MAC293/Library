@@ -5,8 +5,7 @@ namespace Library.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class ReaderBookController : ControllerBase
+    public class LibrarianLoanController : ControllerBase
     {
-
     }
 }
