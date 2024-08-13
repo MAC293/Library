@@ -117,5 +117,135 @@ namespace Library.Controllers
         }
         #endregion
 
+        #region Update Loan (PUT)
+        [HttpPut("UpdateLoan/{bookReturned}, {reader}")]
+        [Authorize]
+        public async Task<IActionResult> ReturnBook([FromRoute] String bookReturned, [FromRoute] String reader)
+        {
+            try
+            {
+                using (LibraryDbContext context = new LibraryDbContext())
+                {
+                    if (!ClaimVerifier.ClaimValidation())
+                    {
+                        return Unauthorized("This user doesn't exist.");
+                    }
+
+                    if (ClaimVerifier.ClaimID.StartsWith('L'))
+                    {
+                        var borrowDAL = await context.Borrows.FirstOrDefaultAsync(book => book.Id == BorrowID(bookReturned, reader + "-Reader").Trim()
+                            && book.Reader == reader + "-Reader".Trim());
+
+                        if (borrowDAL != null)
+                        {
+                            borrowDAL.ReturnDate = DateTime.Now;
+                            //BookContains(borrowDAL.Id).Available = true;
+                            AvailableAgain(ReadyBookAvailable(borrowDAL.Id));
+
+                            await context.SaveChangesAsync();
+
+                            return NoContent();
+                        }
+
+                        return Conflict();
+
+                    }
+                    if (Char.IsDigit(ClaimVerifier.ClaimID[0]))
+                    {
+                        return Unauthorized("This user has no authorization to perform this action.");
+                    }
+
+                    return BadRequest("Invalid request.");
+
+                }
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(400, "An unexpected error occurred. Please try again.");
+            }
+        }
+
+        private String BorrowID(String readerBook, String readerID)
+        {
+            return BookReturned(readerBook, readerID);
+        }
+
+        private String BookReturned(String bookReturned, String readerBorrower)
+        {
+            var bookToReturn = ReaderLoans(readerBorrower.Trim()).FirstOrDefault(borrow =>
+                borrow.Id.Trim() == bookReturned + "-N°1".Trim() ||
+                borrow.Id.Trim() == bookReturned + "-N°2".Trim() || borrow.Id.Trim() == bookReturned + "-N°3".Trim());
+
+            if (bookToReturn != null)
+            {
+                return bookToReturn.Id.Trim();
+            }
+
+            return String.Empty;
+
+        }
+
+        private List<Borrow> ReaderLoans(String reader)
+        {
+            using (LibraryDbContext context = new LibraryDbContext())
+            {
+                var readerBooks = context.Borrows.Where(borrow => borrow.Reader.Trim() == reader.Trim()).ToList();
+
+                return readerBooks;
+
+            }
+        }
+
+        private List<Book> Books()
+        {
+            using (LibraryDbContext context = new LibraryDbContext())
+            {
+                var allBooks = context.Books.ToList();
+
+                return allBooks;
+            }
+        }
+
+        private void AvailableAgain(Book bookToChange)
+        {
+            using (LibraryDbContext context = new LibraryDbContext())
+            {
+                var availableAgain = context.Books.FirstOrDefault(book => book.Id == bookToChange.Id);
+
+                availableAgain.Available = true;
+                context.SaveChanges();
+            }
+        }
+
+        private Book ReadyBookAvailable(String borrowID)
+        {
+            foreach (var book in Books())
+            {
+                if (IsSubWithinMain(book.Id.Trim(), borrowID.Trim()))
+                {
+                    if (book != null)
+                    {
+                        return book;
+                    }
+                }
+            }
+
+            return new Book();
+        }
+
+        private Boolean IsSubWithinMain(String bookID, String borrowID)
+        {
+
+            bool firstHyphenEqual = bookID.Split('-')[0] == borrowID.Split('-')[0];
+            bool secondHyphenEqual = bookID.Split('-').Last() == borrowID.Split('-').Last();
+
+            if (firstHyphenEqual && secondHyphenEqual)
+            {
+                return true;
+            }
+
+            return false;
+        }
+        #endregion
     }
 }
