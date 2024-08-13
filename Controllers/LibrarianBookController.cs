@@ -46,7 +46,6 @@ namespace Library.Controllers
         #region Add a New Book (POST)
         [HttpPost]
         [Route("AddBook")]
-        //This ensures that the JWT token is validated before the method is executed.
         [Authorize]
         //public async Task<IActionResult> CreateBook([FromBody] Book newBook)
         //public async Task<IActionResult> CreateBook([FromForm] Book newBook, [FromForm] IFormFile cover)
@@ -59,7 +58,6 @@ namespace Library.Controllers
                 {
                     return Unauthorized("This user doesn't exist.");
                 }
-
 
                 if (ClaimVerifier.ClaimID.StartsWith('L'))
                 {
@@ -109,7 +107,6 @@ namespace Library.Controllers
             using (LibraryDbContext context = new LibraryDbContext())
             {
                 int matchQuantity = context.Books.Count(book => book.Title == title.Trim());
-                //Console.WriteLine(matchQuantity);
 
                 return matchQuantity;
             }
