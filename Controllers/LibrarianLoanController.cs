@@ -40,7 +40,6 @@ namespace Library.Controllers
         {
             try
             {
-
                 if (!ClaimVerifier.ClaimValidation())
                 {
                     return Unauthorized("This user doesn't exist.");
@@ -124,40 +123,38 @@ namespace Library.Controllers
         {
             try
             {
-                using (LibraryDbContext context = new LibraryDbContext())
+                if (!ClaimVerifier.ClaimValidation())
                 {
-                    if (!ClaimVerifier.ClaimValidation())
+                    return Unauthorized("This user doesn't exist.");
+                }
+
+                if (ClaimVerifier.ClaimID.StartsWith('L'))
+                {
+                    var borrowDAL = await Context.Borrows.FirstOrDefaultAsync(book => book.Id == BorrowID(bookReturned, reader + "-Reader").Trim()
+                        && book.Reader == reader + "-Reader".Trim());
+
+                    if (borrowDAL != null)
                     {
-                        return Unauthorized("This user doesn't exist.");
+                        borrowDAL.ReturnDate = DateTime.Now;
+                        //BookContains(borrowDAL.Id).Available = true;
+                        AvailableAgain(ReadyBookAvailable(borrowDAL.Id));
+
+                        await Context.SaveChangesAsync();
+
+                        return NoContent();
                     }
 
-                    if (ClaimVerifier.ClaimID.StartsWith('L'))
-                    {
-                        var borrowDAL = await context.Borrows.FirstOrDefaultAsync(book => book.Id == BorrowID(bookReturned, reader + "-Reader").Trim()
-                            && book.Reader == reader + "-Reader".Trim());
-
-                        if (borrowDAL != null)
-                        {
-                            borrowDAL.ReturnDate = DateTime.Now;
-                            //BookContains(borrowDAL.Id).Available = true;
-                            AvailableAgain(ReadyBookAvailable(borrowDAL.Id));
-
-                            await context.SaveChangesAsync();
-
-                            return NoContent();
-                        }
-
-                        return Conflict();
-
-                    }
-                    if (Char.IsDigit(ClaimVerifier.ClaimID[0]))
-                    {
-                        return Unauthorized("This user has no authorization to perform this action.");
-                    }
-
-                    return BadRequest("Invalid request.");
+                    return Conflict();
 
                 }
+                if (Char.IsDigit(ClaimVerifier.ClaimID[0]))
+                {
+                    return Unauthorized("This user has no authorization to perform this action.");
+                }
+
+                return BadRequest("Invalid request.");
+
+
             }
             catch (Exception ex)
             {
