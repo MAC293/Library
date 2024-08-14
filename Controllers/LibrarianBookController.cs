@@ -25,11 +25,13 @@ namespace Library.Controllers
         #region Attributes
         private readonly ClaimVerifierService _ClaimVerifier;
         private LibraryDbContext _Context;
+        private HelperService _HelperService;
 
-        public LibrarianBookController(ClaimVerifierService claimVerifier, LibraryDbContext ctx)
+        public LibrarianBookController(ClaimVerifierService claimVerifier, LibraryDbContext ctx, HelperService hs)
         {
             _ClaimVerifier = claimVerifier;
             Context = ctx;
+            HelperService = hs;
         }
         public ClaimVerifierService ClaimVerifier
         {
@@ -40,6 +42,12 @@ namespace Library.Controllers
         {
             get { return _Context; }
             set { _Context = value; }
+        }
+
+        public HelperService HelperService
+        {
+            get { return _HelperService; }
+            set { _HelperService = value; }
         }
         #endregion
 
@@ -73,7 +81,7 @@ namespace Library.Controllers
                         return BadRequest();
                     }
 
-                    if (CheckBookStorage(newBook.Title.Trim()) >= 3)
+                    if (HelperService.CheckBookStorage(newBook.Title.Trim()) >= 3)
                     {
                         return BadRequest("The library is limited to 3 copies per book.");
                     }
@@ -102,12 +110,12 @@ namespace Library.Controllers
             }
         }
 
-        private int CheckBookStorage(String title)
-        {
-            int matchQuantity = Context.Books.Count(book => book.Title == title.Trim());
+        //private int CheckBookStorage(String title)
+        //{
+        //    int matchQuantity = Context.Books.Count(book => book.Title == title.Trim());
 
-            return matchQuantity;
-        }
+        //    return matchQuantity;
+        //}
 
         //Convert the uploaded byte[] image to a varbinary
         private Byte[] ImageToByte(IFormFile uploadedFile)
@@ -293,149 +301,5 @@ namespace Library.Controllers
         }
         #endregion
 
-        //#region Read Books (GET)
-        //[HttpGet]
-        //[Route("ViewBooks")]
-        //[Authorize]
-        //public async Task<ActionResult<List<BooKService>>> DisplayBooks()
-        //{
-        //    try
-        //    {
-        //        using (LibraryDbContext context = new LibraryDbContext())
-        //        {
-        //            if (!ClaimValidation())
-        //            {
-        //                return Unauthorized("This user doesn't exist.");
-        //            }
-
-        //            if (Char.IsDigit(ClaimID[0]))
-        //            {
-
-        //                var allBooks = await context.Books.ToListAsync();
-
-        //                if (allBooks.Any())
-        //                {
-        //                    var allBooksList = MappingAllBooks(allBooks);
-        //                    return allBooksList;
-
-        //                }
-
-        //                return NotFound();
-        //            }
-        //            if (ClaimID.StartsWith('L'))
-        //            {
-        //                return Unauthorized("This user has no authorization to perform this action.");
-        //            }
-
-        //            return BadRequest();
-        //        }
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        return BadRequest("An exception has occurred: " + ex);
-
-        //    }
-        //}
-
-        //private List<BooKService> MappingAllBooks(List<Book> aBooks)
-        ////private ActionResult<List<BooKService>> MappingAllBooks(List<Book> aBooks)
-        //{
-        //    var bookServiceList = aBooks.Select(book => new BooKService()
-        //    {
-        //        Title = book.Title.Trim(),
-        //        Author = book.Author.Trim(),
-        //        Genre = book.Genre.Trim(),
-        //        Year = (int)book.Year,
-        //        Editorial = book.Editorial.Trim(),
-        //        Available = book.Available,
-        //        Cover = book.Cover
-
-        //    }).ToList();
-
-        //    return bookServiceList;
-        //}
-        //#endregion
-
-        //#region Search a Book (GET)
-        //[HttpGet("FindBook/{toSearch}")]
-        //[Authorize]
-        //public async Task<ActionResult<List<BooKService>>> SearchBook(String toSearch)
-        //{
-        //    try
-        //    {
-        //        using (LibraryDbContext context = new LibraryDbContext())
-        //        {
-        //            if (!ClaimValidation())
-        //            {
-        //                return Unauthorized("This user doesn't exist.");
-        //            }
-
-        //            if (Char.IsDigit(ClaimID[0]))
-        //            {
-
-        //                var allBooks = context.Books.AsQueryable();
-
-        //                if (allBooks.Any())
-        //                {
-        //                    allBooks = allBooks.Where(book =>
-        //                        book.Title.Contains(toSearch) ||
-        //                        book.Author.Contains(toSearch) ||
-        //                        book.Genre.Contains(toSearch) ||
-        //                        book.Editorial.Contains(toSearch));
-
-        //                    //var bookServiceList = allBooks.Select(book => new BooKService
-        //                    //{
-        //                    //    Title = book.Title.Trim(),
-        //                    //    Author = book.Author.Trim(),
-        //                    //    Genre = book.Genre.Trim(),
-        //                    //    Year = (int)book.Year,
-        //                    //    Editorial = book.Editorial.Trim(),
-        //                    //    Available = book.Available,
-        //                    //    Cover = book.Cover
-        //                    //}).ToList();
-
-        //                    //return bookServiceList;
-
-        //                    var allBooksList = MappingAllBooksSearch(allBooks);
-        //                    return allBooksList;
-
-        //                }
-
-        //                return NotFound();
-        //            }
-        //            if (ClaimID.StartsWith('L'))
-        //            {
-        //                return Unauthorized("This user has no authorization to perform this action.");
-        //            }
-
-        //            return BadRequest();
-        //        }
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        return BadRequest("An exception has occurred: " + ex);
-
-        //    }
-        //}
-
-        ////private List<BooKService> MappingAllBooksSearch(List<Book> aBooks) 
-        ////List<Book> aBooks
-        //private ActionResult<List<BooKService>> MappingAllBooksSearch(IQueryable<Book> aBooks)
-        //{
-        //    var bookServiceList = aBooks.Select(book => new BooKService()
-        //    {
-        //        Title = book.Title.Trim(),
-        //        Author = book.Author.Trim(),
-        //        Genre = book.Genre.Trim(),
-        //        Year = (int)book.Year,
-        //        Editorial = book.Editorial.Trim(),
-        //        Available = book.Available,
-        //        Cover = book.Cover
-
-        //    }).ToList();
-
-        //    return bookServiceList;
-        //}
-        //#endregion
     }
 }

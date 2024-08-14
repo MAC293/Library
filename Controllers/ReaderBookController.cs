@@ -15,11 +15,13 @@ namespace Library.Controllers
         #region Attributes
         private readonly ClaimVerifierService _ClaimVerifier;
         private LibraryDbContext _Context;
+        private HelperService _HelperService;
 
-        public ReaderBookController(ClaimVerifierService claimVerifier, LibraryDbContext ctx)
+        public ReaderBookController(ClaimVerifierService claimVerifier, LibraryDbContext ctx, HelperService hs)
         {
             _ClaimVerifier = claimVerifier;
             Context = ctx;
+            HelperService = hs;
         }
         public ClaimVerifierService ClaimVerifier
         {
@@ -31,6 +33,12 @@ namespace Library.Controllers
             get { return _Context; }
             set { _Context = value; }
         }
+
+        public HelperService HelperService
+        {
+            get { return _HelperService; }
+            set { _HelperService = value; }
+        }
         #endregion
 
         #region Borrow a Book (GET)
@@ -40,7 +48,6 @@ namespace Library.Controllers
         {
             try
             {
-
                 if (!ClaimVerifier.ClaimValidation())
                 {
                     return Unauthorized("This user doesn't exist.");
@@ -49,7 +56,7 @@ namespace Library.Controllers
                 if (Char.IsDigit(ClaimVerifier.ClaimID[0]))
                 {
                     //if (CheckBookStorage(bookToBorrow.Trim()) == 0)
-                    if (LibrarianBookController. == 0)
+                    if (HelperService.CheckBookStorage(bookToBorrow.Trim()) == 0)
                     {
                         return NotFound("This book is not available in the library, yet.");
                     }
@@ -197,6 +204,147 @@ namespace Library.Controllers
             String endUserIDCleaned = claim.Replace("EndUser", "Reader");
 
             return endUserIDCleaned;
+        }
+        #endregion
+
+        #region Read Books (GET)
+        [HttpGet]
+        [Route("ViewBooks")]
+        [Authorize]
+        public async Task<ActionResult<List<BooKService>>> DisplayBooks()
+        {
+            try
+            {
+                if (!ClaimVerifier.ClaimValidation())
+                {
+                    return Unauthorized("This user doesn't exist.");
+                }
+
+                if (Char.IsDigit(ClaimVerifier.ClaimID[0]))
+                {
+
+                    var allBooks = await Context.Books.ToListAsync();
+
+                    if (allBooks.Any())
+                    {
+                        var allBooksList = MappingAllBooks(allBooks);
+                        return allBooksList;
+                    }
+
+                    return NotFound();
+                }
+                if (ClaimVerifier.ClaimID.StartsWith('L'))
+                {
+                    return Unauthorized("This user has no authorization to perform this action.");
+                }
+
+                return BadRequest();
+
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, "An unexpected error occurred. Please try again.");
+
+            }
+        }
+
+        private List<BooKService> MappingAllBooks(List<Book> aBooks)
+        //private ActionResult<List<BooKService>> MappingAllBooks(List<Book> aBooks)
+        {
+            var bookServiceList = aBooks.Select(book => new BooKService()
+            {
+                Title = book.Title.Trim(),
+                Author = book.Author.Trim(),
+                Genre = book.Genre.Trim(),
+                Year = (int)book.Year,
+                Editorial = book.Editorial.Trim(),
+                Available = book.Available,
+                Cover = book.Cover
+
+            }).ToList();
+
+            return bookServiceList;
+        }
+        #endregion
+
+        #region Search a Book (GET)
+        [HttpGet("FindBook/{toSearch}")]
+        [Authorize]
+        public async Task<ActionResult<List<BooKService>>> SearchBook(String toSearch)
+        {
+            try
+            {
+
+                if (!ClaimVerifier.ClaimValidation())
+                {
+                    return Unauthorized("This user doesn't exist.");
+                }
+
+                if (Char.IsDigit(ClaimVerifier.ClaimID[0]))
+                {
+
+                    var allBooks = Context.Books.AsQueryable();
+
+                    if (allBooks.Any())
+                    {
+                        allBooks = allBooks.Where(book =>
+                            book.Title.Contains(toSearch) ||
+                            book.Author.Contains(toSearch) ||
+                            book.Genre.Contains(toSearch) ||
+                            book.Editorial.Contains(toSearch));
+
+                        //var bookServiceList = allBooks.Select(book => new BooKService
+                        //{
+                        //    Title = book.Title.Trim(),
+                        //    Author = book.Author.Trim(),
+                        //    Genre = book.Genre.Trim(),
+                        //    Year = (int)book.Year,
+                        //    Editorial = book.Editorial.Trim(),
+                        //    Available = book.Available,
+                        //    Cover = book.Cover
+                        //}).ToList();
+
+                        //return bookServiceList;
+
+                        var allBooksList = MappingAllBooksSearch(allBooks);
+                        return allBooksList;
+
+                    }
+
+                    return NotFound();
+                }
+                if (ClaimVerifier.ClaimID.StartsWith('L'))
+                {
+                    return Unauthorized("This user has no authorization to perform this action.");
+                }
+
+                return BadRequest();
+
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, "An unexpected error occurred. Please try again.");
+
+            }
+        }
+
+        //private List<BooKService> MappingAllBooksSearch(List<Book> aBooks) 
+        //List<Book> aBooks
+        private ActionResult<List<BooKService>> MappingAllBooksSearch(IQueryable<Book> aBooks)
+        {
+            var bookServiceList = aBooks.Select(book => new BooKService()
+            {
+                Title = book.Title.Trim(),
+                Author = book.Author.Trim(),
+                Genre = book.Genre.Trim(),
+                Year = (int)book.Year,
+                Editorial = book.Editorial.Trim(),
+                Available = book.Available,
+                Cover = book.Cover
+
+            }).ToList();
+
+            return bookServiceList;
         }
         #endregion
     }
