@@ -293,19 +293,6 @@ namespace Library.Controllers
                             book.Genre.Contains(toSearch) ||
                             book.Editorial.Contains(toSearch));
 
-                        //var bookServiceList = allBooks.Select(book => new BooKService
-                        //{
-                        //    Title = book.Title.Trim(),
-                        //    Author = book.Author.Trim(),
-                        //    Genre = book.Genre.Trim(),
-                        //    Year = (int)book.Year,
-                        //    Editorial = book.Editorial.Trim(),
-                        //    Available = book.Available,
-                        //    Cover = book.Cover
-                        //}).ToList();
-
-                        //return bookServiceList;
-
                         var allBooksList = MappingAllBooksSearch(allBooks);
                         return allBooksList;
 

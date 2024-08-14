@@ -8,16 +8,19 @@ using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
+//Context as Scoped
+builder.Services.AddDbContext<LibraryDbContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("Server=TUF293;Database=LibraryDB;Trusted_Connection=True;TrustServerCertificate=True;")));
+
 //Redis connection as Singleton
 builder.Services.AddSingleton<IConnectionMultiplexer>(redis =>
 ConnectionMultiplexer.Connect(builder.Configuration.GetConnectionString("RedisConnection")));
 
+//CacheManagerService as Scoped
+builder.Services.AddScoped<CacheManagerService>();
+
 //CacheService as Scoped
 builder.Services.AddScoped<CacheService>();
-
-//Context as Scoped
-builder.Services.AddDbContext<LibraryDbContext>(options => 
-    options.UseSqlServer(builder.Configuration.GetConnectionString("Server=TUF293;Database=LibraryDB;Trusted_Connection=True;TrustServerCertificate=True;")));
 
 //ClaimVerifierService as Scoped
 builder.Services.AddScoped<ClaimVerifierService>();
