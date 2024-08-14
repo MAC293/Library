@@ -25,6 +25,9 @@ builder.Services.AddScoped<ClaimVerifierService>();
 //Adding HttpContext allowing ClaimVerifierService to use User outside controller
 builder.Services.AddHttpContextAccessor();
 
+//Adding HelperService as Scoped to use a common method
+builder.Services.AddScoped<HelperService>();
+
 //JWT
 builder.Configuration.AddJsonFile("appsettings.json");
 var secretKey = builder.Configuration.GetSection("Settings").GetSection("SecretKey").ToString();
