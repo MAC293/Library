@@ -130,6 +130,11 @@ namespace Library.Controllers
 
                 if (ClaimVerifier.ClaimID.StartsWith('L'))
                 {
+                    if (CheckLoans() == 0)
+                    {
+                        return NotFound("Readers haven't requested any book.");
+                    }
+
                     var borrowDAL = await Context.Borrows.FirstOrDefaultAsync(book => book.Id == BorrowID(bookReturned, reader + "-Reader").Trim()
                         && book.Reader == reader + "-Reader".Trim());
 
@@ -160,6 +165,13 @@ namespace Library.Controllers
             {
                 return StatusCode(400, "An unexpected error occurred. Please try again.");
             }
+        }
+
+        public int CheckLoans()
+        {
+            int areLoans = Context.Borrows.Count();
+
+            return areLoans;
         }
 
         private String BorrowID(String readerBook, String readerID)
