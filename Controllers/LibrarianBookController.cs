@@ -23,19 +23,22 @@ namespace Library.Controllers
     public class LibrarianBookController : ControllerBase
     {
         #region Attributes
-        private readonly ClaimVerifierService _ClaimVerifier;
+        private ClaimVerifierService _ClaimVerifier;
         private LibraryDbContext _Context;
         private HelperService _HelperService;
+        private CacheManagerService _CacheManagerService;
 
-        public LibrarianBookController(ClaimVerifierService claimVerifier, LibraryDbContext ctx, HelperService hs)
+        public LibrarianBookController(ClaimVerifierService cv, LibraryDbContext ctx, HelperService hs, CacheManagerService cms)
         {
-            _ClaimVerifier = claimVerifier;
+            ClaimVerifier = cv;
             Context = ctx;
             HelperService = hs;
+            CacheManagerService = cms;
         }
         public ClaimVerifierService ClaimVerifier
         {
             get { return _ClaimVerifier; }
+            set { _ClaimVerifier = value; }
         }
 
         public LibraryDbContext Context
@@ -48,6 +51,12 @@ namespace Library.Controllers
         {
             get { return _HelperService; }
             set { _HelperService = value; }
+        }
+        
+        public CacheManagerService CacheManagerService
+        {
+            get { return _CacheManagerService; }
+            set { _CacheManagerService = value; }
         }
         #endregion
 
@@ -185,7 +194,8 @@ namespace Library.Controllers
 
                     await Context.SaveChangesAsync();
 
-                    //Check cache for updated book
+                    //Check cache updated book
+
 
                     return NoContent();
                     //return new ObjectResult("The book was updated successfully.") { StatusCode = 204 };

@@ -62,7 +62,7 @@ builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
-//Configure the HTTP requests
+//HTTP requests
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
