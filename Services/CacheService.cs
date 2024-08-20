@@ -25,7 +25,6 @@ namespace Library.Services
             get { return _CacheDB; }
         }
 
-        //Get cache data
         public T? Get<T>(String key)
         {
             var json = CacheDB.StringGet(key);
@@ -54,13 +53,12 @@ namespace Library.Services
         //        return JsonSerializer.Deserialize<T>(json);
         //    }
 
-        //    return default;*
+        //    return default;
         //}
 
-        //Set cache data
-        public void Set<T>(String userID, String vehicle, T value)
+        public void Set<T>(String check, T value)
         {
-            String key = $"user:{userID}:vehicle:{vehicle}";
+            String key = $"book:{check}";
 
             CacheDB.StringSet(key, JsonSerializer.Serialize(value));
         }
@@ -80,8 +78,7 @@ namespace Library.Services
         //    String key = $"user:{userID}:vehicle:{vehicle}";
         //    CacheDB.StringSet(key, JsonSerializer.Serialize(value));
         //}
-
-        //Remove cache data
+        
         public Boolean Remove(String key)
         {
             var exist = CacheDB.KeyExists(key);

@@ -184,7 +184,6 @@ namespace Library.Controllers
 
                     var bookDAL = await Context.Books.FirstOrDefaultAsync(book => book.Id == updateBook.Id);
 
-
                     if (bookDAL == null)
                     {
                         return Conflict();
@@ -195,7 +194,7 @@ namespace Library.Controllers
                     await Context.SaveChangesAsync();
 
                     //Check cache updated book
-
+                    CacheManagerService.HasBook(bookDAL);
 
                     return NoContent();
                     //return new ObjectResult("The book was updated successfully.") { StatusCode = 204 };
