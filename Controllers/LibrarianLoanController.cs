@@ -68,7 +68,7 @@ namespace Library.Controllers
                     {
                         var allBooksLoan = MappingAllLoans(allLoans);
 
-                        CacheManagerService.CacheService.Set("book:loans", allBooksLoan);
+                        CacheManagerService.CacheService.Set("loans", allBooksLoan);
 
                         return allBooksLoan;
                     }
