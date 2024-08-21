@@ -14,11 +14,13 @@ namespace Library.Controllers
         #region Attributes
         private readonly ClaimVerifierService _ClaimVerifier;
         private LibraryDbContext _Context;
+        private CacheManagerService _CacheManagerService;
 
-        public LibrarianLoanController(ClaimVerifierService claimVerifier, LibraryDbContext ctx)
+        public LibrarianLoanController(ClaimVerifierService claimVerifier, LibraryDbContext ctx, CacheManagerService cms)
         {
             _ClaimVerifier = claimVerifier;
             Context = ctx;
+            CacheManagerService = cms;
         }
         public ClaimVerifierService ClaimVerifier
         {
@@ -29,6 +31,12 @@ namespace Library.Controllers
         {
             get { return _Context; }
             set { _Context = value; }
+        }
+
+        public CacheManagerService CacheManagerService
+        {
+            get { return _CacheManagerService; }
+            set { _CacheManagerService = value; }
         }
         #endregion
 
@@ -47,13 +55,22 @@ namespace Library.Controllers
 
                 if (ClaimVerifier.ClaimID.StartsWith('L'))
                 {
+                    var checkLoan = CacheManagerService.CacheService.Get<List<BorrowInformationService>>("book:loans");
+
+                    if (checkLoan != null)
+                    {
+                        return checkLoan;
+                    }
+
                     var allLoans = await Context.Borrows.ToListAsync();
 
                     if (allLoans.Any())
                     {
                         var allBooksLoan = MappingAllLoans(allLoans);
-                        return allBooksLoan;
 
+                        CacheManagerService.CacheService.Set("book:loans", allBooksLoan);
+
+                        return allBooksLoan;
                     }
 
                     return NotFound("Readers haven't requested a book.");
@@ -141,10 +158,12 @@ namespace Library.Controllers
                     if (borrowDAL != null)
                     {
                         borrowDAL.ReturnDate = DateTime.Now;
-                        //BookContains(borrowDAL.Id).Available = true;
+                     
                         AvailableAgain(ReadyBookAvailable(borrowDAL.Id));
 
                         await Context.SaveChangesAsync();
+
+                        CacheManagerService.IsLoan(borrowDAL);
 
                         return NoContent();
                     }

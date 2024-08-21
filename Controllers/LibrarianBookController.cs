@@ -246,10 +246,10 @@ namespace Library.Controllers
 
                     if (bookDAL != null)
                     {
-                        //Check cache for deleted book
-
                         Context.Books.Remove(bookDAL);
                         await Context.SaveChangesAsync();
+
+                        CacheManagerService.HasBook(bookDAL);
 
                         //return new ObjectResult("The book was removed successfully.") { StatusCode = 204 };
                         return NoContent();
@@ -278,7 +278,6 @@ namespace Library.Controllers
         {
             try
             {
-
                 if (!ClaimVerifier.ClaimValidation())
                 {
                     return Unauthorized("This user doesn't exist.");
@@ -286,10 +285,19 @@ namespace Library.Controllers
 
                 if (ClaimVerifier.ClaimID.StartsWith('L'))
                 {
+                    var isCacheBook = CacheManagerService.CacheService.Get<Book>($"book:{ID}");
+
+                    if (isCacheBook != null)
+                    {
+                        return isCacheBook;
+                    }
+
                     var bookDAL = await Context.Books.FirstOrDefaultAsync(book => book.Id == ID);
 
                     if (bookDAL != null)
                     {
+                        CacheManagerService.CacheService.Set(ID, bookDAL);
+
                         return bookDAL;
                     }
 

@@ -16,12 +16,14 @@ namespace Library.Controllers
         private readonly ClaimVerifierService _ClaimVerifier;
         private LibraryDbContext _Context;
         private HelperService _HelperService;
+        private CacheManagerService _CacheManagerService;
 
-        public ReaderBookController(ClaimVerifierService claimVerifier, LibraryDbContext ctx, HelperService hs)
+        public ReaderBookController(ClaimVerifierService claimVerifier, LibraryDbContext ctx, HelperService hs, CacheManagerService cms)
         {
             _ClaimVerifier = claimVerifier;
             Context = ctx;
             HelperService = hs;
+            CacheManagerService = cms;
         }
         public ClaimVerifierService ClaimVerifier
         {
@@ -38,6 +40,11 @@ namespace Library.Controllers
         {
             get { return _HelperService; }
             set { _HelperService = value; }
+        }
+        public CacheManagerService CacheManagerService
+        {
+            get { return _CacheManagerService; }
+            set { _CacheManagerService = value; }
         }
         #endregion
 
@@ -222,12 +229,21 @@ namespace Library.Controllers
 
                 if (Char.IsDigit(ClaimVerifier.ClaimID[0]))
                 {
+                    var cacheBooks = CacheManagerService.CacheService.Get<List<BooKService>>($"book:all");
+
+                    if (cacheBooks != null)
+                    {
+                        return cacheBooks;
+                    }
 
                     var allBooks = await Context.Books.ToListAsync();
 
                     if (allBooks.Any())
                     {
                         var allBooksList = MappingAllBooks(allBooks);
+
+                        CacheManagerService.CacheService.Set("all", allBooksList);
+
                         return allBooksList;
                     }
 
@@ -282,6 +298,12 @@ namespace Library.Controllers
 
                 if (Char.IsDigit(ClaimVerifier.ClaimID[0]))
                 {
+                    var searchBookCache = CacheManagerService.CacheService.Get<List<BooKService>>($"book:{toSearch}");
+
+                    if (searchBookCache != null)
+                    {
+                        return searchBookCache;
+                    }
 
                     var allBooks = Context.Books.AsQueryable();
 
@@ -294,6 +316,9 @@ namespace Library.Controllers
                             book.Editorial.Contains(toSearch));
 
                         var allBooksList = MappingAllBooksSearch(allBooks);
+
+                        CacheManagerService.CacheService.Set(toSearch, allBooksList);
+
                         return allBooksList;
 
                     }

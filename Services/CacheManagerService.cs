@@ -38,7 +38,6 @@ namespace Library.Services
             IsGenre(cacheBook);
             IsEditorial(cacheBook);
             IsBook(cacheBook);
-            IsLoan(cacheBook);
         }
 
         private void IsAll(Book isAllBook)
@@ -57,7 +56,7 @@ namespace Library.Services
                     {
                         var booksAllList = MappingCheckedList(booksDAL);
 
-                        CacheService.Set("book:all", booksAllList);
+                        CacheService.Set("all", booksAllList);
                     }
                 }
             }
@@ -79,7 +78,7 @@ namespace Library.Services
                     {
                         var booksTitleList = MappingCheckedList(booksTitleDAL);
 
-                        CacheService.Set($"book:{isTitleBook.Title}", booksTitleList);
+                        CacheService.Set(isTitleBook.Title, booksTitleList);
                     }
                 }
             }
@@ -101,7 +100,7 @@ namespace Library.Services
                     {
                         var booksAuthorList = MappingCheckedList(booksAuthorDAL);
 
-                        CacheService.Set($"book:{isAuthorBook.Author}", booksAuthorList);
+                        CacheService.Set(isAuthorBook.Author, booksAuthorList);
                     }
                 }
             }
@@ -123,7 +122,7 @@ namespace Library.Services
                     {
                         var booksGenreList = MappingCheckedList(booksGenreDAL);
 
-                        CacheService.Set($"book:{isGenreBook.Genre}", booksGenreList);
+                        CacheService.Set(isGenreBook.Genre, booksGenreList);
                     }
                 }
             }
@@ -145,7 +144,7 @@ namespace Library.Services
                     {
                         var booksEditorialList = MappingCheckedList(booksEditorialDAL);
 
-                        CacheService.Set($"book:{isEditorialBook.Editorial}", booksEditorialList);
+                        CacheService.Set(isEditorialBook.Editorial, booksEditorialList);
                     }
                 }
             }
@@ -168,15 +167,50 @@ namespace Library.Services
             return carServiceList;
         }
 
-        private void IsBook(Book isEditorialBook)
+        private void IsBook(Book isBook)
         {
+            Book? bookCache = CacheService.Get<Book>($"book:{isBook.Id}");
 
+            if (bookCache != null)
+            {
+                CacheService.Remove($"book:{isBook.Id}");
+
+                var bookDAL = Context.Books.FirstOrDefault(book => book.Id == isBook.Id);
+
+                if (bookDAL != null)
+                {
+                    CacheService.Set(isBook.Id, bookDAL);
+                }
+            }
         }
+        #endregion
 
-        private void IsLoan(Book isEditorialBook)
+        #region Update Loans
+        public void IsLoan(Borrow isBorrow)
         {
+            List<BorrowInformationService>? borrowList = CacheService.Get<List<BorrowInformationService>>("book:loans");
 
+            if (borrowList != null)
+            {
+                if (borrowList.Any(borrow => borrow.ID == isBorrow.Id))
+                {
+                    CacheService.Remove($"book:loans");
+
+                    var booksLoansDAL = Context.Borrows.Where(borrow => borrow.Id == isBorrow.Id).ToList();
+
+                    if (booksLoansDAL.Any())
+                    {
+                        CacheService.Set("all", booksLoansDAL);
+                    }
+                }
+            }
         }
+        #endregion
+
+        #region Remove Book
+
+        
+
         #endregion
 
     }
