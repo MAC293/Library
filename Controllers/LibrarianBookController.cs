@@ -249,7 +249,7 @@ namespace Library.Controllers
                         Context.Books.Remove(bookDAL);
                         await Context.SaveChangesAsync();
 
-                        CacheManagerService.HasBook(bookDAL);
+                        CacheManagerService.CheckDelete(bookDAL);
 
                         //return new ObjectResult("The book was removed successfully.") { StatusCode = 204 };
                         return NoContent();

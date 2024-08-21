@@ -178,7 +178,7 @@ namespace Library.Services
                 var bookDAL = Context.Books.FirstOrDefault(book => book.Id == isBook.Id);
 
                 if (bookDAL != null)
-                {
+                { 
                     CacheService.Set(isBook.Id, bookDAL);
                 }
             }
@@ -208,9 +208,15 @@ namespace Library.Services
         #endregion
 
         #region Remove Book
+        public void CheckDelete(Book bookDelete)
+        {
+            Book? bookCache = CacheService.Get<Book>($"book:{bookDelete.Id}");
 
-        
-
+            if (bookCache != null)
+            {
+                CacheService.Remove($"book:{bookDelete.Id}");
+            }
+        }
         #endregion
 
     }
