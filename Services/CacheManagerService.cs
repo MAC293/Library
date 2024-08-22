@@ -188,7 +188,7 @@ namespace Library.Services
         #region Update Loans
         public void IsLoan(Borrow isBorrow)
         {
-            List<BorrowInformationService>? borrowList = CacheService.Get<List<BorrowInformationService>>("book:loans".Trim());
+            List<BorrowInformationService>? borrowList = CacheService.GetAlt<List<BorrowInformationService>>("book:loans".Trim());
 
             if (borrowList != null)
             {
@@ -200,7 +200,7 @@ namespace Library.Services
 
                     if (booksLoansDAL.Any())
                     {
-                        CacheService.Set("all".Trim(), booksLoansDAL);
+                        CacheService.Set("loans".Trim(), booksLoansDAL);
                     }
                 }
             }
