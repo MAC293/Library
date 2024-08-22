@@ -246,10 +246,10 @@ namespace Library.Controllers
 
                     if (bookDAL != null)
                     {
+                        CacheManagerService.CheckDelete(bookDAL);
+
                         Context.Books.Remove(bookDAL);
                         await Context.SaveChangesAsync();
-
-                        CacheManagerService.CheckDelete(bookDAL);
 
                         //return new ObjectResult("The book was removed successfully.") { StatusCode = 204 };
                         return NoContent();
@@ -264,9 +264,10 @@ namespace Library.Controllers
 
                 return BadRequest();
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                return StatusCode(500, "An unexpected error occurred. Please try again.");
+                //return StatusCode(500, "An unexpected error occurred. Please try again.");
+                return StatusCode(500, "An unexpected error occurred: "+ex);
             }
         }
         #endregion

@@ -42,13 +42,13 @@ namespace Library.Services
 
         private void IsAll(Book isAllBook)
         {
-            List<Book>? allList = CacheService.Get<List<Book>>($"book:all");
+            List<Book>? allList = CacheService.Get<List<Book>>($"book:all".Trim());
 
             if (allList != null)
             {
                 if (allList.Any(book => book.Id == isAllBook.Id))
                 {
-                    CacheService.Remove("book:all");
+                    CacheService.Remove("book:all".Trim());
 
                     var booksDAL = Context.Books.ToList();
 
@@ -56,7 +56,7 @@ namespace Library.Services
                     {
                         var booksAllList = MappingCheckedList(booksDAL);
 
-                        CacheService.Set("all", booksAllList);
+                        CacheService.Set("all".Trim(), booksAllList);
                     }
                 }
             }
@@ -64,21 +64,21 @@ namespace Library.Services
 
         private void IsTitle(Book isTitleBook)
         {
-            List<BooKService>? titleList = CacheService.Get<List<BooKService>>($"book:{isTitleBook.Title}");
+            List<BooKService>? titleList = CacheService.Get<List<BooKService>>($"book:{isTitleBook.Title}".Trim());
 
             if (titleList != null)
             {
-                if (titleList.Any(book => book.Title == isTitleBook.Title))
+                if (titleList.Any(book => book.Title.Trim() == isTitleBook.Title.Trim()))
                 {
-                    CacheService.Remove($"book:{isTitleBook.Title}");
+                    CacheService.Remove($"book:{isTitleBook.Title}".Trim());
 
-                    var booksTitleDAL = Context.Books.Where(book => book.Title == isTitleBook.Title).ToList();
+                    var booksTitleDAL = Context.Books.Where(book => book.Title.Trim() == isTitleBook.Title.Trim()).ToList();
 
                     if (booksTitleDAL.Any())
                     {
                         var booksTitleList = MappingCheckedList(booksTitleDAL);
 
-                        CacheService.Set(isTitleBook.Title, booksTitleList);
+                        CacheService.Set(isTitleBook.Title.Trim(), booksTitleList);
                     }
                 }
             }
@@ -86,21 +86,21 @@ namespace Library.Services
 
         private void IsAuthor(Book isAuthorBook)
         {
-            List<BooKService>? authorList = CacheService.Get<List<BooKService>>($"book:{isAuthorBook.Author}");
+            List<BooKService>? authorList = CacheService.Get<List<BooKService>>($"book:{isAuthorBook.Author}".Trim());
 
             if (authorList != null)
             {
                 if (authorList.Any(book => book.Author == isAuthorBook.Author))
                 {
-                    CacheService.Remove($"book:{isAuthorBook.Author}");
+                    CacheService.Remove($"book:{isAuthorBook.Author}".Trim());
 
-                    var booksAuthorDAL = Context.Books.Where(book => book.Author == isAuthorBook.Author).ToList();
+                    var booksAuthorDAL = Context.Books.Where(book => book.Author.Trim() == isAuthorBook.Author.Trim()).ToList();
 
                     if (booksAuthorDAL.Any())
                     {
                         var booksAuthorList = MappingCheckedList(booksAuthorDAL);
 
-                        CacheService.Set(isAuthorBook.Author, booksAuthorList);
+                        CacheService.Set(isAuthorBook.Author.Trim(), booksAuthorList);
                     }
                 }
             }
@@ -108,21 +108,21 @@ namespace Library.Services
 
         private void IsGenre(Book isGenreBook)
         {
-            List<BooKService>? genreList = CacheService.Get<List<BooKService>>($"book:{isGenreBook.Genre}");
+            List<BooKService>? genreList = CacheService.Get<List<BooKService>>($"book:{isGenreBook.Genre}".Trim());
 
             if (genreList != null)
             {
-                if (genreList.Any(book => book.Genre == isGenreBook.Genre))
+                if (genreList.Any(book => book.Genre.Trim() == isGenreBook.Genre.Trim()))
                 {
-                    CacheService.Remove($"book:{isGenreBook.Genre}");
+                    CacheService.Remove($"book:{isGenreBook.Genre}".Trim());
 
-                    var booksGenreDAL = Context.Books.Where(book => book.Genre == isGenreBook.Genre).ToList();
+                    var booksGenreDAL = Context.Books.Where(book => book.Genre.Trim() == isGenreBook.Genre.Trim()).ToList();
 
                     if (booksGenreDAL.Any())
                     {
                         var booksGenreList = MappingCheckedList(booksGenreDAL);
 
-                        CacheService.Set(isGenreBook.Genre, booksGenreList);
+                        CacheService.Set(isGenreBook.Genre.Trim(), booksGenreList);
                     }
                 }
             }
@@ -130,21 +130,21 @@ namespace Library.Services
 
         private void IsEditorial(Book isEditorialBook)
         {
-            List<BooKService>? editorialList = CacheService.Get<List<BooKService>>($"book:{isEditorialBook.Title}");
+            List<BooKService>? editorialList = CacheService.Get<List<BooKService>>($"book:{isEditorialBook.Title}".Trim());
 
             if (editorialList != null)
             {
                 if (editorialList.Any(book => book.Editorial == isEditorialBook.Editorial))
                 {
-                    CacheService.Remove($"book:{isEditorialBook.Editorial}");
+                    CacheService.Remove($"book:{isEditorialBook.Editorial}".Trim());
 
-                    var booksEditorialDAL = Context.Books.Where(book => book.Editorial == isEditorialBook.Editorial).ToList();
+                    var booksEditorialDAL = Context.Books.Where(book => book.Editorial.Trim() == isEditorialBook.Editorial.Trim()).ToList();
 
                     if (booksEditorialDAL.Any())
                     {
                         var booksEditorialList = MappingCheckedList(booksEditorialDAL);
 
-                        CacheService.Set(isEditorialBook.Editorial, booksEditorialList);
+                        CacheService.Set(isEditorialBook.Editorial.Trim(), booksEditorialList);
                     }
                 }
             }
@@ -154,11 +154,11 @@ namespace Library.Services
         {
             var carServiceList = aVehicle.Select(book => new BooKService
             {
-                Title = book.Title,
-                Author = book.Author,
-                Genre = book.Genre,
+                Title = book.Title.Trim(),
+                Author = book.Author.Trim(),
+                Genre = book.Genre.Trim(),
                 Year = (int)book.Year,
-                Editorial = book.Editorial,
+                Editorial = book.Editorial.Trim(),
                 Available = book.Available,
                 Cover = book.Cover
 
@@ -169,17 +169,17 @@ namespace Library.Services
 
         private void IsBook(Book isBook)
         {
-            Book? bookCache = CacheService.Get<Book>($"book:{isBook.Id}");
+            var bookCache = CacheService.GetAlt<Book>($"book:{isBook.Id}".Trim());
 
             if (bookCache != null)
             {
-                CacheService.Remove($"book:{isBook.Id}");
+                CacheService.Remove($"book:{isBook.Id}".Trim());
 
-                var bookDAL = Context.Books.FirstOrDefault(book => book.Id == isBook.Id);
+                var bookDAL = Context.Books.FirstOrDefault(book => book.Id.Trim() == isBook.Id.Trim());
 
                 if (bookDAL != null)
                 { 
-                    CacheService.Set(isBook.Id, bookDAL);
+                    CacheService.Set(isBook.Id.Trim(), bookDAL);
                 }
             }
         }
@@ -188,19 +188,19 @@ namespace Library.Services
         #region Update Loans
         public void IsLoan(Borrow isBorrow)
         {
-            List<BorrowInformationService>? borrowList = CacheService.Get<List<BorrowInformationService>>("book:loans");
+            List<BorrowInformationService>? borrowList = CacheService.Get<List<BorrowInformationService>>("book:loans".Trim());
 
             if (borrowList != null)
             {
                 if (borrowList.Any(borrow => borrow.ID == isBorrow.Id))
                 {
-                    CacheService.Remove($"book:loans");
+                    CacheService.Remove($"book:loans".Trim());
 
-                    var booksLoansDAL = Context.Borrows.Where(borrow => borrow.Id == isBorrow.Id).ToList();
+                    var booksLoansDAL = Context.Borrows.Where(borrow => borrow.Id.Trim() == isBorrow.Id.Trim()).ToList();
 
                     if (booksLoansDAL.Any())
                     {
-                        CacheService.Set("all", booksLoansDAL);
+                        CacheService.Set("all".Trim(), booksLoansDAL);
                     }
                 }
             }
@@ -210,11 +210,12 @@ namespace Library.Services
         #region Remove Book
         public void CheckDelete(Book bookDelete)
         {
-            Book? bookCache = CacheService.Get<Book>($"book:{bookDelete.Id}");
+            //var bookCache = CacheService.Get<Book>($"book:{bookDelete.Id}".Trim());
+            var bookCache = CacheService.GetAlt<Book>($"book:{bookDelete.Id}".Trim());
 
             if (bookCache != null)
             {
-                CacheService.Remove($"book:{bookDelete.Id}");
+                CacheService.Remove($"book:{bookDelete.Id}".Trim());
             }
         }
         #endregion

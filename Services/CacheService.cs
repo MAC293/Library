@@ -27,7 +27,7 @@ namespace Library.Services
 
         public T? Get<T>(String key)
         {
-            var json = CacheDB.StringGet(key);
+            var json = CacheDB.StringGet(key.Trim());
 
             if (!String.IsNullOrEmpty(json))
             {
@@ -44,21 +44,21 @@ namespace Library.Services
             return default;
         }
 
-        //public T? GetAlt<T>(String key)
-        //{
-        //    var json = CacheDB.StringGet(key);
+        public T? GetAlt<T>(String key)
+        {
+            var json = CacheDB.StringGet(key.Trim());
 
-        //    if (!String.IsNullOrEmpty(json))
-        //    {
-        //        return JsonSerializer.Deserialize<T>(json);
-        //    }
+            if (!String.IsNullOrEmpty(json))
+            {
+                return JsonSerializer.Deserialize<T>(json);
+            }
 
-        //    return default;
-        //}
+            return default;
+        }
 
         public void Set<T>(String check, T value)
         {
-            String key = $"book:{check}";
+            String key = $"book:{check}".Trim();
 
             CacheDB.StringSet(key, JsonSerializer.Serialize(value));
         }
