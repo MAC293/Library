@@ -188,11 +188,11 @@ namespace Library.Services
         #region Update Loans
         public void IsLoan(Borrow isBorrow)
         {
-            List<BorrowInformationService>? borrowList = CacheService.GetAlt<List<BorrowInformationService>>("book:loans".Trim());
+            List<Borrow>? borrowList = CacheService.GetAlt<List<Borrow>>("book:loans".Trim());
 
             if (borrowList != null)
             {
-                if (borrowList.Any(borrow => borrow.ID == isBorrow.Id))
+                if (borrowList.Any(borrow => borrow.Id == isBorrow.Id))
                 {
                     CacheService.Remove($"book:loans".Trim());
 
