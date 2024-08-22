@@ -42,7 +42,7 @@ namespace Library.Services
 
         private void IsAll(Book isAllBook)
         {
-            List<Book>? allList = CacheService.Get<List<Book>>($"book:all".Trim());
+            List<Book>? allList = CacheService.GetAlt<List<Book>>($"book:all".Trim());
 
             if (allList != null)
             {
@@ -188,11 +188,11 @@ namespace Library.Services
         #region Update Loans
         public void IsLoan(Borrow isBorrow)
         {
-            List<Borrow>? borrowList = CacheService.GetAlt<List<Borrow>>("book:loans".Trim());
+            List<BorrowInformationService>? borrowList = CacheService.GetAlt<List<BorrowInformationService>>("book:loans".Trim());
 
             if (borrowList != null)
             {
-                if (borrowList.Any(borrow => borrow.Id == isBorrow.Id))
+                if (borrowList.Any(borrow => borrow.ID.Trim() == isBorrow.Id.Trim()))
                 {
                     CacheService.Remove($"book:loans".Trim());
 
