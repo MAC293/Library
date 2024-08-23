@@ -307,21 +307,22 @@ namespace Library.Controllers
                     }
 
                     var allBooks = Context.Books.AsQueryable();
+                    //var allBooks = await Context.Books.ToListAsync();
 
                     if (allBooks.Any())
                     {
                         allBooks = allBooks.Where(book =>
-                            book.Title.Contains(toSearch) ||
-                            book.Author.Contains(toSearch) ||
-                            book.Genre.Contains(toSearch) ||
-                            book.Editorial.Contains(toSearch));
+                            book.Title.Contains(toSearch.Trim()) ||
+                            book.Author.Contains(toSearch.Trim()) ||
+                            book.Genre.Contains(toSearch.Trim()) ||
+                            book.Editorial.Contains(toSearch.Trim()));
 
                         var allBooksList = MappingAllBooksSearch(allBooks);
 
-                        CacheManagerService.CacheService.Set(toSearch, allBooksList);
+                        CacheManagerService.CacheService.Set(toSearch.Trim(), allBooksList);
+                        //CacheManagerService.CacheService.SetAlt(toSearch, allBooksList);
 
                         return allBooksList;
-
                     }
 
                     return NotFound();

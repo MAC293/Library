@@ -60,25 +60,25 @@ namespace Library.Services
         {
             String key = $"book:{check}".Trim();
 
-            CacheDB.StringSet(key, JsonSerializer.Serialize(value));
+            CacheDB.StringSet(key.Trim(), JsonSerializer.Serialize(value));
         }
 
-        //public Boolean SetAlt<T>(String userID, String vehicle, T value)
-        //{
-        //    String key = $"user:{userID}:vehicle:{vehicle}";
+        public Boolean SetAlt<T>(String check, T value)
+        {
+            String key = $"book:{check}".Trim();
 
-        //    var valueToCache = value is ActionResult<T> actionResult ? actionResult.Value : value;
-        //    var isSet = CacheDB.StringSet(key, JsonSerializer.Serialize(valueToCache));
+            var valueToCache = value is ActionResult<T> actionResult ? actionResult.Value : value;
+            var isSet = CacheDB.StringSet(key, JsonSerializer.Serialize(valueToCache));
 
-        //    return isSet;
-        //}
+            return isSet;
+        }
 
         //public void SetAlt1(String userID, String vehicle, List<VehicleService> value)
         //{
         //    String key = $"user:{userID}:vehicle:{vehicle}";
         //    CacheDB.StringSet(key, JsonSerializer.Serialize(value));
         //}
-        
+
         public Boolean Remove(String key)
         {
             var exist = CacheDB.KeyExists(key);
