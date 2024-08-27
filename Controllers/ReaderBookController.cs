@@ -308,7 +308,7 @@ namespace Library.Controllers
                     }
 
                     //var allBooks = Context.Books.ToListAsync();
-                    var allBooks = Context.Books.Where(book => book.Title.Trim() == toSearch.Trim()).ToList();
+                    var allBooks = await Context.Books.Where(book => book.Title.Trim() == toSearch.Trim()).ToListAsync();
 
 
                     //switch (toSearch.Trim())
@@ -374,7 +374,7 @@ namespace Library.Controllers
         //private List<BooKService> MappingAllBooksSearch(List<Book> aBooks) 
         //List<Book> aBooks
         //private ActionResult<List<BooKService>> MappingAllBooksSearch(IQueryable<Book> aBooks)
-        private ActionResult<List<BooKService>> MappingAllBooksSearch(List<Book> aBooks)
+        private List<BooKService> MappingAllBooksSearch(List<Book> aBooks)
         {
             var bookServiceList = aBooks.Select(book => new BooKService()
             {
