@@ -229,7 +229,8 @@ namespace Library.Controllers
 
                 if (Char.IsDigit(ClaimVerifier.ClaimID[0]))
                 {
-                    var cacheBooks = CacheManagerService.CacheService.GetAlt<List<BooKService>>($"book:all");
+                    //var cacheBooks = CacheManagerService.CacheService.GetAlt<List<BooKService>>($"book:all");
+                    var cacheBooks = CacheManagerService.CacheService.Get<List<BooKService>>($"book:all");
 
                     if (cacheBooks != null)
                     {
