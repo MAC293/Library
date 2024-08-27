@@ -307,26 +307,54 @@ namespace Library.Controllers
                         return searchBookCache;
                     }
 
-                    var allBooks = Context.Books.AsQueryable();
-                    //var allBooks = await Context.Books.ToListAsync();
+                    //var allBooks = Context.Books.ToListAsync();
+                    var allBooks = Context.Books.Where(book => book.Title.Trim() == toSearch.Trim()).ToList();
 
-                    if (allBooks.Any())
-                    {
-                        allBooks = allBooks.Where(book =>
-                            book.Title.Contains(toSearch.Trim()) ||
-                            book.Author.Contains(toSearch.Trim()) ||
-                            book.Genre.Contains(toSearch.Trim()) ||
-                            book.Editorial.Contains(toSearch.Trim()));
 
-                        var allBooksList = MappingAllBooksSearch(allBooks);
+                    //switch (toSearch.Trim())
+                    //{
+                    //    case string search when allBooks.Any(book => book.Title.Contains(search)):
+                    //        allBooks = allBooks.Where(book => book.Title.Contains(search));
+                    //        break;
+                    //    case string search when allBooks.Any(book => book.Author.Contains(search)):
+                    //        allBooks = allBooks.Where(book => book.Author.Contains(search));
+                    //        break;
+                    //    case string search when allBooks.Any(book => book.Genre.Contains(search)):
+                    //        allBooks = allBooks.Where(book => book.Genre.Contains(search));
+                    //        break;
+                    //    case string search when allBooks.Any(book => book.Editorial.Contains(search)):
+                    //        allBooks = allBooks.Where(book => book.Editorial.Contains(search));
+                    //        break;
+                    //    default:
+                    //        allBooks = Enumerable.Empty<Book>().AsQueryable();
+                    //        break;
+                    //}
 
-                        CacheManagerService.CacheService.Set(toSearch.Trim(), allBooksList);
-                        //CacheManagerService.CacheService.SetAlt(toSearch, allBooksList);
 
-                        return allBooksList;
-                    }
+                    var allBooksList = MappingAllBooksSearch(allBooks);
 
-                    return NotFound();
+                    CacheManagerService.CacheService.Set(toSearch.Trim(), allBooksList);
+
+                    return allBooksList;
+
+                    //var allBooks = Context.Books.AsQueryable();
+
+                    //if (allBooks.Any())
+                    //{
+                    //    allBooks = allBooks.Where(book =>
+                    //        book.Title.Contains(toSearch.Trim()) ||
+                    //        book.Author.Contains(toSearch.Trim()) ||
+                    //        book.Genre.Contains(toSearch.Trim()) ||
+                    //        book.Editorial.Contains(toSearch.Trim()));
+
+                    //    var allBooksList = MappingAllBooksSearch(allBooks);
+
+                    //    CacheManagerService.CacheService.Set(toSearch.Trim(), allBooksList);
+
+                    //    return allBooksList;
+                    //}
+
+                    //return NotFound();
                 }
                 if (ClaimVerifier.ClaimID.StartsWith('L'))
                 {
@@ -345,7 +373,8 @@ namespace Library.Controllers
 
         //private List<BooKService> MappingAllBooksSearch(List<Book> aBooks) 
         //List<Book> aBooks
-        private ActionResult<List<BooKService>> MappingAllBooksSearch(IQueryable<Book> aBooks)
+        //private ActionResult<List<BooKService>> MappingAllBooksSearch(IQueryable<Book> aBooks)
+        private ActionResult<List<BooKService>> MappingAllBooksSearch(List<Book> aBooks)
         {
             var bookServiceList = aBooks.Select(book => new BooKService()
             {
