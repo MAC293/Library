@@ -299,7 +299,6 @@ namespace Library.Controllers
 
                 if (Char.IsDigit(ClaimVerifier.ClaimID[0]))
                 {
-                    //var searchBookCache = CacheManagerService.CacheService.GetAlt<List<BooKService>>($"book:{toSearch}");
                     var searchBookCache = CacheManagerService.CacheService.Get<List<BooKService>>($"book:{toSearch}");
 
                     if (searchBookCache != null)
@@ -308,7 +307,6 @@ namespace Library.Controllers
                     }
 
                     var allBooks = await Context.Books.ToListAsync();
-
 
                     if (allBooks.Any())
                     {
