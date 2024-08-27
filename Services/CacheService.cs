@@ -81,7 +81,7 @@ namespace Library.Services
 
         public Boolean Remove(String key)
         {
-            var exist = CacheDB.KeyExists(key);
+            var exist = CacheDB.KeyExists(key.Trim());
 
             if (exist)
             {

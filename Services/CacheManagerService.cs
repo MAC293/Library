@@ -46,7 +46,7 @@ namespace Library.Services
 
             if (allList != null)
             {
-                if (allList.Any(book => book.Id == isAllBook.Id))
+                if (allList.Any(book => book.Id?.Trim() == isAllBook.Id?.Trim()))
                 {
                     CacheService.Remove("book:all".Trim());
 
@@ -68,7 +68,7 @@ namespace Library.Services
 
             if (titleList != null)
             {
-                if (titleList.Any(book => book.Title.Trim() == isTitleBook.Title.Trim()))
+                if (titleList.Any(book => book.Title.Trim() == isTitleBook.Title?.Trim()))
                 {
                     CacheService.Remove($"book:{isTitleBook.Title}".Trim());
 
@@ -90,7 +90,7 @@ namespace Library.Services
 
             if (authorList != null)
             {
-                if (authorList.Any(book => book.Author == isAuthorBook.Author))
+                if (authorList.Any(book => book.Author.Trim() == isAuthorBook.Author?.Trim()))
                 {
                     CacheService.Remove($"book:{isAuthorBook.Author}".Trim());
 
@@ -112,7 +112,7 @@ namespace Library.Services
 
             if (genreList != null)
             {
-                if (genreList.Any(book => book.Genre.Trim() == isGenreBook.Genre.Trim()))
+                if (genreList.Any(book => book.Genre.Trim() == isGenreBook.Genre?.Trim()))
                 {
                     CacheService.Remove($"book:{isGenreBook.Genre}".Trim());
 
@@ -134,7 +134,7 @@ namespace Library.Services
 
             if (editorialList != null)
             {
-                if (editorialList.Any(book => book.Editorial == isEditorialBook.Editorial))
+                if (editorialList.Any(book => book.Editorial.Trim() == isEditorialBook.Editorial?.Trim()))
                 {
                     CacheService.Remove($"book:{isEditorialBook.Editorial}".Trim());
 
