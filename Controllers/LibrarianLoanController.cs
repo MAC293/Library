@@ -81,7 +81,6 @@ namespace Library.Controllers
                 }
 
                 return BadRequest();
-
             }
             catch (Exception ex)
             {
@@ -100,7 +99,6 @@ namespace Library.Controllers
                 ReturnDate = DateTime.MinValue,
                 Reader = loan.Reader.Trim(),
                 Book = loan.Book.Trim()
-
 
             }).ToList();
 
@@ -263,7 +261,6 @@ namespace Library.Controllers
 
         private Boolean IsSubWithinMain(String bookID, String borrowID)
         {
-
             bool firstHyphenEqual = bookID.Split('-')[0] == borrowID.Split('-')[0];
             bool secondHyphenEqual = bookID.Split('-').Last() == borrowID.Split('-').Last();
 

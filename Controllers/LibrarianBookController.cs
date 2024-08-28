@@ -1,20 +1,9 @@
 ﻿using Library.Models;
 using Library.Services;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using System.Security.Claims;
-using System.Xml;
 using Microsoft.EntityFrameworkCore;
 using BrunoZell.ModelBinding;
-using System.Text.Json.Nodes;
-using System.Linq;
-using System.ComponentModel.DataAnnotations;
-using Library.CustomDataAnnotations;
-using System.Globalization;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
-using System.Reflection.PortableExecutable;
-using StackExchange.Redis;
 
 namespace Library.Controllers
 {
@@ -64,10 +53,7 @@ namespace Library.Controllers
         [HttpPost]
         [Route("AddBook")]
         [Authorize]
-        //public async Task<IActionResult> CreateBook([FromBody] Book newBook)
-        //public async Task<IActionResult> CreateBook([FromForm] Book newBook, [FromForm] IFormFile cover)
         public async Task<IActionResult> CreateBook([ModelBinder(BinderType = typeof(JsonModelBinder))][FromForm] Book newBook, [FromForm] IFormFile newCover)
-        //public async Task<IActionResult> CreateBook([ModelBinder(BinderType = typeof(JsonModelBinder))][FromForm] BookService newBook, [FromForm] IFormFile cover)
         {
             try
             {
@@ -109,24 +95,13 @@ namespace Library.Controllers
                 }
 
                 return BadRequest("Invalid request.");
-
-
             }
             catch (Exception)
             {
                 return StatusCode(500, "An unexpected error occurred. Please try again.");
-
             }
         }
 
-        //private int CheckBookStorage(String title)
-        //{
-        //    int matchQuantity = Context.Books.Count(book => book.Title == title.Trim());
-
-        //    return matchQuantity;
-        //}
-
-        //Convert the uploaded byte[] image to a varbinary
         private Byte[] ImageToByte(IFormFile uploadedFile)
         {
             if (uploadedFile.Length == 0)
@@ -193,11 +168,9 @@ namespace Library.Controllers
 
                     await Context.SaveChangesAsync();
 
-                    //Check cache updated book
                     CacheManagerService.HasBook(bookDAL);
 
                     return NoContent();
-                    //return new ObjectResult("The book was updated successfully.") { StatusCode = 204 };
 
                 }
                 if (Char.IsDigit(ClaimVerifier.ClaimID[0]))
@@ -211,13 +184,11 @@ namespace Library.Controllers
             catch (Exception)
             {
                 return StatusCode(500, "An unexpected error occurred. Please try again.");
-
             }
         }
 
         private void MappingPUT(Book bookDAL, Book updateBook, IFormFile updateCover)
         {
-            //bookDAL.Id = updateBook.Id;
             bookDAL.Title = updateBook.Title;
             bookDAL.Author = updateBook.Author;
             bookDAL.Genre = updateBook.Genre;
@@ -251,7 +222,6 @@ namespace Library.Controllers
                         Context.Books.Remove(bookDAL);
                         await Context.SaveChangesAsync();
 
-                        //return new ObjectResult("The book was removed successfully.") { StatusCode = 204 };
                         return NoContent();
                     }
 
@@ -266,7 +236,6 @@ namespace Library.Controllers
             }
             catch (Exception ex)
             {
-                //return StatusCode(500, "An unexpected error occurred. Please try again.");
                 return StatusCode(500, "An unexpected error occurred: "+ex);
             }
         }
@@ -314,10 +283,8 @@ namespace Library.Controllers
             catch (Exception ex)
             {
                 return StatusCode(500, "An unexpected error occurred. Please try again.");
-
             }
         }
         #endregion
-
     }
 }

@@ -1,5 +1,4 @@
 ﻿using Library.Models;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Library.Services;
 using System.Text;
@@ -36,16 +35,12 @@ namespace Library.Controllers
         [Route("SignUp")]
         public async Task<IActionResult> SignUp([FromBody] ReaderService newMember)
         {
-
             try
             {
-                //Validate the coming JSON body
                 if (newMember == null || !ModelState.IsValid)
                 {
                     return BadRequest();
                 }
-
-                //Validation occurs on ReaderService.
 
                 var memberDAL = Context.Members.FirstOrDefault(member => member.Id == newMember.IDMember);
 
@@ -54,43 +49,30 @@ namespace Library.Controllers
                     return BadRequest("This user already exists!");
                 }
 
-
-                //Member
                 Context.Members.Add(MappingMember(newMember));
 
                 EndUserReader(newMember, Context);
 
                 await Context.SaveChangesAsync();
 
-                //var uri = new Uri($"{Request.Scheme}://{Request.Host}{Request.Path}/{newMember.IDMember}");
-                //return Created(uri, "Congratulations! Your account has been successfully created.");
                 //return StatusCode(StatusCodes.Status201Created, "Congratulations! Your account has been successfully created.");
                 return Created("", "Your account has been successfully created.");
-
-                //return default;
             }
 
             catch (DbUpdateException)
             {
-                //return BadRequest("A DbUpdateException has occurred: " + ex);
-                //return Unauthorized(ex.Message);
                 return StatusCode(500, "A database error occurred. Please try again.");
             }
-
             catch (Exception)
             {
-                //return BadRequest("An exception has occurred: " + ex);
                 return StatusCode(500, "An unexpected error occurred. Please try again.");
-
             }
-
         }
 
         private Member MappingMember(ReaderService readerService)
         {
             var newMember = new Member()
             {
-
                 Id = readerService.IDMember,
                 Name = readerService.Name,
                 Phone = readerService.Phone,
@@ -101,18 +83,14 @@ namespace Library.Controllers
             return newMember;
         }
 
-        //Add background attributes to EndUser, and Reader entities
         private void EndUserReader(ReaderService newMember, LibraryDbContext context)
         {
-
-            //EndUSer
             EndUser newUser = new EndUser();
             newUser.Id = EndUserID(newMember.IDMember);
             newUser.Username = newMember.Username;
             newUser.Password = Hash(newMember.Password);
             context.EndUsers.Add(newUser);
 
-            //Reader
             Reader newReader = new Reader();
             newReader.Id = ReaderID(newMember.IDMember);
             newReader.Member = newMember.IDMember;
@@ -127,7 +105,6 @@ namespace Library.Controllers
         {
             using (LibraryDbContext context = new LibraryDbContext())
             {
-                //Validate the coming JSON body
                 if (librarianService == null || !ModelState.IsValid)
                 {
                     return BadRequest();
@@ -156,14 +133,12 @@ namespace Library.Controllers
             newEndUser.Username = librarianService.Username;
             newEndUser.Password = Hash(librarianService.Password);
             context.EndUsers.Add(newEndUser);
-            //AddEndUser(librarianService, context);
 
             //Librarian
             Librarian newLibrarian = new Librarian();
             newLibrarian.Id = librarianService.IDLibrarian;
             newLibrarian.EndUser = IDLibrarian(librarianService.IDLibrarian);
             context.Librarians.Add(newLibrarian);
-            //AddLibrarian(librarianService, context);
         }
 
         private void AddEndUser(LibrarianService librarianService, LibraryDbContext context)
@@ -220,16 +195,13 @@ namespace Library.Controllers
             {
                 return BadRequest("A DbUpdateException has occurred: " + ex);
             }
-
             catch (InvalidOperationException ex)
             {
                 return BadRequest("An exception has occurred: " + ex);
             }
-
             catch (Exception ex)
             {
                 return BadRequest("An exception has occurred: " + ex);
-
             }
         }
         #endregion
