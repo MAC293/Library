@@ -2,7 +2,6 @@
 using Library.Models;
 using Library.Services;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -25,6 +24,7 @@ namespace Library.Controllers
             HelperService = hs;
             CacheManagerService = cms;
         }
+
         public ClaimVerifierService ClaimVerifier
         {
             get { return _ClaimVerifier; }
@@ -41,6 +41,7 @@ namespace Library.Controllers
             get { return _HelperService; }
             set { _HelperService = value; }
         }
+
         public CacheManagerService CacheManagerService
         {
             get { return _CacheManagerService; }
@@ -62,7 +63,6 @@ namespace Library.Controllers
 
                 if (Char.IsDigit(ClaimVerifier.ClaimID[0]))
                 {
-                    //if (CheckBookStorage(bookToBorrow.Trim()) == 0)
                     if (HelperService.CheckBookStorage(bookToBorrow.Trim()) == 0)
                     {
                         return NotFound("This book is not available in the library, yet.");
@@ -73,21 +73,14 @@ namespace Library.Controllers
 
                     if (bookDAL.Available)
                     {
-                        //context.Borrows.Add(newBook);
-                        //await context.SaveChangesAsync();
-
                         LoadBorrowInformation(bookDAL, Context);
 
                         bookDAL.Available = false;
                         Context.SaveChanges();
 
-                        //Console.WriteLine(bookDAL.Available);
-
                         return MapDALToServiceBook(bookDAL);
                     }
 
-                    //return NotFound(bookToBorrow + "is not available. You have to wait until a reader returns a copy.");
-                    //'{bookToBorrow}'
                     return NotFound($"\"{bookToBorrow}\" is not available. You have to wait until a reader returns a copy.");
 
                 }
@@ -102,7 +95,6 @@ namespace Library.Controllers
             catch (Exception ex)
             {
                 return BadRequest("An exception has occurred: " + ex);
-
             }
         }
 
@@ -118,8 +110,6 @@ namespace Library.Controllers
                 Cover = availableBook.Cover,
                 BorrowDate = BorrowDate(),
                 DueDate = DueDate()
-                //Information = borrowInformation
-
             };
 
             return borrowedBook;
@@ -127,8 +117,6 @@ namespace Library.Controllers
 
         private String BorrowDate()
         {
-            //String borrowDate = Convert.ToDateTime(DateTime.Now.ToString("dd/MM/yyyy"), CultureInfo.InvariantCulture);
-
             String borrowDate = DateTime.Now.ToString("dd/MM/yyyy", CultureInfo.InvariantCulture);
 
             return borrowDate;
@@ -157,12 +145,9 @@ namespace Library.Controllers
         {
             Borrow borrowDAL = context.Borrows.FirstOrDefault(borrow => borrow.Book == book.Id);
 
-            //var borrowDAL = context.Borrows.FirstOrDefault(borrow => borrow.Book == book.Id);
-
             if (borrowDAL == null)
             {
                 Borrow borrow = new Borrow();
-
 
                 borrow.Id = BorrowID(book);
                 borrow.BorrowDate = BorrowDateBorrow();
@@ -174,14 +159,12 @@ namespace Library.Controllers
                 context.Borrows.Add(borrow);
                 context.SaveChanges();
             }
-            //}
         }
 
         private DateTime BorrowDateBorrow()
         {
             String strDate = DateTime.Today.ToString("dd/MM/yyyy", CultureInfo.InvariantCulture);
             return StrToDate(strDate);
-
         }
 
         private DateTime DueDateBorrow()
@@ -193,7 +176,6 @@ namespace Library.Controllers
 
         }
 
-        //Extract from Think&GrowRich-NapoleonHill-1965-Wealth-N°1, to Think&GrowRich-N°1                  
         private String BorrowID(Book book)
         {
 
@@ -229,7 +211,6 @@ namespace Library.Controllers
 
                 if (Char.IsDigit(ClaimVerifier.ClaimID[0]))
                 {
-                    //var cacheBooks = CacheManagerService.CacheService.GetAlt<List<BooKService>>($"book:all");
                     var cacheBooks = CacheManagerService.CacheService.Get<List<BooKService>>($"book:all");
 
                     if (cacheBooks != null)
@@ -256,17 +237,14 @@ namespace Library.Controllers
                 }
 
                 return BadRequest();
-
             }
             catch (Exception ex)
             {
                 return StatusCode(500, "An unexpected error occurred. Please try again.");
-
             }
         }
 
         private List<BooKService> MappingAllBooks(List<Book> aBooks)
-        //private ActionResult<List<BooKService>> MappingAllBooks(List<Book> aBooks)
         {
             var bookServiceList = aBooks.Select(book => new BooKService()
             {
@@ -291,7 +269,6 @@ namespace Library.Controllers
         {
             try
             {
-
                 if (!ClaimVerifier.ClaimValidation())
                 {
                     return Unauthorized("This user doesn't exist.");
@@ -310,7 +287,6 @@ namespace Library.Controllers
 
                     if (allBooks.Any())
                     {
-
                         var filteredBooks = allBooks.Where(book =>
                             book.Title.Contains(toSearch.Trim()) ||
                             book.Author.Contains(toSearch.Trim()) ||
@@ -332,18 +308,13 @@ namespace Library.Controllers
                 }
 
                 return BadRequest();
-
             }
             catch (Exception ex)
             {
                 return StatusCode(500, "An unexpected error occurred. Please try again.");
-
             }
         }
 
-        //private List<BooKService> MappingAllBooksSearch(List<Book> aBooks) 
-        //List<Book> aBooks
-        //private ActionResult<List<BooKService>> MappingAllBooksSearch(IQueryable<Book> aBooks)
         private List<BooKService> MappingAllBooksSearch(List<Book> aBooks)
         {
             var bookServiceList = aBooks.Select(book => new BooKService()
