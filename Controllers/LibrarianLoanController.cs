@@ -150,14 +150,16 @@ namespace Library.Controllers
                         return NotFound("Readers haven't requested any book.");
                     }
 
-                    var borrowDAL = await Context.Borrows.FirstOrDefaultAsync(book => book.Id == BorrowID(bookReturned, reader + "-Reader").Trim()
-                        && book.Reader == reader + "-Reader".Trim());
+                    //String cleanedBook = bookReturned.Replace(",", "");
+
+                    var borrowDAL = await Context.Borrows.FirstOrDefaultAsync(borrow => borrow.Id.Trim() == BorrowID(bookReturned.Trim(), 
+                            reader + "-Reader").Trim() && borrow.Reader.Trim() == reader + "-Reader".Trim());
 
                     if (borrowDAL != null)
                     {
                         borrowDAL.ReturnDate = DateTime.Now;
                      
-                        AvailableAgain(ReadyBookAvailable(borrowDAL.Id));
+                        AvailableAgain(ReadyBookAvailable(borrowDAL.Id.Trim()));
 
                         await Context.SaveChangesAsync();
 
@@ -193,7 +195,7 @@ namespace Library.Controllers
 
         private String BorrowID(String readerBook, String readerID)
         {
-            return BookReturned(readerBook, readerID);
+            return BookReturned(readerBook.Trim(), readerID.Trim());
         }
 
         private String BookReturned(String bookReturned, String readerBorrower)
@@ -208,7 +210,6 @@ namespace Library.Controllers
             }
 
             return String.Empty;
-
         }
 
         private List<Borrow> ReaderLoans(String reader)
@@ -236,9 +237,10 @@ namespace Library.Controllers
         {
             using (LibraryDbContext context = new LibraryDbContext())
             {
-                var availableAgain = context.Books.FirstOrDefault(book => book.Id == bookToChange.Id);
+                var availableAgain = context.Books.FirstOrDefault(book => book.Id.Trim() == bookToChange.Id.Trim());
 
                 availableAgain.Available = true;
+
                 context.SaveChanges();
             }
         }

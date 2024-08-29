@@ -42,7 +42,7 @@ namespace Library.Services
 
         private void IsAll(Book isAllBook)
         {
-            List<Book>? allList = CacheService.GetAlt<List<Book>>($"book:all".Trim());
+            List<Book>? allList = CacheService.Get<List<Book>>($"book:all".Trim());
 
             if (allList != null)
             {
@@ -169,7 +169,7 @@ namespace Library.Services
 
         private void IsBook(Book isBook)
         {
-            var bookCache = CacheService.GetAlt<Book>($"book:{isBook.Id}".Trim());
+            var bookCache = CacheService.Get<Book>($"book:{isBook.Id}".Trim());
 
             if (bookCache != null)
             {
@@ -188,7 +188,7 @@ namespace Library.Services
         #region Update Loans
         public void IsLoan(Borrow isBorrow)
         {
-            List<BorrowInformationService>? borrowList = CacheService.GetAlt<List<BorrowInformationService>>("book:loans".Trim());
+            List<BorrowInformationService>? borrowList = CacheService.Get<List<BorrowInformationService>>("book:loans".Trim());
 
             if (borrowList != null)
             {
@@ -210,8 +210,8 @@ namespace Library.Services
         #region Remove Book
         public void CheckDelete(Book bookDelete)
         {
-            //var bookCache = CacheService.Get<Book>($"book:{bookDelete.Id}".Trim());
-            var bookCache = CacheService.GetAlt<Book>($"book:{bookDelete.Id}".Trim());
+            var bookCache = CacheService.Get<Book>($"book:{bookDelete.Id}".Trim());
+            //var bookCache = CacheService.GetAlt<Book>($"book:{bookDelete.Id}".Trim());
 
             if (bookCache != null)
             {

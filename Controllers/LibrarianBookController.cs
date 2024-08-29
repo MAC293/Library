@@ -157,7 +157,7 @@ namespace Library.Controllers
                         return BadRequest();
                     }
 
-                    var bookDAL = await Context.Books.FirstOrDefaultAsync(book => book.Id == updateBook.Id);
+                    var bookDAL = await Context.Books.FirstOrDefaultAsync(book => book.Id.Trim() == updateBook.Id.Trim());
 
                     if (bookDAL == null)
                     {
@@ -244,7 +244,7 @@ namespace Library.Controllers
         #region Read a Book (GET)
         [HttpGet("ViewBook/{ID}")]
         [Authorize]
-        public async Task<ActionResult<Book>> DisplayBook([FromRoute] String ID)
+        public async Task<ActionResult<BooKService>> DisplayBook([FromRoute] String ID)
         {
             try
             {
@@ -255,7 +255,7 @@ namespace Library.Controllers
 
                 if (ClaimVerifier.ClaimID.StartsWith('L'))
                 {
-                    var isCacheBook = CacheManagerService.CacheService.Get<Book>($"book:{ID}");
+                    var isCacheBook = CacheManagerService.CacheService.Get<BooKService>($"book:{ID}");
 
                     if (isCacheBook != null)
                     {
@@ -266,9 +266,9 @@ namespace Library.Controllers
 
                     if (bookDAL != null)
                     {
-                        CacheManagerService.CacheService.Set(ID, bookDAL);
+                        CacheManagerService.CacheService.Set(ID, MappingBook(bookDAL));
 
-                        return bookDAL;
+                        return MappingBook(bookDAL);
                     }
 
                     return NotFound();
@@ -284,6 +284,22 @@ namespace Library.Controllers
             {
                 return StatusCode(500, "An unexpected error occurred. Please try again.");
             }
+        }
+
+        private BooKService MappingBook(Book displayBook)
+        {
+            var newBook = new BooKService()
+            {
+                Title = displayBook.Title.Trim(),
+                Author = displayBook.Author.Trim(),
+                Genre = displayBook.Genre.Trim(),
+                Year = (int)displayBook.Year,
+                Editorial = displayBook.Editorial.Trim(),
+                Available = displayBook.Available,
+                Cover = displayBook.Cover
+            };
+
+            return newBook;
         }
         #endregion
     }

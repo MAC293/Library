@@ -94,7 +94,7 @@ namespace Library.Controllers
             }
             catch (Exception ex)
             {
-                return BadRequest("An exception has occurred: " + ex);
+                return StatusCode(500, "An unexpected error occurred. Please try again.");
             }
         }
 
@@ -102,11 +102,11 @@ namespace Library.Controllers
         {
             BorrowedBookService borrowedBook = new BorrowedBookService()
             {
-                Title = availableBook.Title,
-                Author = availableBook.Author,
-                Genre = availableBook.Genre,
+                Title = availableBook.Title.Trim(),
+                Author = availableBook.Author.Trim(),
+                Genre = availableBook.Genre.Trim(),
                 Year = (int)availableBook.Year,
-                Editorial = availableBook.Editorial,
+                Editorial = availableBook.Editorial.Trim(),
                 Cover = availableBook.Cover,
                 BorrowDate = BorrowDate(),
                 DueDate = DueDate()

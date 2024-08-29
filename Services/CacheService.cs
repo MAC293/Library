@@ -25,7 +25,7 @@ namespace Library.Services
             get { return _CacheDB; }
         }
 
-        public T? Get<T>(String key)
+        public T? GetAlt<T>(String key)
         {
             var json = CacheDB.StringGet(key.Trim());
 
@@ -44,7 +44,7 @@ namespace Library.Services
             return default;
         }
 
-        public T? GetAlt<T>(String key)
+        public T? Get<T>(String key)
         {
             var json = CacheDB.StringGet(key.Trim());
 
@@ -72,12 +72,6 @@ namespace Library.Services
 
             return isSet;
         }
-
-        //public void SetAlt1(String userID, String vehicle, List<VehicleService> value)
-        //{
-        //    String key = $"user:{userID}:vehicle:{vehicle}";
-        //    CacheDB.StringSet(key, JsonSerializer.Serialize(value));
-        //}
 
         public Boolean Remove(String key)
         {

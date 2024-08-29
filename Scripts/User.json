@@ -1,15 +1,5 @@
 //Reader sign up
 {
-  "idMember": "18.852.157-K",
-  "name": "John Doe",
-  "phone": "994251987",
-  "email": "example@gmail.com",
-  "age": 25,
-  "username": "JoD2024",
-  "password": "SuperRea2024"
-}
-
-{
   "idMember": "17.548.723-0",
   "name": "Jane Doe",
   "phone": "805412365",
@@ -21,11 +11,6 @@
 
 //Reader login
 {
-  "username": "JoD2024",
-  "password": "SuperRea2024"
-}
-
-{
   "username": "JaD1964",
   "password": "SuperRea1964"
 }
@@ -36,12 +21,6 @@
   "username": "JaD2024",
   "password": "SuperLib2024"
 } 
-
-{
-  "idLibrarian": "L6.751.659-2",
-  "username": "JoD2000",
-  "password": "SuperLib2000"
-}
 
 //Librarian login
 {
