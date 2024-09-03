@@ -151,11 +151,9 @@ namespace Library.Controllers
                         return NotFound("Readers haven't requested any book.");
                     }
 
-                    //String specialCharacters = bookReturned.Replace("%20", "");
+                    String noWhiteSpaces = bookReturned.Replace(" ", "");
 
-                    //String decodedBookReturned = Uri.UnescapeDataString(specialCharacters);
-
-                    var borrowDAL = await Context.Borrows.FirstOrDefaultAsync(borrow => borrow.Id.Trim() == BorrowID(bookReturned.Trim(),
+                    var borrowDAL = await Context.Borrows.FirstOrDefaultAsync(borrow => borrow.Id.Trim() == BorrowID(noWhiteSpaces.Trim(),
                         reader + "-Reader").Trim() && borrow.Reader.Trim() == reader + "-Reader".Trim());
 
                     if(borrowDAL != null)
