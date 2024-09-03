@@ -151,9 +151,8 @@ namespace Library.Controllers
                         return NotFound("Readers haven't requested any book.");
                     }
 
-                    String noWhiteSpaces = bookReturned.Replace(" ", "");
 
-                    var borrowDAL = await Context.Borrows.FirstOrDefaultAsync(borrow => borrow.Id.Trim() == BorrowID(noWhiteSpaces.Trim(),
+                    var borrowDAL = await Context.Borrows.FirstOrDefaultAsync(borrow => borrow.Id.Trim() == BorrowID(CleanedReturnedBook(bookReturned).Trim(),
                         reader + "-Reader").Trim() && borrow.Reader.Trim() == reader + "-Reader".Trim());
 
                     if(borrowDAL != null)
@@ -185,6 +184,13 @@ namespace Library.Controllers
             {
                 return StatusCode(400, "An unexpected error occurred. Please try again.");
             }
+        }
+
+        private String CleanedReturnedBook(String input)
+        {
+            String output = input.Replace(" ", "");
+
+            return output;
         }
 
         public int CheckLoans()
