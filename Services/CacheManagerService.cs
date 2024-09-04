@@ -188,13 +188,15 @@ namespace Library.Services
         #region Update Loans
         public void IsLoan(Borrow isBorrow)
         {
-            List<BorrowInformationService>? borrowList = CacheService.Get<List<BorrowInformationService>>("book:loans".Trim());
+            List<Borrow>? borrowList = CacheService.Get<List<Borrow>>("book:loans");
+            //List<BorrowInformationService> borrowList = CacheService.Get<List<BorrowInformationService>>("book:loans");
 
             if (borrowList != null)
             {
-                if (borrowList.Any(borrow => borrow.ID.Trim() == isBorrow.Id.Trim()))
+                //if (borrowList.Any(borrow => borrow.ID.Trim() == isBorrow.Id.Trim()))
+                if (borrowList.Any(borrow => borrow.Id.Trim() == isBorrow.Id.Trim()))
                 {
-                    CacheService.Remove($"book:loans".Trim());
+                    CacheService.Remove("book:loans".Trim());
 
                     var booksLoansDAL = Context.Borrows.Where(borrow => borrow.Id.Trim() == isBorrow.Id.Trim()).ToList();
 

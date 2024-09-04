@@ -151,7 +151,6 @@ namespace Library.Controllers
                         return NotFound("Readers haven't requested any book.");
                     }
 
-
                     var borrowDAL = await Context.Borrows.FirstOrDefaultAsync(borrow => borrow.Id.Trim() == BorrowID(CleanedReturnedBook(bookReturned).Trim(),
                         reader + "-Reader").Trim() && borrow.Reader.Trim() == reader + "-Reader".Trim());
 
@@ -161,9 +160,9 @@ namespace Library.Controllers
 
                         AvailableAgain(ReadyBookAvailable(borrowDAL.Id.Trim()));
 
-                        await Context.SaveChangesAsync();
-
                         CacheManagerService.IsLoan(borrowDAL);
+
+                        await Context.SaveChangesAsync();
 
                         return NoContent();
                     }
@@ -188,9 +187,16 @@ namespace Library.Controllers
 
         private String CleanedReturnedBook(String input)
         {
-            String output = input.Replace(" ", "");
+            Boolean hasWhiteSpace = input.Any(char.IsWhiteSpace);
 
-            return output;
+            if (hasWhiteSpace)
+            {
+                String output = input.Replace(" ", "");
+
+                return output;
+            }
+
+            return input;
         }
 
         public int CheckLoans()
