@@ -193,9 +193,9 @@ namespace Library.Services
 
             if (borrowList != null)
             {
-                if (isBorrow.Id.Trim() ==)
+                if (isBorrow != null)
                 {
-                    var bList = borrowList.FirstOrDefault(borrow => borrow.Id.Trim() == isBorrow.Id.Trim());
+                    var bList = borrowList.FirstOrDefault(borrow => borrow.Reader.Trim() == "175487230-Reader");
 
                     if (bList != null)
                     //if (borrowList.Any(borrow => borrow.Id.Trim() == isBorrow.Id.Trim()))
@@ -208,11 +208,28 @@ namespace Library.Services
 
                         if (booksLoansDAL.Any())
                         {
-                            CacheService.Set("loans".Trim(), booksLoansDAL);
+                            //CacheService.Set("loans".Trim(), booksLoansDAL);
+                            CacheService.Set("loans".Trim(), MappingCheckedLoans(booksLoansDAL));
                         }
                     }
                 }
             }
+        }
+
+        private List<BorrowInformationService> MappingCheckedLoans(List<Borrow> unsortedLoans)
+        {
+            var loanServiceList = unsortedLoans.Select(borrow => new BorrowInformationService
+            {
+                ID = borrow.Id.Trim(),
+                BorrowDate = borrow.BorrowDate,
+                DueDate = borrow.DueDate,
+                ReturnDate = (DateTime)borrow.ReturnDate,
+                Reader = borrow.Reader.Trim(),
+                Book = borrow.Book.Trim()
+
+            }).ToList();
+
+            return loanServiceList;
         }
         #endregion
 

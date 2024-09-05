@@ -152,7 +152,7 @@ namespace Library.Controllers
                 borrow.Id = BorrowID(book);
                 borrow.BorrowDate = BorrowDateBorrow();
                 borrow.DueDate = DueDateBorrow();
-                borrow.ReturnDate = null;
+                borrow.ReturnDate = DateTime.MinValue;
                 borrow.Reader = ReaderID(ClaimVerifier.ClaimID);
                 borrow.Book = book.Id;
 
