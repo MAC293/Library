@@ -195,7 +195,8 @@ namespace Library.Services
             {
                 if (isBorrow != null)
                 {
-                    var bList = borrowList.FirstOrDefault(borrow => borrow.Reader.Trim() == "175487230-Reader");
+                    //var bList = borrowList.FirstOrDefault(borrow => borrow.Reader.Trim() == "175487230-Reader");
+                    var bList = borrowList.FirstOrDefault(borrow => borrow.Id.Trim() == isBorrow.Id.Trim());
 
                     if (bList != null)
                     //if (borrowList.Any(borrow => borrow.Id.Trim() == isBorrow.Id.Trim()))
