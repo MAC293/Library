@@ -193,16 +193,23 @@ namespace Library.Services
 
             if (borrowList != null)
             {
-                //if (borrowList.Any(borrow => borrow.ID.Trim() == isBorrow.Id.Trim()))
-                if (borrowList.Any(borrow => borrow.Id.Trim() == isBorrow.Id.Trim()))
+                if (isBorrow.Id.Trim() ==)
                 {
-                    CacheService.Remove("book:loans".Trim());
+                    var bList = borrowList.FirstOrDefault(borrow => borrow.Id.Trim() == isBorrow.Id.Trim());
 
-                    var booksLoansDAL = Context.Borrows.Where(borrow => borrow.Id.Trim() == isBorrow.Id.Trim()).ToList();
-
-                    if (booksLoansDAL.Any())
+                    if (bList != null)
+                    //if (borrowList.Any(borrow => borrow.Id.Trim() == isBorrow.Id.Trim()))
+                    //if (borrowList.Any(borrow => borrow.Reader.Trim() == "175487230-Reader".Trim()))
                     {
-                        CacheService.Set("loans".Trim(), booksLoansDAL);
+                        CacheService.Remove("book:loans".Trim());
+
+                        //var booksLoansDAL = Context.Borrows.Where(borrow => borrow.Id.Trim() == isBorrow.Id.Trim()).ToList();
+                        var booksLoansDAL = Context.Borrows.ToList();
+
+                        if (booksLoansDAL.Any())
+                        {
+                            CacheService.Set("loans".Trim(), booksLoansDAL);
+                        }
                     }
                 }
             }
