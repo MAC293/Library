@@ -45,6 +45,8 @@ namespace Library.Services
         {
             List<Book>? allList = CacheService.Get<List<Book>>($"book:all".Trim());
 
+            Log.Information("All List coming from Cache Get: {@AllList}", allList);
+
             if (allList != null)
             {
                 if (allList.Any(book => book.Id?.Trim() == isAllBook.Id?.Trim()))
@@ -66,6 +68,8 @@ namespace Library.Services
         private void IsTitle(Book isTitleBook)
         {
             List<BooKService>? titleList = CacheService.Get<List<BooKService>>($"book:{isTitleBook.Title}".Trim());
+
+            Log.Information("Title List coming from Cache Get: {@TitleList}", titleList);
 
             if (titleList != null)
             {
@@ -89,6 +93,8 @@ namespace Library.Services
         {
             List<BooKService>? authorList = CacheService.Get<List<BooKService>>($"book:{isAuthorBook.Author}".Trim());
 
+            Log.Information("Author List coming from Cache Get: {@AuthorList}", authorList);
+
             if (authorList != null)
             {
                 if (authorList.Any(book => book.Author.Trim() == isAuthorBook.Author?.Trim()))
@@ -111,6 +117,8 @@ namespace Library.Services
         {
             List<BooKService>? genreList = CacheService.Get<List<BooKService>>($"book:{isGenreBook.Genre}".Trim());
 
+            Log.Information("Genre List coming from Cache Get: {@GenreList}", genreList);
+
             if (genreList != null)
             {
                 if (genreList.Any(book => book.Genre.Trim() == isGenreBook.Genre?.Trim()))
@@ -132,6 +140,8 @@ namespace Library.Services
         private void IsEditorial(Book isEditorialBook)
         {
             List<BooKService>? editorialList = CacheService.Get<List<BooKService>>($"book:{isEditorialBook.Title}".Trim());
+
+            Log.Information("Editorial List coming from Cache Get: {@EditorialList}", editorialList);
 
             if (editorialList != null)
             {
@@ -187,20 +197,21 @@ namespace Library.Services
         #endregion
 
         #region Update Loans
-        public void IsLoan(Borrow isBorrow)
+        public void IsLoan(BorrowInformationService isBorrow)
         {
-            List<Borrow>? borrowList = CacheService.Get<List<Borrow>>("book:loans");
-            //List<BorrowInformationService> borrowList = CacheService.Get<List<BorrowInformationService>>("book:loans");
+            //List<Borrow>? borrowList = CacheService.Get<List<Borrow>>("book:loans");
+            List<BorrowInformationService>? borrowList = CacheService.Get<List<BorrowInformationService>>("book:loans");
 
             //Log
-            Log.Information("Borrow list coming from Cache Get: {@BorrowList}", borrowList);
+            Log.Information("Borrow List coming from Cache Get: {@BorrowList}", borrowList);
+            Log.Information("Borrow coming from endpoint: {@Borrow}", isBorrow);
 
             if (borrowList != null)
             {
                 if (isBorrow != null)
                 {
                     //var bList = borrowList.FirstOrDefault(borrow => borrow.Reader.Trim() == "175487230-Reader");
-                    var bList = borrowList.FirstOrDefault(borrow => borrow.Id.Trim() == isBorrow.Id.Trim());
+                    var bList = borrowList.FirstOrDefault(borrow => borrow.ID.Trim() == isBorrow.ID.Trim());
 
                     if (bList != null)
                     //if (borrowList.Any(borrow => borrow.Id.Trim() == isBorrow.Id.Trim()))

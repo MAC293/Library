@@ -72,6 +72,7 @@ namespace Library.Controllers
                         CacheManagerService.CacheService.Set("loans", allBooksLoan);
 
                         return allBooksLoan;
+                        
                     }
 
                     return NotFound("Readers haven't requested a book.");
@@ -160,7 +161,8 @@ namespace Library.Controllers
 
                         AvailableAgain(ReadyBookAvailable(borrowDAL.Id.Trim()));
 
-                        CacheManagerService.IsLoan(borrowDAL);
+                        //CacheManagerService.IsLoan(borrowDAL);
+                        CacheManagerService.IsLoan(MappingLoan(borrowDAL));
 
                         await Context.SaveChangesAsync();
 
@@ -177,12 +179,26 @@ namespace Library.Controllers
 
                 return BadRequest("Invalid request.");
 
-
             }
             catch (Exception ex)
             {
                 return StatusCode(400, "An unexpected error occurred. Please try again.");
             }
+        }
+
+        private BorrowInformationService MappingLoan(Borrow loan)
+        {
+            var loansService = new BorrowInformationService
+            {
+                ID = loan.Id.Trim(),
+                BorrowDate = loan.BorrowDate,
+                DueDate = loan.DueDate,
+                ReturnDate = DateTime.MinValue,
+                Reader = loan.Reader.Trim(),
+                Book = loan.Book.Trim()
+            };
+
+            return loansService;
         }
 
         private String CleanedReturnedBook(String input)
