@@ -203,8 +203,8 @@ namespace Library.Services
             List<BorrowInformationService>? borrowList = CacheService.Get<List<BorrowInformationService>>("book:loans");
 
             //Log
-            Log.Information("Borrow List coming from Cache Get: {@BorrowList}", borrowList);
-            Log.Information("Borrow coming from endpoint: {@Borrow}", isBorrow);
+            //Log.Information("Borrow List coming from Cache Get: {@BorrowList}", borrowList);
+            //Log.Information("Borrow coming from endpoint: {@Borrow}", isBorrow);
 
             if (borrowList != null)
             {
