@@ -1,5 +1,6 @@
 ﻿using Library.Models;
 using Library.Services;
+using Serilog;
 
 
 namespace Library.Services
@@ -190,6 +191,9 @@ namespace Library.Services
         {
             List<Borrow>? borrowList = CacheService.Get<List<Borrow>>("book:loans");
             //List<BorrowInformationService> borrowList = CacheService.Get<List<BorrowInformationService>>("book:loans");
+
+            //Log
+            Log.Information("Borrow list coming from Cache Get: {@BorrowList}", borrowList);
 
             if (borrowList != null)
             {
