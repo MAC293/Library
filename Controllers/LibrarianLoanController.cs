@@ -151,7 +151,8 @@ namespace Library.Controllers
                         return NotFound("Readers haven't requested any book.");
                     }
 
-                    var borrowDAL = await Context.Borrows.FirstOrDefaultAsync(borrow => borrow.Id.Trim() == BorrowID(CleanedReturnedBook(bookReturned).Trim(),
+                    var borrowDAL = await Context.Borrows.FirstOrDefaultAsync(borrow => borrow.Id.Trim() == 
+                        BorrowID(CleanedReturnedBook(bookReturned).Trim(),
                         reader + "-Reader").Trim() && borrow.Reader.Trim() == reader + "-Reader".Trim());
 
                     if (borrowDAL != null)

@@ -45,7 +45,7 @@ namespace Library.Services
         {
             List<Book>? allList = CacheService.Get<List<Book>>($"book:all".Trim());
 
-            Log.Information("All List coming from Cache Get: {@AllList}", allList);
+            //Log.Information("All List coming from Cache Get: {@AllList}", allList);
 
             if (allList != null)
             {
@@ -69,7 +69,7 @@ namespace Library.Services
         {
             List<BooKService>? titleList = CacheService.Get<List<BooKService>>($"book:{isTitleBook.Title}".Trim());
 
-            Log.Information("Title List coming from Cache Get: {@TitleList}", titleList);
+            //Log.Information("Title List coming from Cache Get: {@TitleList}", titleList);
 
             if (titleList != null)
             {
@@ -93,7 +93,7 @@ namespace Library.Services
         {
             List<BooKService>? authorList = CacheService.Get<List<BooKService>>($"book:{isAuthorBook.Author}".Trim());
 
-            Log.Information("Author List coming from Cache Get: {@AuthorList}", authorList);
+            //Log.Information("Author List coming from Cache Get: {@AuthorList}", authorList);
 
             if (authorList != null)
             {
@@ -117,7 +117,7 @@ namespace Library.Services
         {
             List<BooKService>? genreList = CacheService.Get<List<BooKService>>($"book:{isGenreBook.Genre}".Trim());
 
-            Log.Information("Genre List coming from Cache Get: {@GenreList}", genreList);
+            //Log.Information("Genre List coming from Cache Get: {@GenreList}", genreList);
 
             if (genreList != null)
             {
@@ -141,7 +141,7 @@ namespace Library.Services
         {
             List<BooKService>? editorialList = CacheService.Get<List<BooKService>>($"book:{isEditorialBook.Title}".Trim());
 
-            Log.Information("Editorial List coming from Cache Get: {@EditorialList}", editorialList);
+            //Log.Information("Editorial List coming from Cache Get: {@EditorialList}", editorialList);
 
             if (editorialList != null)
             {
@@ -201,7 +201,6 @@ namespace Library.Services
         {
             List<BorrowInformationService>? borrowList = CacheService.Get<List<BorrowInformationService>>("book:loans");
 
-            //Log
             //Log.Information("Borrow List coming from Cache Get: {@BorrowList}", borrowList);
             //Log.Information("Borrow coming from endpoint: {@Borrow}", isBorrow);
 

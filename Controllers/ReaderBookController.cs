@@ -95,6 +95,7 @@ namespace Library.Controllers
             catch (Exception ex)
             {
                 return StatusCode(500, "An unexpected error occurred. Please try again.");
+                //return BadRequest("An exception has occurred: " + ex);
             }
         }
 
@@ -152,7 +153,7 @@ namespace Library.Controllers
                 borrow.Id = BorrowID(book);
                 borrow.BorrowDate = BorrowDateBorrow();
                 borrow.DueDate = DueDateBorrow();
-                borrow.ReturnDate = DateTime.MinValue;
+                borrow.ReturnDate = new DateTime(1753, 1, 1); ;
                 borrow.Reader = ReaderID(ClaimVerifier.ClaimID);
                 borrow.Book = book.Id;
 
