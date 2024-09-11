@@ -72,7 +72,6 @@ namespace Library.Controllers
                         CacheManagerService.CacheService.Set("loans", allBooksLoan);
 
                         return allBooksLoan;
-                        
                     }
 
                     return NotFound("Readers haven't requested a book.");
@@ -155,7 +154,7 @@ namespace Library.Controllers
                     var borrowDAL = await Context.Borrows.FirstOrDefaultAsync(borrow => borrow.Id.Trim() == BorrowID(CleanedReturnedBook(bookReturned).Trim(),
                         reader + "-Reader").Trim() && borrow.Reader.Trim() == reader + "-Reader".Trim());
 
-                    if(borrowDAL != null)
+                    if (borrowDAL != null)
                     {
                         borrowDAL.ReturnDate = DateTime.Now;
 
@@ -243,35 +242,25 @@ namespace Library.Controllers
 
         private List<Borrow> ReaderLoans(String reader)
         {
-            using (LibraryDbContext context = new LibraryDbContext())
-            {
-                var readerBooks = context.Borrows.Where(borrow => borrow.Reader.Trim() == reader.Trim()).ToList();
+            var readerBooks = Context.Borrows.Where(borrow => borrow.Reader.Trim() == reader.Trim()).ToList();
 
-                return readerBooks;
-
-            }
+            return readerBooks;
         }
 
         private List<Book> Books()
         {
-            using (LibraryDbContext context = new LibraryDbContext())
-            {
-                var allBooks = context.Books.ToList();
+            var allBooks = Context.Books.ToList();
 
-                return allBooks;
-            }
+            return allBooks;
         }
 
         private void AvailableAgain(Book bookToChange)
         {
-            using (LibraryDbContext context = new LibraryDbContext())
-            {
-                var availableAgain = context.Books.FirstOrDefault(book => book.Id.Trim() == bookToChange.Id.Trim());
+            var availableAgain = Context.Books.FirstOrDefault(book => book.Id.Trim() == bookToChange.Id.Trim());
 
-                availableAgain.Available = true;
+            availableAgain.Available = true;
 
-                context.SaveChanges();
-            }
+            Context.SaveChanges();
         }
 
         private Book ReadyBookAvailable(String borrowID)

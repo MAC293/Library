@@ -199,7 +199,6 @@ namespace Library.Services
         #region Update Loans
         public void IsLoan(BorrowInformationService isBorrow)
         {
-            //List<Borrow>? borrowList = CacheService.Get<List<Borrow>>("book:loans");
             List<BorrowInformationService>? borrowList = CacheService.Get<List<BorrowInformationService>>("book:loans");
 
             //Log
@@ -210,21 +209,16 @@ namespace Library.Services
             {
                 if (isBorrow != null)
                 {
-                    //var bList = borrowList.FirstOrDefault(borrow => borrow.Reader.Trim() == "175487230-Reader");
                     var bList = borrowList.FirstOrDefault(borrow => borrow.ID.Trim() == isBorrow.ID.Trim());
 
                     if (bList != null)
-                    //if (borrowList.Any(borrow => borrow.Id.Trim() == isBorrow.Id.Trim()))
-                    //if (borrowList.Any(borrow => borrow.Reader.Trim() == "175487230-Reader".Trim()))
                     {
                         CacheService.Remove("book:loans".Trim());
 
-                        //var booksLoansDAL = Context.Borrows.Where(borrow => borrow.Id.Trim() == isBorrow.Id.Trim()).ToList();
                         var booksLoansDAL = Context.Borrows.ToList();
 
                         if (booksLoansDAL.Any())
                         {
-                            //CacheService.Set("loans".Trim(), booksLoansDAL);
                             CacheService.Set("loans".Trim(), MappingCheckedLoans(booksLoansDAL));
                         }
                     }

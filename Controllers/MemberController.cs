@@ -103,26 +103,25 @@ namespace Library.Controllers
         [Route("Hire")]
         public async Task<IActionResult> SignUp([FromBody] LibrarianService librarianService)
         {
-            using (LibraryDbContext context = new LibraryDbContext())
+
+            if (librarianService == null || !ModelState.IsValid)
             {
-                if (librarianService == null || !ModelState.IsValid)
-                {
-                    return BadRequest();
-                }
-
-                var librarianDAL = context.Librarians.FirstOrDefault(librarian => librarian.Id == librarianService.IDLibrarian);
-
-                if (librarianDAL != null)
-                {
-                    return BadRequest();
-                }
-
-                EndUserLibrarian(librarianService, context);
-
-                await context.SaveChangesAsync();
-
-                return Created("", "Your new librarian account has been created.");
+                return BadRequest();
             }
+
+            var librarianDAL = Context.Librarians.FirstOrDefault(librarian => librarian.Id == librarianService.IDLibrarian);
+
+            if (librarianDAL != null)
+            {
+                return BadRequest();
+            }
+
+            EndUserLibrarian(librarianService, Context);
+
+            await Context.SaveChangesAsync();
+
+            return Created("", "Your new librarian account has been created.");
+
         }
 
         private void EndUserLibrarian(LibrarianService librarianService, LibraryDbContext context)
@@ -167,29 +166,25 @@ namespace Library.Controllers
         {
             try
             {
-                using (LibraryDbContext context = new LibraryDbContext())
+                if (newUser == null || !ModelState.IsValid)
                 {
-                    if (newUser == null || !ModelState.IsValid)
-                    {
-                        return BadRequest();
-                    }
-
-                    var users = context.EndUsers
-                        .Where(user => user.Username == newUser.Username)
-                        .ToList();
-
-                    //HashVerifier cannot be performed inside the database, hast to be out if it
-                    var userDAL = users.FirstOrDefault(user => HashVerifier(newUser.Password, user.Password)
-                                                               && UsernameComparison(newUser.Username, user.Username));
-
-                    if (userDAL != null)
-                    {
-                        return Ok(CreateToken(userDAL.Id));
-                    }
-
-                    return NotFound("This user doesn't exist.");
-
+                    return BadRequest();
                 }
+
+                var users = Context.EndUsers
+                    .Where(user => user.Username == newUser.Username)
+                    .ToList();
+
+                //HashVerifier cannot be performed inside the database, hast to be out if it
+                var userDAL = users.FirstOrDefault(user => HashVerifier(newUser.Password, user.Password)
+                                                           && UsernameComparison(newUser.Username, user.Username));
+
+                if (userDAL != null)
+                {
+                    return Ok(CreateToken(userDAL.Id));
+                }
+
+                return NotFound("This user doesn't exist.");
             }
             catch (DbUpdateException ex)
             {
