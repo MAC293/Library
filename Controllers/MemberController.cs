@@ -51,7 +51,7 @@ namespace Library.Controllers
 
                 Context.Members.Add(MappingMember(newMember));
 
-                EndUserReader(newMember, Context);
+                EndUserReader(newMember);
 
                 await Context.SaveChangesAsync();
 
@@ -83,19 +83,19 @@ namespace Library.Controllers
             return newMember;
         }
 
-        private void EndUserReader(ReaderService newMember, LibraryDbContext context)
+        private void EndUserReader(ReaderService newMember)
         {
             EndUser newUser = new EndUser();
             newUser.Id = EndUserID(newMember.IDMember);
             newUser.Username = newMember.Username;
             newUser.Password = Hash(newMember.Password);
-            context.EndUsers.Add(newUser);
+            Context.EndUsers.Add(newUser);
 
             Reader newReader = new Reader();
             newReader.Id = ReaderID(newMember.IDMember);
             newReader.Member = newMember.IDMember;
             newReader.EndUser = EndUserID(newMember.IDMember);
-            context.Readers.Add(newReader);
+            Context.Readers.Add(newReader);
         }
         #endregion
 
@@ -116,7 +116,7 @@ namespace Library.Controllers
                 return BadRequest();
             }
 
-            EndUserLibrarian(librarianService, Context);
+            EndUserLibrarian(librarianService);
 
             await Context.SaveChangesAsync();
 
@@ -124,38 +124,38 @@ namespace Library.Controllers
 
         }
 
-        private void EndUserLibrarian(LibrarianService librarianService, LibraryDbContext context)
+        private void EndUserLibrarian(LibrarianService librarianService)
         {
             //EndUSer
             EndUser newEndUser = new EndUser();
             newEndUser.Id = IDLibrarian(librarianService.IDLibrarian);
             newEndUser.Username = librarianService.Username;
             newEndUser.Password = Hash(librarianService.Password);
-            context.EndUsers.Add(newEndUser);
+            Context.EndUsers.Add(newEndUser);
 
             //Librarian
             Librarian newLibrarian = new Librarian();
             newLibrarian.Id = librarianService.IDLibrarian;
             newLibrarian.EndUser = IDLibrarian(librarianService.IDLibrarian);
-            context.Librarians.Add(newLibrarian);
+            Context.Librarians.Add(newLibrarian);
         }
 
-        private void AddEndUser(LibrarianService librarianService, LibraryDbContext context)
+        private void AddEndUser(LibrarianService librarianService)
         {
             EndUser newEndUser = new EndUser();
             newEndUser.Id = IDLibrarian(librarianService.IDLibrarian);
             newEndUser.Username = librarianService.Username;
             newEndUser.Password = Hash(librarianService.Password);
-            context.EndUsers.Add(newEndUser);
+            Context.EndUsers.Add(newEndUser);
         }
 
-        private void AddLibrarian(LibrarianService librarianService, LibraryDbContext context)
+        private void AddLibrarian(LibrarianService librarianService)
         {
             EndUser newEndUser = new EndUser();
             newEndUser.Id = IDLibrarian(librarianService.IDLibrarian);
             newEndUser.Username = librarianService.Username;
             newEndUser.Password = Hash(librarianService.Password);
-            context.EndUsers.Add(newEndUser);
+            Context.EndUsers.Add(newEndUser);
         }
         #endregion
 
@@ -290,6 +290,5 @@ namespace Library.Controllers
             return createdToken;
         }
         #endregion
-
     }
 }
