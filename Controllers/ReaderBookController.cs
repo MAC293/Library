@@ -4,6 +4,7 @@ using Library.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Serilog;
 
 namespace Library.Controllers
 {
@@ -68,8 +69,16 @@ namespace Library.Controllers
                         return NotFound("This book is not available in the library, yet.");
                     }
 
-                    var bookDAL = await Context.Books.FirstOrDefaultAsync(book => book.Title.Trim() == bookToBorrow.Trim() && book.Available);
+                    var copiesUnavailable = Context.Books.Where(book =>
+                        book.Title.Trim() == bookToBorrow.Trim() && book.Available == false).ToList();
 
+                    if (IsAlreadyRequested(copiesUnavailable))
+                    {
+                        return BadRequest($"You already borrowed the book \"{bookToBorrow}\".");
+                    }
+
+                    var bookDAL = await Context.Books.FirstOrDefaultAsync(book => 
+                        book.Title.Trim() == bookToBorrow.Trim() && book.Available);
 
                     if (bookDAL.Available)
                     {
@@ -97,6 +106,48 @@ namespace Library.Controllers
                 return StatusCode(500, "An unexpected error occurred. Please try again.");
                 //return BadRequest("An exception has occurred: " + ex);
             }
+        }
+
+        private Boolean IsAlreadyRequested(List<Book> copiesAlreadyRequested)
+        {
+            //Log.Information("copiesAlreadyRequested: {@copiesAlreadyRequested}", copiesAlreadyRequested);
+
+            var unavailableBooks = MappingBook(copiesAlreadyRequested);
+
+            foreach (var book in unavailableBooks)
+            {
+                String borrowID = BorrowID1(book);
+
+                foreach (var borrow in Context.Borrows.Where(borrow => borrow.Id == borrowID))
+                {
+                    
+                    if (borrow.Reader == ReaderID(ClaimVerifier.ClaimID))
+                    {
+                        return true;
+                    }
+                }
+
+            }
+
+            return false;
+        }
+
+        private List<BookBorrowService> MappingBook(List<Book> books)
+        {
+            var booksList = books.Select(book => new BookBorrowService()
+            {
+                ID = book.Id.Trim(),
+                Title = book.Title.Trim(),
+                Author = book.Author.Trim(),
+                Genre = book.Genre.Trim(),
+                Year = (int)book.Year,
+                Editorial = book.Editorial.Trim(),
+                Cover = book.Cover,
+                Available = book.Available
+
+            }).ToList();
+
+            return booksList;
         }
 
         private BorrowedBookService MapDALToServiceBook(Book availableBook)
@@ -174,7 +225,6 @@ namespace Library.Controllers
             var dueDate = dtDate.AddDays(7);
 
             return dueDate;
-
         }
 
         private String BorrowID(Book book)
@@ -187,6 +237,18 @@ namespace Library.Controllers
             String copyNumber = book.Id.Substring(lastHyphenIndex + 1).Trim();
 
             return $"{bookTitle}-{copyNumber}";
+        }
+
+        private String BorrowID1(BookBorrowService book)
+        {
+
+            int firstHyphenIndex = book.ID.IndexOf("-");
+            String bookTitle = book.ID.Substring(0, firstHyphenIndex).Trim();
+
+            int lastHyphenIndex = book.ID.LastIndexOf("-");
+            String copyNumber = book.ID.Substring(lastHyphenIndex + 1).Trim();
+
+            return $"{bookTitle}-{copyNumber}".Trim();
         }
 
         private String ReaderID(String claim)

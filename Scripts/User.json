@@ -7,12 +7,25 @@
   "age": 30,
   "username": "JaD1964",
   "password": "SuperRea1964"
+}{
+  "idMember": "18.963.125-K",
+  "name": "Carl Doe",
+  "phone": "123658745",
+  "email": "example@gmail.com",
+  "age": 35,
+  "username": "CaD1956",
+  "password": "SuperRea1956"
 }
 
 //Reader login
 {
   "username": "JaD1964",
   "password": "SuperRea1964"
+}
+
+{
+  "username": "CaD1956",
+  "password": "SuperRea1956"
 }
 
 //Librarian sign up
