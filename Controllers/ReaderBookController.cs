@@ -77,7 +77,7 @@ namespace Library.Controllers
                         return BadRequest($"You already borrowed the book \"{bookToBorrow}\".");
                     }
 
-                    var bookDAL = await Context.Books.FirstOrDefaultAsync(book => 
+                    var bookDAL = await Context.Books.FirstOrDefaultAsync(book =>
                         book.Title.Trim() == bookToBorrow.Trim() && book.Available);
 
                     if (bookDAL.Available)
@@ -118,16 +118,15 @@ namespace Library.Controllers
             {
                 String borrowID = BorrowID1(book);
 
-                foreach (var borrow in Context.Borrows.Where(borrow => borrow.Id == borrowID))
+                foreach (var borrowed in Context.Borrows.Where(borrow => borrow.Id.Trim() == borrowID.Trim()).ToList())
                 {
-                    
-                    if (borrow.Reader == ReaderID(ClaimVerifier.ClaimID))
+                    if (borrowed.Reader.Trim() == ReaderID(ClaimVerifier.ClaimID).Trim())
                     {
                         return true;
                     }
                 }
 
-            }   
+            }
 
             return false;
         }
