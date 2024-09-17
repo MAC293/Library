@@ -82,7 +82,8 @@ namespace Library.Controllers
 
                     if (bookDAL.Available)
                     {
-                        LoadBorrowInformation(bookDAL, Context);
+                        //LoadBorrowInformation(bookDAL, Context);
+                        LoadBorrowInformation(bookDAL);
 
                         bookDAL.Available = false;
                         Context.SaveChanges();
@@ -125,7 +126,6 @@ namespace Library.Controllers
                         return true;
                     }
                 }
-
             }
 
             return false;
@@ -192,9 +192,11 @@ namespace Library.Controllers
             return date.ToString("dd/MM/yyyy", CultureInfo.InvariantCulture);
         }
 
-        private void LoadBorrowInformation(Book book, LibraryDbContext context)
+        //private void LoadBorrowInformation(Book book, LibraryDbContext context)
+        private void LoadBorrowInformation(Book book)
         {
-            Borrow borrowDAL = context.Borrows.FirstOrDefault(borrow => borrow.Book == book.Id);
+            //Borrow borrowDAL = context.Borrows.FirstOrDefault(borrow => borrow.Book == book.Id);
+            Borrow borrowDAL = Context.Borrows.FirstOrDefault(borrow => borrow.Book == book.Id);
 
             if (borrowDAL == null)
             {
@@ -207,8 +209,8 @@ namespace Library.Controllers
                 borrow.Reader = ReaderID(ClaimVerifier.ClaimID);
                 borrow.Book = book.Id;
 
-                context.Borrows.Add(borrow);
-                context.SaveChanges();
+                Context.Borrows.Add(borrow);
+                Context.SaveChanges();
             }
         }
 
