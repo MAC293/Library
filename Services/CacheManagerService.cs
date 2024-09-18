@@ -67,7 +67,7 @@ namespace Library.Services
 
         private void IsTitle(Book isTitleBook)
         {
-            List<BooKService>? titleList = CacheService.Get<List<BooKService>>($"book:{isTitleBook.Title}".Trim());
+            List<BookService>? titleList = CacheService.Get<List<BookService>>($"book:{isTitleBook.Title}".Trim());
 
             //Log.Information("Title List coming from Cache Get: {@TitleList}", titleList);
 
@@ -91,7 +91,7 @@ namespace Library.Services
 
         private void IsAuthor(Book isAuthorBook)
         {
-            List<BooKService>? authorList = CacheService.Get<List<BooKService>>($"book:{isAuthorBook.Author}".Trim());
+            List<BookService>? authorList = CacheService.Get<List<BookService>>($"book:{isAuthorBook.Author}".Trim());
 
             //Log.Information("Author List coming from Cache Get: {@AuthorList}", authorList);
 
@@ -115,7 +115,7 @@ namespace Library.Services
 
         private void IsGenre(Book isGenreBook)
         {
-            List<BooKService>? genreList = CacheService.Get<List<BooKService>>($"book:{isGenreBook.Genre}".Trim());
+            List<BookService>? genreList = CacheService.Get<List<BookService>>($"book:{isGenreBook.Genre}".Trim());
 
             //Log.Information("Genre List coming from Cache Get: {@GenreList}", genreList);
 
@@ -139,7 +139,7 @@ namespace Library.Services
 
         private void IsEditorial(Book isEditorialBook)
         {
-            List<BooKService>? editorialList = CacheService.Get<List<BooKService>>($"book:{isEditorialBook.Title}".Trim());
+            List<BookService>? editorialList = CacheService.Get<List<BookService>>($"book:{isEditorialBook.Title}".Trim());
 
             //Log.Information("Editorial List coming from Cache Get: {@EditorialList}", editorialList);
 
@@ -161,9 +161,9 @@ namespace Library.Services
             }
         }
 
-        private List<BooKService> MappingCheckedList(List<Book> aVehicle)
+        private List<BookService> MappingCheckedList(List<Book> aVehicle)
         {
-            var carServiceList = aVehicle.Select(book => new BooKService
+            var carServiceList = aVehicle.Select(book => new BookService
             {
                 Title = book.Title.Trim(),
                 Author = book.Author.Trim(),

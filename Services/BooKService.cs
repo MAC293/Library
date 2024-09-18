@@ -1,6 +1,6 @@
 ﻿namespace Library.Services
 {
-    public class BooKService
+    public class BookService
     {
         private String _Title;
         private String _Author;
@@ -10,7 +10,7 @@
         private Boolean _Available;
         private Byte[] _Cover;
 
-        public BooKService()
+        public BookService()
         {
             
         }

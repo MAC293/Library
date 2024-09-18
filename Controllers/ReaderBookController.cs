@@ -264,7 +264,7 @@ namespace Library.Controllers
         [HttpGet]
         [Route("ViewBooks")]
         [Authorize]
-        public async Task<ActionResult<List<BooKService>>> DisplayBooks()
+        public async Task<ActionResult<List<BookService>>> DisplayBooks()
         {
             try
             {
@@ -275,7 +275,7 @@ namespace Library.Controllers
 
                 if (Char.IsDigit(ClaimVerifier.ClaimID[0]))
                 {
-                    var cacheBooks = CacheManagerService.CacheService.Get<List<BooKService>>($"book:all");
+                    var cacheBooks = CacheManagerService.CacheService.Get<List<BookService>>($"book:all");
 
                     if (cacheBooks != null)
                     {
@@ -308,9 +308,9 @@ namespace Library.Controllers
             }
         }
 
-        private List<BooKService> MappingAllBooks(List<Book> aBooks)
+        private List<BookService> MappingAllBooks(List<Book> aBooks)
         {
-            var bookServiceList = aBooks.Select(book => new BooKService()
+            var bookServiceList = aBooks.Select(book => new BookService()
             {
                 Title = book.Title.Trim(),
                 Author = book.Author.Trim(),
@@ -329,7 +329,7 @@ namespace Library.Controllers
         #region Search a Book (GET)
         [HttpGet("FindBook/{toSearch}")]
         [Authorize]
-        public async Task<ActionResult<List<BooKService>>> SearchBook(String toSearch)
+        public async Task<ActionResult<List<BookService>>> SearchBook(String toSearch)
         {
             try
             {
@@ -340,7 +340,7 @@ namespace Library.Controllers
 
                 if (Char.IsDigit(ClaimVerifier.ClaimID[0]))
                 {
-                    var searchBookCache = CacheManagerService.CacheService.Get<List<BooKService>>($"book:{toSearch}");
+                    var searchBookCache = CacheManagerService.CacheService.Get<List<BookService>>($"book:{toSearch}");
 
                     if (searchBookCache != null)
                     {
@@ -379,9 +379,9 @@ namespace Library.Controllers
             }
         }
 
-        private List<BooKService> MappingAllBooksSearch(List<Book> aBooks)
+        private List<BookService> MappingAllBooksSearch(List<Book> aBooks)
         {
-            var bookServiceList = aBooks.Select(book => new BooKService()
+            var bookServiceList = aBooks.Select(book => new BookService()
             {
                 Title = book.Title.Trim(),
                 Author = book.Author.Trim(),

@@ -244,7 +244,7 @@ namespace Library.Controllers
         #region Read a Book (GET)
         [HttpGet("ViewBook/{ID}")]
         [Authorize]
-        public async Task<ActionResult<BooKService>> DisplayBook([FromRoute] String ID)
+        public async Task<ActionResult<BookService>> DisplayBook([FromRoute] String ID)
         {
             try
             {
@@ -255,7 +255,7 @@ namespace Library.Controllers
 
                 if (ClaimVerifier.ClaimID.StartsWith('L'))
                 {
-                    var isCacheBook = CacheManagerService.CacheService.Get<BooKService>($"book:{ID}");
+                    var isCacheBook = CacheManagerService.CacheService.Get<BookService>($"book:{ID}");
 
                     if (isCacheBook != null)
                     {
@@ -286,9 +286,9 @@ namespace Library.Controllers
             }
         }
 
-        private BooKService MappingBook(Book displayBook)
+        private BookService MappingBook(Book displayBook)
         {
-            var newBook = new BooKService()
+            var newBook = new BookService()
             {
                 Title = displayBook.Title.Trim(),
                 Author = displayBook.Author.Trim(),
