@@ -189,11 +189,11 @@ namespace Library.Controllers
 
         private void MappingPUT(Book bookDAL, Book updateBook, IFormFile updateCover)
         {
-            bookDAL.Title = updateBook.Title;
-            bookDAL.Author = updateBook.Author;
-            bookDAL.Genre = updateBook.Genre;
+            bookDAL.Title = updateBook.Title?.Trim();
+            bookDAL.Author = updateBook.Author?.Trim();
+            bookDAL.Genre = updateBook.Genre?.Trim();
             bookDAL.Year = updateBook.Year;
-            bookDAL.Editorial = updateBook.Editorial;
+            bookDAL.Editorial = updateBook.Editorial?.Trim();
             bookDAL.Available = updateBook.Available;
             bookDAL.Cover = ImageToByte(updateCover);
         }
