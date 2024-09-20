@@ -217,9 +217,12 @@ namespace Library.Controllers
 
                     if (bookDAL != null)
                     {
-                        CacheManagerService.CheckDelete(bookDAL);
-
+                        //CacheManagerService.CheckDelete(bookDAL);
                         Context.Books.Remove(bookDAL);
+
+                        CacheManagerService.HasBook(bookDAL);
+                        CacheManagerService.DeleteBook(bookDAL);
+
                         await Context.SaveChangesAsync();
 
                         return NoContent();

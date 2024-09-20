@@ -45,8 +45,6 @@ namespace Library.Services
         {
             List<Book>? allList = CacheService.Get<List<Book>>($"book:all".Trim());
 
-            //Log.Information("All List coming from Cache Get: {@AllList}", allList);
-
             if (allList != null)
             {
                 if (allList.Any(book => book.Id?.Trim() == isAllBook.Id?.Trim()))
@@ -68,8 +66,6 @@ namespace Library.Services
         private void IsTitle(Book isTitleBook)
         {
             List<BookService>? titleList = CacheService.Get<List<BookService>>($"book:{isTitleBook.Title}".Trim());
-
-            //Log.Information("Title List coming from Cache Get: {@TitleList}", titleList);
 
             if (titleList != null)
             {
@@ -93,8 +89,6 @@ namespace Library.Services
         {
             List<BookService>? authorList = CacheService.Get<List<BookService>>($"book:{isAuthorBook.Author}".Trim());
 
-            //Log.Information("Author List coming from Cache Get: {@AuthorList}", authorList);
-
             if (authorList != null)
             {
                 if (authorList.Any(book => book.Author.Trim() == isAuthorBook.Author?.Trim()))
@@ -117,8 +111,6 @@ namespace Library.Services
         {
             List<BookService>? genreList = CacheService.Get<List<BookService>>($"book:{isGenreBook.Genre}".Trim());
 
-            //Log.Information("Genre List coming from Cache Get: {@GenreList}", genreList);
-
             if (genreList != null)
             {
                 if (genreList.Any(book => book.Genre.Trim() == isGenreBook.Genre?.Trim()))
@@ -140,8 +132,6 @@ namespace Library.Services
         private void IsEditorial(Book isEditorialBook)
         {
             List<BookService>? editorialList = CacheService.Get<List<BookService>>($"book:{isEditorialBook.Title}".Trim());
-
-            //Log.Information("Editorial List coming from Cache Get: {@EditorialList}", editorialList);
 
             if (editorialList != null)
             {
@@ -243,10 +233,9 @@ namespace Library.Services
         #endregion
 
         #region Remove Book
-        public void CheckDelete(Book bookDelete)
+        public void DeleteBook(Book bookDelete)
         {
             var bookCache = CacheService.Get<Book>($"book:{bookDelete.Id}".Trim());
-            //var bookCache = CacheService.GetAlt<Book>($"book:{bookDelete.Id}".Trim());
 
             if (bookCache != null)
             {
