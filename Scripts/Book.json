@@ -7,9 +7,7 @@
   "year": 2010,
   "editorial": "Wellbeing",
   "available": true
-}
-
-{
+}{
   "id": "ThePowerOfNow-EckhartTolle-2010-Wellbeing-N°2", 
   "title": "The Power Of Now",
   "author": "Eckhart Tolle",
@@ -146,6 +144,16 @@
   "genre": "Mental Hack",
   "year": 2003,
   "editorial": "Hack Life",
+  "available": true
+}
+
+{
+  "id": "The5AMClub-RobinSharma-2005-Enlightment-N°1",
+  "title": "The 5 AM Club",
+  "author": "Robin Sharma",
+  "genre": "Self Help",
+  "year": 2005,
+  "editorial": "Enlightment",
   "available": true
 }
 

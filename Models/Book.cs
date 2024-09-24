@@ -46,6 +46,7 @@ public partial class Book
     //[AllowedExtensions(new String[]{ ".jpg", ".jpeg", ".png" })]
     //[FileExtensionService]
     //public IFormFile Cover { get; set; }
+    [NotNull]
     public byte[] Cover { get; set; } = Array.Empty<Byte>();
     //public IFormFile Cover { get; set; }
 

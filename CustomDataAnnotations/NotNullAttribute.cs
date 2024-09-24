@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Serilog;
+using System.ComponentModel.DataAnnotations;
 
 namespace Library.CustomDataAnnotations
 {
@@ -8,6 +9,9 @@ namespace Library.CustomDataAnnotations
         protected override ValidationResult IsValid(object value, ValidationContext validationContext)
         {
             var byteArray = value as byte[];
+
+            Log.Information("byteArray: {@byteArray}", byteArray);
+
 
             if (byteArray == null || byteArray.Length == 0)
             {

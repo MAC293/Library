@@ -104,7 +104,7 @@ namespace Library.Controllers
 
         private Byte[] ImageToByte(IFormFile uploadedFile)
         {
-            if (uploadedFile.Length == 0)
+            if (uploadedFile.Length == 0 || uploadedFile == null)
             {
                 return null;
             }
