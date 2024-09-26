@@ -10,8 +10,7 @@ namespace Library.CustomDataAnnotations
         {
             var byteArray = value as byte[];
 
-            Log.Information("byteArray: {@byteArray}", byteArray);
-
+            //Log.Information("byteArray: {@byteArray}", byteArray);
 
             if (byteArray == null || byteArray.Length == 0)
             {

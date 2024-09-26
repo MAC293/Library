@@ -6,8 +6,15 @@ using Library.Services;
 using Library.Models;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
+using Microsoft.AspNetCore.Mvc.ModelBinding.Binders;
 
 var builder = WebApplication.CreateBuilder(args);
+
+//Custom Model Binder
+builder.Services.AddControllers(options =>
+{
+    options.ModelBinderProviders.Insert(0, new CustomBinderProviderService());
+});
 
 //Context as Scoped
 builder.Services.AddDbContext<LibraryDbContext>(options =>

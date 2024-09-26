@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using BrunoZell.ModelBinding;
+using Microsoft.AspNetCore.Mvc.ModelBinding.Binders;
 
 namespace Library.Controllers
 {
@@ -53,7 +54,8 @@ namespace Library.Controllers
         [HttpPost]
         [Route("AddBook")]
         [Authorize]
-        public async Task<IActionResult> CreateBook([ModelBinder(BinderType = typeof(JsonModelBinder))][FromForm] Book newBook, [FromForm] IFormFile newCover)
+        //public async Task<IActionResult> CreateBook([ModelBinder(BinderType = typeof(JsonModelBinder))][FromForm] Book newBook, [FromForm] IFormFile newCover)
+        public async Task<IActionResult> CreateBook([ModelBinder(BinderType = typeof(CustomBinderService))] Book newBook)
         {
             try
             {
@@ -81,7 +83,8 @@ namespace Library.Controllers
                         return BadRequest("The library is limited to 3 copies per book.");
                     }
 
-                    newBook.Cover = ImageToByte(newCover);
+                    //newBook.Cover = ImageToByte(newCover);
+                    //newBook.Cover = ImageToByte(newBook.Cover);
 
                     Context.Books.Add(newBook);
                     await Context.SaveChangesAsync();
@@ -104,10 +107,10 @@ namespace Library.Controllers
 
         private Byte[] ImageToByte(IFormFile uploadedFile)
         {
-            if (uploadedFile.Length == 0 || uploadedFile == null)
-            {
-                return null;
-            }
+            //if (uploadedFile.Length == 0 || uploadedFile == null)
+            //{
+            //    return null;
+            //}
 
             using (var memoryStream = new MemoryStream())
             {
