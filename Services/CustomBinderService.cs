@@ -1,6 +1,7 @@
 ﻿using Library.Models;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Serilog;
+using System.Text.Json;
 
 namespace Library.Services
 {
@@ -16,7 +17,7 @@ namespace Library.Services
                 var bookJSON = form["newBook"];
                 Log.Information("bookJSON: {@bookJSON}", bookJSON);
 
-                var book = System.Text.Json.JsonSerializer.Deserialize<Book>(bookJSON);
+                var book = JsonSerializer.Deserialize<BookBorrowService>(bookJSON);
                 Log.Information("book: {@book}", book);
 
                 var file = form.Files.GetFile("newCover");
@@ -36,4 +37,3 @@ namespace Library.Services
         }
     }
 }
- 

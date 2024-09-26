@@ -1,4 +1,5 @@
 ﻿using System.Security.Cryptography;
+using Library.CustomDataAnnotations;
 
 namespace Library.Services
 {
@@ -63,7 +64,7 @@ namespace Library.Services
         public Byte[] Cover
         {
             get { return _Cover; }
-            set { _Cover = value; }
+            set { _Cover = value; } 
         }
 
 
