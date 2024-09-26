@@ -1,5 +1,6 @@
 ﻿using Library.Models;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
+using Serilog;
 
 namespace Library.Services
 {
@@ -10,18 +11,24 @@ namespace Library.Services
             if (bindingContext != null)
             {
                 var form = bindingContext.HttpContext.Request.Form;
+                Log.Information("form: {@form}", form);
 
-                //Bind the Book object
                 var bookJSON = form["newBook"];
+                Log.Information("bookJSON: {@bookJSON}", bookJSON);
+
                 var book = System.Text.Json.JsonSerializer.Deserialize<Book>(bookJSON);
+                Log.Information("book: {@book}", book);
 
-                //Bind the IFormFile
                 var file = form.Files.GetFile("newCover");
+                Log.Information("file: {@file}", file);
 
-                using (var memoryStream = new MemoryStream())
+                if (file != null)
                 {
-                    await file.CopyToAsync(memoryStream);
-                    book.Cover = memoryStream.ToArray();
+                    using (var memoryStream = new MemoryStream())
+                    {
+                        await file.CopyToAsync(memoryStream);
+                        book.Cover = memoryStream.ToArray();
+                    }
                 }
 
                 bindingContext.Result = ModelBindingResult.Success(book);

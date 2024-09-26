@@ -3,7 +3,6 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Library.CustomDataAnnotations
 {
-    //[AttributeUsage(AttributeTargets.Property, AllowMultiple = false)]
     public class NotNullAttribute : ValidationAttribute
     {
         protected override ValidationResult IsValid(object value, ValidationContext validationContext)
