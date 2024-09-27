@@ -5,13 +5,11 @@ namespace Library.CustomDataAnnotations
 {
     public class NotNullAttribute : ValidationAttribute
     {
-        protected override ValidationResult IsValid(object value, ValidationContext validationContext)
+        protected override ValidationResult IsValid(Object value, ValidationContext validationContext)
         {
-            var byteArray = value as byte[];
+            var byteArray = value as Byte[];
 
-            //Log.Information("byteArray: {@byteArray}", byteArray);
-
-            if (byteArray == null || byteArray.Length == 0)
+            if (byteArray == null)
             {
                 return new ValidationResult("Book cover is required.");
             }

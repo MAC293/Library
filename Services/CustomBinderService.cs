@@ -49,13 +49,13 @@ namespace Library.Services
             var bookJSON = form["newBook"];
             //Log.Information("bookJSON: {@bookJSON}", bookJSON);
 
-            var options = new System.Text.Json.JsonSerializerOptions
+            var options = new JsonSerializerOptions
             {
                 PropertyNameCaseInsensitive = true
             };
 
             var book = System.Text.Json.JsonSerializer.Deserialize<Book>(bookJSON, options);
-            Log.Information("book: {@book}", book);
+            //Log.Information("book: {@book}", book);
 
             var file = form.Files.GetFile("newCover");
             //Log.Information("file: {@file}", file);

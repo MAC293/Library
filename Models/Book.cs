@@ -47,6 +47,8 @@ public partial class Book
     //[FileExtensionService]
     //public IFormFile Cover { get; set; }
     [NotNull]
+    [Size]
+    [AllowedExtensions]
     public byte[] Cover { get; set; } = Array.Empty<Byte>();
     //public IFormFile Cover { get; set; }
 

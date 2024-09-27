@@ -107,10 +107,10 @@ namespace Library.Controllers
 
         private Byte[] ImageToByte(IFormFile uploadedFile)
         {
-            //if (uploadedFile.Length == 0 || uploadedFile == null)
-            //{
-            //    return null;
-            //}
+            if (uploadedFile.Length == 0 || uploadedFile == null)
+            {
+                return null;
+            }
 
             using (var memoryStream = new MemoryStream())
             {
@@ -120,24 +120,24 @@ namespace Library.Controllers
             }
         }
 
-        private Boolean ValidateCoverExtension(IFormFile cover)
-        {
-            if (cover == null || cover.ContentType == null)
-            {
-                return false;
-            }
+        //private Boolean ValidateCoverExtension(IFormFile cover)
+        //{
+        //    if (cover == null || cover.ContentType == null)
+        //    {
+        //        return false;
+        //    }
 
-            var allowedExtensions = new string[] { ".jpg", ".jpeg", ".png" };
+        //    var allowedExtensions = new string[] { ".jpg", ".jpeg", ".png" };
 
-            var extension = Path.GetExtension(cover.FileName).ToLowerInvariant();
+        //    var extension = Path.GetExtension(cover.FileName).ToLowerInvariant();
 
-            if (allowedExtensions.Contains(extension))
-            {
-                return true;
-            }
+        //    if (allowedExtensions.Contains(extension))
+        //    {
+        //        return true;
+        //    }
 
-            return false;
-        }
+        //    return false;
+        //}
         #endregion
 
         #region Update a Book (PUT)
