@@ -44,10 +44,8 @@ namespace Library.Services
             if (bindingContext == null) return;
 
             var form = bindingContext.HttpContext.Request.Form;
-            //Log.Information("form: {@form}", form);
 
             var bookJSON = form["newBook"];
-            //Log.Information("bookJSON: {@bookJSON}", bookJSON);
 
             var options = new JsonSerializerOptions
             {
@@ -55,10 +53,8 @@ namespace Library.Services
             };
 
             var book = System.Text.Json.JsonSerializer.Deserialize<Book>(bookJSON, options);
-            //Log.Information("book: {@book}", book);
 
             var file = form.Files.GetFile("newCover");
-            //Log.Information("file: {@file}", file);
 
             if (file != null)
             {

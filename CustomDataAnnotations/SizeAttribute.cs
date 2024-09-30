@@ -4,8 +4,8 @@ namespace Library.CustomDataAnnotations
 {
     public class SizeAttribute : ValidationAttribute
     {
-        private const int MinFileSize = 10 * 1024; //10 KB in bytes
-        private const int MaxFileSize = 1000000; //1 MB in bytes
+        private const int MinFileSize = 1 * 1024; //1KB
+        private const int MaxFileSize = 1 * 1024 * 1024; //1MB in bytes
 
         protected override ValidationResult? IsValid(Object? value, ValidationContext validationContext)
         {
@@ -20,7 +20,7 @@ namespace Library.CustomDataAnnotations
 
                 if (file.Length > MaxFileSize)
                 {
-                    return new ValidationResult($"Maximum allowed file size is {MaxFileSize / 1024} MB.");
+                    return new ValidationResult($"Maximum allowed file size is {MaxFileSize / (1024 * 1024)} MB.");
                 }
             }
 
