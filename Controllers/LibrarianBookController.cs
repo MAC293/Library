@@ -55,7 +55,8 @@ namespace Library.Controllers
         [Route("AddBook")]
         [Authorize]
         //public async Task<IActionResult> CreateBook([ModelBinder(BinderType = typeof(JsonModelBinder))][FromForm] Book newBook, [FromForm] IFormFile newCover)
-        public async Task<IActionResult> CreateBook([ModelBinder(BinderType = typeof(CustomBinderService))] Book newBook)
+        //public async Task<IActionResult> CreateBook([ModelBinder(BinderType = typeof(CustomBinderService))] Book newBook)
+        public async Task<IActionResult> CreateBook([ModelBinder(BinderType = typeof(CustomBinderService))] BookCoverService newBook)
         {
             try
             {
@@ -71,7 +72,7 @@ namespace Library.Controllers
                         return BadRequest();
                     }
 
-                    var bookDAL = await Context.Books.FirstOrDefaultAsync(book => book.Id == newBook.Id);
+                    var bookDAL = await Context.Books.FirstOrDefaultAsync(book => book.Id == newBook.ID);
 
                     if (bookDAL != null)
                     {
@@ -86,7 +87,7 @@ namespace Library.Controllers
                     //newBook.Cover = ImageToByte(newCover);
                     //newBook.Cover = ImageToByte(newBook.Cover);
 
-                    Context.Books.Add(newBook);
+                    Context.Books.Add(MappingBookCover(newBook));
                     await Context.SaveChangesAsync();
 
                     return Created("", $"\"{newBook.Title}\" has been added to the Library.");
@@ -103,6 +104,22 @@ namespace Library.Controllers
             {
                 return StatusCode(500, "An unexpected error occurred. Please try again.");
             }
+        }
+        private Book MappingBookCover(BookCoverService coverBook)
+        {
+            var newBook = new Book()
+            {
+                Id = coverBook.ID.Trim(),
+                Title = coverBook.Title.Trim(),
+                Author = coverBook.Author.Trim(),
+                Genre = coverBook.Genre.Trim(),
+                Year = (int)coverBook.Year,
+                Editorial = coverBook.Editorial.Trim(),
+                Available = coverBook.Available,
+                Cover = coverBook.Cover
+            };
+
+            return newBook;
         }
 
         private Byte[] ImageToByte(IFormFile uploadedFile)
