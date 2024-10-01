@@ -56,7 +56,7 @@ namespace Library.Controllers
         [Authorize]
         //public async Task<IActionResult> CreateBook([ModelBinder(BinderType = typeof(JsonModelBinder))][FromForm] Book newBook, [FromForm] IFormFile newCover)
         //public async Task<IActionResult> CreateBook([ModelBinder(BinderType = typeof(CustomBinderService))] Book newBook)
-        public async Task<IActionResult> CreateBook([ModelBinder(BinderType = typeof(CustomBinderService))] BookCoverService newBook)
+        public async Task<IActionResult> CreateBook([ModelBinder(BinderType = typeof(CustomBinderService))] BookCoverService incomingBook)
         {
             try
             {
@@ -67,19 +67,19 @@ namespace Library.Controllers
 
                 if (ClaimVerifier.ClaimID.StartsWith('L'))
                 {
-                    if (newBook == null || !ModelState.IsValid)
+                    if (incomingBook == null || !ModelState.IsValid)
                     {
                         return BadRequest();
                     }
 
-                    var bookDAL = await Context.Books.FirstOrDefaultAsync(book => book.Id == newBook.ID);
+                    var bookDAL = await Context.Books.FirstOrDefaultAsync(book => book.Id == incomingBook.ID);
 
                     if (bookDAL != null)
                     {
                         return BadRequest();
                     }
 
-                    if (HelperService.CheckBookStorage(newBook.Title.Trim()) >= 3)
+                    if (HelperService.CheckBookStorage(incomingBook.Title.Trim()) >= 3)
                     {
                         return BadRequest("The library is limited to 3 copies per book.");
                     }
@@ -87,10 +87,10 @@ namespace Library.Controllers
                     //newBook.Cover = ImageToByte(newCover);
                     //newBook.Cover = ImageToByte(newBook.Cover);
 
-                    Context.Books.Add(MappingBookCover(newBook));
+                    Context.Books.Add(MappingBookCover(incomingBook));
                     await Context.SaveChangesAsync();
 
-                    return Created("", $"\"{newBook.Title}\" has been added to the Library.");
+                    return Created("", $"\"{incomingBook.Title}\" has been added to the Library.");
 
                 }
                 if (Char.IsDigit(ClaimVerifier.ClaimID[0]))
@@ -122,20 +122,20 @@ namespace Library.Controllers
             return newBook;
         }
 
-        private Byte[] ImageToByte(IFormFile uploadedFile)
-        {
-            if (uploadedFile.Length == 0 || uploadedFile == null)
-            {
-                return null;
-            }
+        //private Byte[] ImageToByte(IFormFile uploadedFile)
+        //{
+        //    if (uploadedFile.Length == 0 || uploadedFile == null)
+        //    {
+        //        return null;
+        //    }
 
-            using (var memoryStream = new MemoryStream())
-            {
-                uploadedFile.CopyTo(memoryStream);
+        //    using (var memoryStream = new MemoryStream())
+        //    {
+        //        uploadedFile.CopyTo(memoryStream);
 
-                return memoryStream.ToArray();
-            }
-        }
+        //        return memoryStream.ToArray();
+        //    }
+        //}
 
         //private Boolean ValidateCoverExtension(IFormFile cover)
         //{
@@ -161,7 +161,8 @@ namespace Library.Controllers
         [HttpPut]
         [Route("UpdateBook")]
         [Authorize]
-        public async Task<IActionResult> EditBook([ModelBinder(BinderType = typeof(JsonModelBinder))][FromForm] Book updateBook, [FromForm] IFormFile updateCover)
+        //public async Task<IActionResult> EditBook([ModelBinder(BinderType = typeof(JsonModelBinder))][FromForm] Book updateBook, [FromForm] IFormFile updateCover)
+        public async Task<IActionResult> EditBook([ModelBinder(BinderType = typeof(CustomBinderService))] BookCoverService incomingBook)
         {
             try
             {
@@ -172,19 +173,22 @@ namespace Library.Controllers
 
                 if (ClaimVerifier.ClaimID.StartsWith('L'))
                 {
-                    if (updateBook == null || !ModelState.IsValid)
+                    //if (updateBook == null || !ModelState.IsValid)
+                    if (incomingBook == null || !ModelState.IsValid)
                     {
                         return BadRequest();
                     }
 
-                    var bookDAL = await Context.Books.FirstOrDefaultAsync(book => book.Id.Trim() == updateBook.Id.Trim());
+                    var bookDAL = await Context.Books.FirstOrDefaultAsync(book => book.Id.Trim() == incomingBook.ID.Trim());
+                    //var bookDAL = await Context.Books.FirstOrDefaultAsync(book => book.Id.Trim() == updateBook.Id.Trim());
 
                     if (bookDAL == null)
                     {
                         return Conflict();
                     }
 
-                    MappingPUT(bookDAL, updateBook, updateCover);
+                    //MappingPUT(bookDAL, updateBook, updateCover);
+                    MappingPUT(bookDAL, incomingBook);
 
                     await Context.SaveChangesAsync();
 
@@ -207,7 +211,17 @@ namespace Library.Controllers
             }
         }
 
-        private void MappingPUT(Book bookDAL, Book updateBook, IFormFile updateCover)
+        //private void MappingPUT(Book bookDAL, Book updateBook, IFormFile updateCover)
+        //{
+        //    bookDAL.Title = updateBook.Title?.Trim();
+        //    bookDAL.Author = updateBook.Author?.Trim();
+        //    bookDAL.Genre = updateBook.Genre?.Trim();
+        //    bookDAL.Year = updateBook.Year;
+        //    bookDAL.Editorial = updateBook.Editorial?.Trim();
+        //    bookDAL.Available = updateBook.Available;
+        //    bookDAL.Cover = ImageToByte(updateCover);
+        //}
+        private void MappingPUT(Book bookDAL, BookCoverService updateBook)
         {
             bookDAL.Title = updateBook.Title?.Trim();
             bookDAL.Author = updateBook.Author?.Trim();
@@ -215,7 +229,7 @@ namespace Library.Controllers
             bookDAL.Year = updateBook.Year;
             bookDAL.Editorial = updateBook.Editorial?.Trim();
             bookDAL.Available = updateBook.Available;
-            bookDAL.Cover = ImageToByte(updateCover);
+            bookDAL.Cover = updateBook.Cover;
         }
         #endregion
 

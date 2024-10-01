@@ -42,7 +42,7 @@ namespace Library.Services
             if (bindingContext == null) return;
 
             var form = bindingContext.HttpContext.Request.Form;
-            var bookJSON = form["newBook"];
+            var bookJSON = form["incomingBook"];
 
             var options = new JsonSerializerOptions
             {
@@ -50,7 +50,7 @@ namespace Library.Services
             };
 
             var book = System.Text.Json.JsonSerializer.Deserialize<BookCoverService>(bookJSON, options);
-            var file = form.Files.GetFile("newCover");
+            var file = form.Files.GetFile("incomingCover");
 
             if (file != null)
             {
