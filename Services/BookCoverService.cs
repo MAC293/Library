@@ -1,4 +1,5 @@
-﻿using Library.CustomDataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
+using Library.CustomDataAnnotations;
 
 namespace Library.Services
 {
@@ -19,36 +20,48 @@ namespace Library.Services
 
         }
 
+        [Required(ErrorMessage = "ID field is required.")]
+        [MaxLength(60, ErrorMessage = "ID cannot exceed 60 characters.")]
         public String ID
         {
             get { return _ID; }
             set { _ID = value; }
         }
 
+        [Required(ErrorMessage = "Title field is required.")]
+        [MaxLength(35, ErrorMessage = "Title length cannot exceed 35 characters.")]
         public String Title
         {
             get { return _Title; }
             set { _Title = value; }
         }
 
+        [Required(ErrorMessage = "Author field is required.")]
+        [MaxLength(30, ErrorMessage = "Author cannot exceed 30 characters.")]
         public String Author
         {
             get { return _Author; }
             set { _Author = value; }
         }
 
+        [Required(ErrorMessage = "Genre field is required.")]
+        [MaxLength(20, ErrorMessage = "Genre cannot exceed 20 characters.")]
         public String Genre
         {
             get { return _Genre; }
             set { _Genre = value; }
         }
 
+        [Required(ErrorMessage = "Year field is required.")]
+        [Range(1950, 2024, ErrorMessage = "Year must be between 1950 and 2024.")]
         public int Year
         {
             get { return _Year; }
             set { _Year = value; }
         }
 
+        [Required(ErrorMessage = "Editorial field is required.")]
+        [MaxLength(20, ErrorMessage = "Editorial cannot exceed 20 characters.")]
         public String Editorial
         {
             get { return _Editorial; }

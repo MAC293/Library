@@ -35,20 +35,7 @@ public partial class Book
 
     //[Required]
     public bool Available { get; set; }
-
-    //[Required(ErrorMessage = "Book cover is required.")]
-    //[FileExtensions(Extensions = ".jpg,.jpeg,.png", ErrorMessage = "Upload a valid image file type (jpg, jpeg, png).")]
-    //public byte[]? Cover { get; set; }
-    //public byte[] Cover { get; set; } = new Byte[0];
-    //Initialize with an empty array
-    //[NotNull]
-    //[Size]
-    //[AllowedExtensions(new String[]{ ".jpg", ".jpeg", ".png" })]
-    //[FileExtensionService]
-    //public IFormFile Cover { get; set; }
-    [NotNull]
-    [Size]
-    [AllowedExtensions]
+    
     public byte[] Cover { get; set; } = Array.Empty<Byte>();
     //public IFormFile Cover { get; set; }
 
