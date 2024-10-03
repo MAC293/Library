@@ -11,7 +11,6 @@ namespace Library.Services
         private String _Reader;
         private String _Book;
 
-
         public BorrowInformationService()
         {
 
@@ -41,7 +40,6 @@ namespace Library.Services
             set { _ReturnDate = value; }
         }
 
-      
         public String Reader
         {
             get { return _Reader; }
@@ -53,8 +51,5 @@ namespace Library.Services
             get { return _Book; }
             set { _Book = value; }
         }
-
-
-
     }
 }

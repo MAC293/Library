@@ -160,8 +160,7 @@ namespace Library.Controllers
                         borrowDAL.ReturnDate = DateTime.Now;
 
                         AvailableAgain(ReadyBookAvailable(borrowDAL.Id.Trim()));
-
-                        //CacheManagerService.IsLoan(borrowDAL);
+                        
                         CacheManagerService.IsLoan(MappingLoan(borrowDAL));
 
                         await Context.SaveChangesAsync();

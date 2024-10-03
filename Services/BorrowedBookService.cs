@@ -16,11 +16,10 @@ namespace Library.Services
         private String _BorrowDate;
         private String _DueDate;
         private Byte[] _Cover;
-        //private BorrowInformationService _Information;
 
         public BorrowedBookService()
         {
-            //Information = new BorrowInformationService();
+            
         }
 
         public String Title
@@ -52,12 +51,6 @@ namespace Library.Services
             get { return _Editorial; }
             set { _Editorial = value; }
         }
-
-        //public BorrowInformationService Information
-        //{
-        //    get { return _Information; }
-        //    set { _Information = value; }
-        //}
 
         public String BorrowDate
         {

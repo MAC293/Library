@@ -6,18 +6,11 @@ namespace Library.Services
 {
     public class ReaderService
     {
-        //Input
         private String _IDMember;
         private String _Name;
         private String _Phone;
         private String _Email;
         private int _Age;
-        //Background
-        //private String _IDReader;
-        //private String _IDMemberReader;
-        //private String _IDEndUserReader;
-        //private String _IDEndUser;
-        //Input
         private String _Username;
         private String _Password;
 
@@ -66,30 +59,6 @@ namespace Library.Services
             get { return _Age; }
             set { _Age = value; }
         }
-
-        //public String IDReader
-        //{
-        //    get { return _IDReader; }
-        //    set { _IDReader = value; }
-        //}
-
-        //public String IDMemberReader
-        //{
-        //    get { return _IDMemberReader; }
-        //    set { _IDMemberReader = value; }
-        //}
-
-        //public String IDEndUserReader
-        //{
-        //    get { return _IDEndUserReader; }
-        //    set { _IDEndUserReader = value; }
-        //}
-
-        //public String IDEndUser
-        //{
-        //    get { return _IDEndUser; }
-        //    set { _IDEndUser = value; }
-        //}
 
         [Required(ErrorMessage = "Username field is required.")]
         [MaxLength(12, ErrorMessage = "Username cannot exceed 12 characters.")]

@@ -2,7 +2,6 @@
 using Library.Services;
 using Serilog;
 
-
 namespace Library.Services
 {
     public class CacheManagerService
@@ -190,9 +189,6 @@ namespace Library.Services
         public void IsLoan(BorrowInformationService isBorrow)
         {
             List<BorrowInformationService>? borrowList = CacheService.Get<List<BorrowInformationService>>("book:loans");
-
-            //Log.Information("Borrow List coming from Cache Get: {@BorrowList}", borrowList);
-            //Log.Information("Borrow coming from endpoint: {@Borrow}", isBorrow);
 
             if (borrowList != null)
             {

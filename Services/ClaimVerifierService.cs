@@ -6,7 +6,6 @@ namespace Library.Services
     public  class ClaimVerifierService
     {
         private String _ClaimID;
-        //private HttpContext _HttpCTX;
         private readonly IHttpContextAccessor _HttpCTXA;
 
         public ClaimVerifierService(IHttpContextAccessor httpCTX)
@@ -23,7 +22,6 @@ namespace Library.Services
         public IHttpContextAccessor HttpCTXA
         {
             get { return _HttpCTXA; }
-            //set { _HttpCTX = value; }
         }
 
         public Boolean ClaimValidation()
@@ -37,6 +35,7 @@ namespace Library.Services
 
             return false;
         }
+
         public void AssignClaim()
         {
             var userIdClaim = _HttpCTXA.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier);
@@ -53,7 +52,6 @@ namespace Library.Services
             return true;
         }
 
-        //Check if Claim is valid (L/0)
         public Boolean ValidClaim()
         {
             if (ClaimID.StartsWith('L') || Char.IsDigit(ClaimID[0]))

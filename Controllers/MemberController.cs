@@ -126,14 +126,12 @@ namespace Library.Controllers
 
         private void EndUserLibrarian(LibrarianService librarianService)
         {
-            //EndUSer
             EndUser newEndUser = new EndUser();
             newEndUser.Id = IDLibrarian(librarianService.IDLibrarian);
             newEndUser.Username = librarianService.Username;
             newEndUser.Password = Hash(librarianService.Password);
             Context.EndUsers.Add(newEndUser);
 
-            //Librarian
             Librarian newLibrarian = new Librarian();
             newLibrarian.Id = librarianService.IDLibrarian;
             newLibrarian.EndUser = IDLibrarian(librarianService.IDLibrarian);
@@ -202,7 +200,6 @@ namespace Library.Controllers
         #endregion
 
         #region ID Cleaned
-        //ReaderID cleaned for Sign Up
         private String ReaderID(String memberID)
         {
             String newReaderID = IDCleaner(memberID) + "-Reader";
@@ -210,7 +207,6 @@ namespace Library.Controllers
             return newReaderID;
         }
 
-        //EndUserID cleaned for Sign Up
         private String EndUserID(String memberID)
         {
             String newEndUserID = IDCleaner(memberID) + "-EndUser";
@@ -218,7 +214,6 @@ namespace Library.Controllers
             return newEndUserID;
         }
 
-        //IDEndUser and IDEndUserLibrarian cleaned for Hire
         private String IDLibrarian(String librarianID)
         {
             String newEndUserID = IDCleaner(librarianID) + "-EndUser";
@@ -226,19 +221,15 @@ namespace Library.Controllers
             return newEndUserID;
         }
 
-        //Clean the coming ID
         private String IDCleaner(String memberID)
         {
             String cleanedID = memberID.Replace(".", "").Replace("-", "");
-            //String cleanedID = Regex.Replace(memberID, @"[.-]", "");
 
             return cleanedID;
-
         }
         #endregion
 
         #region Hashing
-        //Hash the password
         private String Hash(String plainPassword)
         {
             String hashedPassword = BCrypt.Net.BCrypt.HashPassword(plainPassword);
@@ -246,7 +237,6 @@ namespace Library.Controllers
             return hashedPassword;
         }
 
-        //Verify password
         private Boolean HashVerifier(String plainPassword, String hashedPassword)
         {
             Boolean validPassword = BCrypt.Net.BCrypt.Verify(plainPassword.Trim(), hashedPassword.Trim());
@@ -256,7 +246,6 @@ namespace Library.Controllers
         #endregion
 
         #region Others
-        //Compare incoming and stored username
         private Boolean UsernameComparison(String input, String source)
         {
             if (String.Equals(input.Trim(), source.Trim(), StringComparison.CurrentCulture))
@@ -267,7 +256,6 @@ namespace Library.Controllers
             return false;
         }
 
-        //Create token based on incoming ID
         private String CreateToken(String ID)
         {
             var keyBytes = Encoding.ASCII.GetBytes(_SecretKey);
