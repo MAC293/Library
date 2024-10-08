@@ -19,6 +19,7 @@ namespace Library.Controllers
             _ClaimVerifier = claimVerifier;
             Context = ctx;
         }
+
         public ClaimVerifierService ClaimVerifier
         {
             get { return _ClaimVerifier; }

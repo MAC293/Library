@@ -213,7 +213,7 @@ To add most of its features, dependencies must be installed from the NuGet Packa
 
 ### AppSettings Configuration
 
-This is where the Serilog, Token, and Redis settings are stored.
+It stores configuration settings of the API's features. Where the Serilog, Token, and Redis settings are declared.
 
 ```json
 {
@@ -256,5 +256,92 @@ This is where the Serilog, Token, and Redis settings are stored.
 
 **Redis:** the cache system works locally on the host RAM. The host address, and the Redis port are declared.
 
+### Program
 
+It's the entry point for the API. It sets up the necessary configuration and services to run. When the API is executed, `Program.cs` is the first file to initiate. `Program.cs` reads from `Appsettings.json` to get the proper configuration values.
 
+```c#
+var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddControllers(options =>
+{
+    options.ModelBinderProviders.Insert(0, new CustomBinderProviderService());
+});
+
+builder.Services.AddDbContext<LibraryDbContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("Server=TUF293;Database=LibraryDB;Trusted_Connection=True;TrustServerCertificate=True;")));
+
+builder.Services.AddSingleton<IConnectionMultiplexer>(redis =>
+ConnectionMultiplexer.Connect(builder.Configuration.GetConnectionString("RedisConnection")));
+
+builder.Services.AddScoped<CacheManagerService>();
+
+builder.Services.AddScoped<CacheService>();
+
+builder.Services.AddScoped<ClaimVerifierService>();
+
+builder.Services.AddHttpContextAccessor();
+
+builder.Services.AddScoped<HelperService>();
+
+builder.Configuration.AddJsonFile("appsettings.json");
+var secretKey = builder.Configuration.GetSection("Settings").GetSection("SecretKey").ToString();
+var keyBytes = Encoding.UTF8.GetBytes(secretKey);
+
+builder.Services.AddAuthentication(config =>
+{
+
+    config.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    config.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+
+}).AddJwtBearer(config =>
+{
+    config.RequireHttpsMetadata = false;
+    config.SaveToken = true;
+    config.TokenValidationParameters = new TokenValidationParameters
+    {
+
+        ValidateIssuerSigningKey = true,
+        IssuerSigningKey = new SymmetricSecurityKey(keyBytes),
+        ValidateIssuer = false,
+        ValidateAudience = false
+    };
+});
+
+builder.Services.AddControllers();
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
+
+Log.Logger = new LoggerConfiguration()
+    .ReadFrom.Configuration(builder.Configuration).CreateLogger();
+
+var app = builder.Build();
+
+if (app.Environment.IsDevelopment())
+{
+    app.UseSwagger();
+    app.UseSwaggerUI();
+}
+
+app.UseHttpsRedirection();
+app.UseAuthentication();
+app.UseAuthorization();
+app.MapControllers();
+app.Run();
+```
+
+**builder.Services.AddControllers... :** a "Custom Model Binder" is needed to handle the incoming image file from the client along with the "Custom Data Annotation".
+
+**builder.Services.AddDbContext\<LibraryDbContext>... :** due to the Context is the database. It needs to be accessible on every request. That's why is declared as Scoped.
+
+**builder.Services.AddSingleton\<IConnectionMultiplexer>... :** cache needs to be always available during the API lifetime, so, it was declared as Singleton.
+
+**builder.Services.AddScoped\<CacheManagerService>()**, **builder.Services.AddScoped\<CacheService>()**, **builder.Services.AddScoped\<ClaimVerifierService>()**, **builder.Services.AddScoped\<HelperService>()**: are Scoped support classes playing the role of SOLID to lighten the overload of some classes.
+
+**builder.Services.AddHttpContextAccessor()**: there is a class called, `ClaimVerifierService` which manages the user's request claim for authorization purposes. The `HTTPContextAccessor` permit to this class to access to the User content from the HTTP.
+
+**builder.Configuration.AddJsonFile... :** this declaration adds the JWT configuration from appsettings.
+
+**builder.Services.AddAuthentication:** more JWT configuration declaration.
+
+**Log.Logger = new LoggerConfiguration():** adds Serilog to the configuration, allowing its logs during execution.
