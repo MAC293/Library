@@ -44,11 +44,9 @@ Given that a Library is being simulated.  The relationships were modeled as fait
 
 Assuming a Library can store three copies of each book, the quantity was limited to that number. Allowing a Book to be borrowed up to three times. The Member (Person) can have only one unique account called, Reader, allowing it to borrow as many books as he wants as long a copy is available. On the other hand we have the Librarian, whose role is not directly related to the tables relationships, neither the EndUser. Reader, and Librarian are an unique EndUser, it's just a separation of concerns, otherwise, Reader, and Librarian would have been on the same table, which can't be, due to the design. Only a Reader can borrow books not a Librarian.
 
-
-
 ![](E:\Programming\API\Books Lender_Borrower\Library\Resources\Database Diagram.png)
 
-### • Database Source Code
+#### • Database Source Code
 
 ```sql
 USE [LibraryDB]
@@ -185,7 +183,7 @@ ALTER TABLE [dbo].[Reader] CHECK CONSTRAINT [FK__Reader__MemberID__3F466844]
 GO
 ```
 
-### • Scaffold-DbContext Generation
+#### • Scaffold-DbContext Generation
 
 To be able to inject queries against the database, i.e., the Entity Framework, a `Database Context` must be created. In this case the Context would be the database, but as C# classes.
 
@@ -213,7 +211,50 @@ To add most of its features, dependencies must be installed from the NuGet Packa
 14. **Swashbuckle ASP.NET Core**: it allows the use of the API client called, 'Swagger'.
 15. **Identity Model Tokens JWT**: it allows the creation, and validations of the JWT.
 
+### AppSettings Configuration
 
+This is where the Serilog, Token, and Redis settings are stored.
+
+```json
+{
+  "Serilog": {
+    "Using": [ "Serilog.Sinks.Console", "Serilog.Sinks.File" ],
+    "MinimumLevel": {
+      "Default": "Information",
+      "Override": {
+        "Microsoft": "Warning",
+        "System": "Warning"
+      }
+    },
+    "WriteTo": [
+      { "Name": "Console" },
+      {
+        "Name": "File",
+        "Args": {
+          "path": "Logs/log-.json",
+          "rollingInterval": "Day",
+          "formatter": "Serilog.Formatting.Compact.CompactJsonFormatter, Serilog.Formatting.Compact"
+        }
+      }
+    ]
+  },
+
+  "AllowedHosts": "*",
+  "Settings": {
+    "SecretKey": "=[RE$74P1T0KEN]="
+  },
+    
+  "ConnectionStrings": {
+    "RedisConnection": "127.0.0.1:6379"
+  }
+}
+```
+
+**Serilog:** a console and a file sinks are declared. A sink is an output destination, meaning, that the log events will be displayed on the console as the API is executed, and stored on a specified file location once the execution has ended. There are many sinks, but, only these two were selected, cause, they are more suitable for this case scenario.
+
+**Token**: given that this is a demonstration environment, any host is allowed to perform this token validation. The `SecretKey` is used to secure the token by signing it, this ensures that the token hasn't been tampered during the request. It allows to validate the token integrity, and it should be kept in secret, as it name implies.
+
+**Redis:** the cache system works locally on the host RAM. The host address, and the Redis port are declared.
 
 
 
