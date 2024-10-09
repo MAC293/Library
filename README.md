@@ -44,7 +44,7 @@ Given that a Library is being simulated.  The relationships were modeled as fait
 
 Assuming a Library can store three copies of each book, the quantity was limited to that number. Allowing a Book to be borrowed up to three times. The Member (Person) can have only one unique account called, Reader, allowing it to borrow as many books as he wants as long a copy is available. On the other hand we have the Librarian, whose role is not directly related to the tables relationships, neither the EndUser. Reader, and Librarian are an unique EndUser, it's just a separation of concerns, otherwise, Reader, and Librarian would have been on the same table, which can't be, due to the design. Only a Reader can borrow books not a Librarian.
 
-![](E:\Programming\API\Books Lender_Borrower\Library\Resources\Database Diagram.png)
+![Database Diagram](E:\Programming\API\Books Lender_Borrower\Library\Resources\Database Diagram.png)
 
 #### • Database Source Code
 
@@ -345,3 +345,19 @@ app.Run();
 **builder.Services.AddAuthentication:** more JWT configuration declaration.
 
 **Log.Logger = new LoggerConfiguration():** adds Serilog to the configuration, allowing its logs during execution.
+
+## Business Logic
+### Use Cases
+
+![Use Cases](E:\Programming\API\Books Lender_Borrower\Use Cases.png)
+
+A Library system is too big to replicate it on an API just for showcasing, so, it opted to illustrate the main function of it, the borrow, and the user management systems accordingly.
+
+There are only two entities present on this business logic, the Librarian who is in charge of managing the books, the loans, and the readers. On the other hand, the Reader who can search for a book, view a list of books based on a criteria, and borrow them.
+
+### Structure
+
+**Controllers:** every incoming HTTP request is received, and processed by the endpoints inside their respective Controller. Controllers are the core of the API.
+
+**CustomDataAnnotations:** a custom validator was built to handle the incoming image file attributes.
+
