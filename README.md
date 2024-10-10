@@ -38,7 +38,7 @@ The real goal behind this web API is to demonstrate my skills as a C# web develo
 
 This database is developed in SQL Server. To interact with the database in a more friendly way, Entity Framework is used to map the database into C# classes. To make a seamless relation, `LINQ to Entities` plays as a bridge between the API and the database for a fluent data transferring.
 
-#### • Database Diagram
+#### 1. Database Diagram
 
 Given that a Library is being simulated.  The relationships were modeled as faithful as possible to the real life, respecting the relational mapping.
 
@@ -46,7 +46,7 @@ Assuming a Library can store three copies of each book, the quantity was limited
 
 ![Database Diagram](E:\Programming\API\Books Lender_Borrower\Library\Resources\Database Diagram.png)
 
-#### • Database Source Code
+#### 2. Database Source Code
 
 ```sql
 USE [LibraryDB]
@@ -183,7 +183,7 @@ ALTER TABLE [dbo].[Reader] CHECK CONSTRAINT [FK__Reader__MemberID__3F466844]
 GO
 ```
 
-#### • Scaffold-DbContext Generation
+#### 3. Scaffold-DbContext Generation
 
 To be able to inject queries against the database, i.e., the Entity Framework, a `Database Context` must be created. In this case the Context would be the database, but as C# classes.
 
@@ -346,7 +346,7 @@ app.Run();
 
 **Log.Logger = new LoggerConfiguration():** adds Serilog to the configuration, allowing its logs during execution.
 
-## Business Logic
+## Business
 ### Use Cases
 
 ![Use Cases](E:\Programming\API\Books Lender_Borrower\Use Cases.png)
@@ -360,4 +360,79 @@ There are only two entities present on this business logic, the Librarian who is
 **Controllers:** every incoming HTTP request is received, and processed by the endpoints inside their respective Controller. Controllers are the core of the API.
 
 **CustomDataAnnotations:** a custom validator was built to handle the incoming image file attributes.
+
+**Logs:** has all the results as text files from the debugging. To keep a track of the generated values.
+
+**Models**: this contains all the tables mapped to a class along with `LibraryDbContext`.
+
+**Services:** all the support classes to produce leverage on the logic.
+
+### Logic
+
+#### 1. Sign Up & Login: `MemberController`
+
+##### Overview
+
+It holds the Sign Up, and Login endpoints mainly. As their names implies, they take care of the user account creation, and authentication. Before any process is granted, the incoming data either for Sign Up or Login must be verified based on a criteria, after the integrity has been correctly proven right, the subsequent process is good to continue.
+##### Key Components
+
+- Password Hashing
+- Token
+- Authentication
+- Sign Up
+
+##### Important Methods
+
+The `SignUp()` uses the `Hash()`, and `HasVerifier()` to hash the  user's new password to keep it safe, so no one in the database can guess it. The Hash process borrows the BCrypt Library for its aim. As for the `Login()`, `CreateToken()` performs the JWT creation, generating a `Claim Key` on the process, a key that's comprised of the user's ID . Now on, every time the user requests some information, the endpoint will validate the user's identity before continue on the response, this will ensure that no one that's not authorized on this API perform a requests.
+
+##### Source Code
+
+This method is a slight different from Member, and Librarian sign up due to the nature of the user type, but both serves as the main purpose, register the new users to the system. Any of them was chosen for explanation purposes.
+
+
+
+```c#
+        [HttpPost]
+        [Route("SignUp")]
+        public async Task<IActionResult> SignUp([FromBody] ReaderService newMember)
+        {
+            try
+            {
+                if (newMember == null || !ModelState.IsValid)
+                {
+                    return BadRequest();
+                }
+
+                var memberDAL = Context.Members.FirstOrDefault(member => member.Id == newMember.IDMember);
+
+                if (memberDAL != null)
+                {
+                    return BadRequest("This user already exists!");
+                }
+
+                Context.Members.Add(MappingMember(newMember));
+
+                EndUserReader(newMember);
+
+                await Context.SaveChangesAsync();
+                
+                return Created("", "Your account has been successfully created.");
+            }
+            catch (DbUpdateException)
+            {
+                return StatusCode(500, "A database error occurred. Please try again.");
+            }
+            catch (Exception)
+            {
+                return StatusCode(500, "An unexpected error occurred. Please try again.");
+            }
+        }
+
+```
+
+
+
+
+
+
 
