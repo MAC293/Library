@@ -387,9 +387,9 @@ The `SignUp()` uses the `Hash()`, and `HasVerifier()` to hash the  user's new pa
 
 ##### Source Code
 
-This method is a slight different from Member, and Librarian sign up due to the nature of the user type, but both serves as the main purpose, register the new users to the system. Any of them was chosen for explanation purposes.
+This method is a slight different from Member, and Librarian Sign Up due to the nature of the user type, but both serve as the main purpose, register the new users to the system. Any of these two were chosen for explanation purposes.
 
-
+This method handles a POST request cause data is send for creation. It gets a JSON member object to be deserialized into a C#, for the server manipulation. A check is performed against the context for any duplicates, then an error message is returned, or a successful one with the new Member created on the database.
 
 ```c#
         [HttpPost]
@@ -430,9 +430,175 @@ This method is a slight different from Member, and Librarian sign up due to the 
 
 ```
 
+Here, the Login() works both for the Reader and the Librarian user. Just like the SignUp(), it gets a JSON user object which is deserialized for its use on the server. After the existence validation, `HasVerifier()` checks if the entered password matches the one stored in the database, and `UsernameComparison()` checks if the username also matches the stored one. After both methods return true, a token is created to use for the entire API lifetime as an authentication inside the request.
+
+```c#
+        [HttpPost]
+        [Route("LogIn")]
+        public async Task<IActionResult> LogIn([FromBody] UserService newUser)
+        {
+            try
+            {
+                if (newUser == null || !ModelState.IsValid)
+                {
+                    return BadRequest();
+                }
+
+                var users = Context.EndUsers
+                    .Where(user => user.Username == newUser.Username)
+                    .ToList();
+                
+                var userDAL = users.FirstOrDefault(user => HashVerifier(newUser.Password, user.Password)
+                                                           && UsernameComparison(newUser.Username, user.Username));
+
+                if (userDAL != null)
+                {
+                    return Ok(CreateToken(userDAL.Id));
+                }
+
+                return NotFound("This user doesn't exist.");
+            }
+            catch (DbUpdateException ex)
+            {
+                return BadRequest("A DbUpdateException has occurred: " + ex);
+            }
+            catch (InvalidOperationException ex)
+            {
+                return BadRequest("An exception has occurred: " + ex);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest("An exception has occurred: " + ex);
+            }
+        }
+```
 
 
 
+#### 2. Book CRUD: `LibrarianBookController`
+
+##### Overview
+
+As far as we know so far, the Librarian takes care of the administration whether is for the users, and the books. Here, he's able to add a new book, update the book attributes, remove a book, and search for a book. 
+
+A new extremely useful feature is gonna come to play, Redis. It's an in-memory data structure store used as a fast volatile database. Only GET requests are equipped with a cache, which a request response time must be decrease significantly due to the heavy traffic that implies.
+
+##### Key Components
+
+- Claim Validation
+- Cache
+
+##### Important Methods
+
+This entire CRUD bases its main functionality in two classes, `ClaimVerifier`, and `CacheManagerService`, are the backbone of every endpoint.
+
+When the Librarian performs any CRUD action. The first procedure that comes into play is the user's claim validation, it has to make sure that the claim has a valid token. Afterwards, along with this method, it must check what type of user is the one who's trying to perform a CRUD. This is by checking the first character of the Claim, which is the ID. If it starts with 'L', is the Librarian, if it starts with a number, is a Reader.
+
+Regarding the use of the cache system. Every value that is requested by the client side, that's not already on the cache, is injected as a new memory space so if the user come to request the same data as before, the response will be way faster than before. When the Librarian updates any value located on any cache, the system automatically will replace the old for the new entry, so the cache is always updated. 
+
+##### Source Code
+
+A book is comprised of a JSON, and an image being its cover. When its creation is requested, both the JSON, and the image file are handled by the `Custom Model Binder`, that ensures both are loaded deserialized properly into C# objects, for its respective `Custom Data Validation`, besides of the book meeting the requirements, the image file also has to be based on the business criteria. After both being validated accordingly the rest of the pipeline can be executed. 
+
+```c#
+        [HttpPost]
+        [Route("AddBook")]
+        [Authorize]
+        public async Task<IActionResult> CreateBook([ModelBinder(BinderType = typeof(CustomBinderService))] BookCoverService incomingBook)
+        {
+            try
+            {
+                if (!ClaimVerifier.ClaimValidation())
+                {
+                    return Unauthorized("This user doesn't exist.");
+                }
+
+                if (ClaimVerifier.ClaimID.StartsWith('L'))
+                {
+                    if (incomingBook == null || !ModelState.IsValid)
+                    {
+                        return BadRequest();
+                    }
+
+                    var bookDAL = await Context.Books.FirstOrDefaultAsync(book => book.Id == incomingBook.ID);
+
+                    if (bookDAL != null)
+                    {
+                        return BadRequest();
+                    }
+
+                    if (HelperService.CheckBookStorage(incomingBook.Title.Trim()) >= 3)
+                    {
+                        return BadRequest("The library is limited to 3 copies per book.");
+                    }
+
+                    Context.Books.Add(MappingBookCover(incomingBook));
+                    await Context.SaveChangesAsync();
+
+                    return Created("", $"\"{incomingBook.Title}\" has been added to the Library.");
+
+                }
+                if (Char.IsDigit(ClaimVerifier.ClaimID[0]))
+                {
+                    return Unauthorized("This user has no authorization to perform this action.");
+                }
+
+                return BadRequest("Invalid request.");
+            }
+            catch (Exception)
+            {
+                return StatusCode(500, "An unexpected error occurred. Please try again.");
+            }
+        }
+```
+
+Most of the endpoints have the same principle. We're gonna focus on this time on the cache management. `CacheManagerService` manipulate all the cache on every request, it's responsible for calling the cache methods, whether is setting a new memory space, getting an existing value, or removing a memory space.
+
+```c#
+        [HttpGet("ViewBook/{ID}")]
+        [Authorize]
+        public async Task<ActionResult<BookService>> DisplayBook([FromRoute] String ID)
+        {
+            try
+            {
+                if (!ClaimVerifier.ClaimValidation())
+                {
+                    return Unauthorized("This user doesn't exist.");
+                }
+
+                if (ClaimVerifier.ClaimID.StartsWith('L'))
+                {
+                    var isCacheBook = CacheManagerService.CacheService.Get<BookService>($"book:{ID}");
+
+                    if (isCacheBook != null)
+                    {
+                        return isCacheBook;
+                    }
+
+                    var bookDAL = await Context.Books.FirstOrDefaultAsync(book => book.Id == ID);
+
+                    if (bookDAL != null)
+                    {
+                        CacheManagerService.CacheService.Set(ID, MappingBook(bookDAL));
+
+                        return MappingBook(bookDAL);
+                    }
+
+                    return NotFound();
+                }
+                if (Char.IsDigit(ClaimVerifier.ClaimID[0]))
+                {
+                    return Unauthorized("This user has no authorization to perform this action.");
+                }
+
+                return BadRequest();
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, "An unexpected error occurred. Please try again.");
+            }
+        }
+```
 
 
 
