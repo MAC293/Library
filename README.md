@@ -600,5 +600,130 @@ Most of the endpoints have the same principle. We're gonna focus on this time on
         }
 ```
 
+#### 3. Book Loan: `LibrarianLoanController`
 
+##### Overview
+
+The book loan is another important task of the Librarian. He must check regularly, and keep track of every book loan status. 
+
+On this controller, he is able to do two major things. One, is to list every single borrow with meaningful information made by the readers, and to update the loan status to "returned". 
+
+##### Key Components
+
+- Claim Validation
+- Cache
+
+##### Important Methods
+
+On this method call. As every endpoint, it does a claim validation, and a user authentication. If they are any loans, it will return a list of every single one of them, otherwise, it will return a message indication that is no loan available to show given that no reader has borrowed a book so far. Its functioning is not rocket science.
+
+```c#
+        [HttpGet]
+        [Route("ViewLoans")]
+        [Authorize]
+        public async Task<ActionResult<List<BorrowInformationService>>> DisplayLoans()
+        {
+            try
+            {
+                if (!ClaimVerifier.ClaimValidation())
+                {
+                    return Unauthorized("This user doesn't exist.");
+                }
+
+                if (ClaimVerifier.ClaimID.StartsWith('L'))
+                {
+                    var checkLoan = CacheManagerService.CacheService.Get<List<BorrowInformationService>>("book:loans");
+
+                    if (checkLoan != null)
+                    {
+                        return checkLoan;
+                    }
+
+                    var allLoans = await Context.Borrows.ToListAsync();
+
+                    if (allLoans.Any())
+                    {
+                        var allBooksLoan = MappingAllLoans(allLoans);
+
+                        CacheManagerService.CacheService.Set("loans", allBooksLoan);
+
+                        return allBooksLoan;
+                    }
+
+                    return NotFound("Readers haven't requested a book.");
+                }
+                if (Char.IsDigit(ClaimVerifier.ClaimID[0]))
+                {
+                    return Unauthorized("This user has no authorization to perform this action.");
+                }
+
+                return BadRequest();
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, "An unexpected error occurred. Please try again.");
+
+            }
+        }
+```
+
+As for the book loan update. The Librarian, must submit the reader's ID, and the book name that is being returned. With those two entry parameters, this method checks for any matches on the context, if it does find any matches, it will set the current date to the return date attribute of the Borrow (Loan) model, saying, that this book was returned that same day.
+
+```c#
+        [HttpPut("UpdateLoan/{bookReturned}, {reader}")]
+        [Authorize]
+        public async Task<IActionResult> ReturnBook([FromRoute] String bookReturned, [FromRoute] String reader)
+        {
+            try
+            {
+                if (!ClaimVerifier.ClaimValidation())
+                {
+                    return Unauthorized("This user doesn't exist.");
+                }
+
+                if (ClaimVerifier.ClaimID.StartsWith('L'))
+                {
+                    if (CheckLoans() == 0)
+                    {
+                        return NotFound("Readers haven't requested any book.");
+                    }
+
+                    var borrowDAL = await Context.Borrows.FirstOrDefaultAsync(borrow => borrow.Id.Trim() == 
+                        BorrowID(CleanedReturnedBook(bookReturned).Trim(),
+                        reader + "-Reader").Trim() && borrow.Reader.Trim() == reader + "-Reader".Trim());
+
+                    if (borrowDAL != null)
+                    {
+                        borrowDAL.ReturnDate = DateTime.Now;
+
+                        AvailableAgain(ReadyBookAvailable(borrowDAL.Id.Trim()));
+                        
+                        CacheManagerService.IsLoan(MappingLoan(borrowDAL));
+
+                        await Context.SaveChangesAsync();
+
+                        return NoContent();
+                    }
+
+                    return Conflict();
+
+                }
+                if (Char.IsDigit(ClaimVerifier.ClaimID[0]))
+                {
+                    return Unauthorized("This user has no authorization to perform this action.");
+                }
+
+                return BadRequest("Invalid request.");
+
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(400, "An unexpected error occurred. Please try again.");
+            }
+        }
+```
+
+#### 4. Librarian-Reader: `LibrarianReaderController`
+
+##### Overview
 
