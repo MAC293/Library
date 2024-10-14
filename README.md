@@ -4,13 +4,14 @@ This is a RESTful API project developed entirely upon C# on the Visual Studio ID
 
 'Library' as its name implies, is an API that serves as a library in a real-life scenario. It focuses on optimizing the main objective of a library, the book loan system. To carry out this service, a user management environment is implemented.
 
-The real goal behind this web API is to demonstrate my skills as a C# web developer for any potential employer.
+**The real goal behind this web API is to demonstrate my skills as a C# web developer for any potential employer.**
 
 ## Table Of Contents
 
-1. 
-
-## Installation
+1. [Features](#Features)
+1. [Getting Started](#Getting-Started)
+1. [Business](#Business)
+1. [Usage](#Usage)
 
 ## Features
 
@@ -965,3 +966,6 @@ public async Task<ActionResult<List<BookService>>> SearchBook(String toSearch)
     }
 }
 ```
+
+## Usage
+
