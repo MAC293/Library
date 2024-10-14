@@ -392,85 +392,85 @@ This method is a slight different from Member, and Librarian Sign Up due to the 
 This method handles a POST request cause data is send for creation. It gets a JSON member object to be deserialized into a C#, for the server manipulation. A check is performed against the context for any duplicates, then an error message is returned, or a successful one with the new Member created on the database.
 
 ```c#
-        [HttpPost]
-        [Route("SignUp")]
-        public async Task<IActionResult> SignUp([FromBody] ReaderService newMember)
+[HttpPost]
+[Route("SignUp")]
+public async Task<IActionResult> SignUp([FromBody] ReaderService newMember)
+{
+    try
+    {
+        if (newMember == null || !ModelState.IsValid)
         {
-            try
-            {
-                if (newMember == null || !ModelState.IsValid)
-                {
-                    return BadRequest();
-                }
-
-                var memberDAL = Context.Members.FirstOrDefault(member => member.Id == newMember.IDMember);
-
-                if (memberDAL != null)
-                {
-                    return BadRequest("This user already exists!");
-                }
-
-                Context.Members.Add(MappingMember(newMember));
-
-                EndUserReader(newMember);
-
-                await Context.SaveChangesAsync();
-                
-                return Created("", "Your account has been successfully created.");
-            }
-            catch (DbUpdateException)
-            {
-                return StatusCode(500, "A database error occurred. Please try again.");
-            }
-            catch (Exception)
-            {
-                return StatusCode(500, "An unexpected error occurred. Please try again.");
-            }
+            return BadRequest();
         }
+
+        var memberDAL = Context.Members.FirstOrDefault(member => member.Id == newMember.IDMember);
+
+        if (memberDAL != null)
+        {
+            return BadRequest("This user already exists!");
+        }
+
+        Context.Members.Add(MappingMember(newMember));
+
+        EndUserReader(newMember);
+
+        await Context.SaveChangesAsync();
+
+        return Created("", "Your account has been successfully created.");
+    }
+    catch (DbUpdateException)
+    {
+        return StatusCode(500, "A database error occurred. Please try again.");
+    }
+    catch (Exception)
+    {
+        return StatusCode(500, "An unexpected error occurred. Please try again.");
+    }
+}
 
 ```
 
 Here, the Login() works both for the Reader and the Librarian user. Just like the SignUp(), it gets a JSON user object which is deserialized for its use on the server. After the existence validation, `HasVerifier()` checks if the entered password matches the one stored in the database, and `UsernameComparison()` checks if the username also matches the stored one. After both methods return true, a token is created to use for the entire API lifetime as an authentication inside the request.
 
 ```c#
-        [HttpPost]
-        [Route("LogIn")]
-        public async Task<IActionResult> LogIn([FromBody] UserService newUser)
+[HttpPost]
+[Route("LogIn")]
+public async Task<IActionResult> LogIn([FromBody] UserService newUser)
+{
+    try
+    {
+        if (newUser == null || !ModelState.IsValid)
         {
-            try
-            {
-                if (newUser == null || !ModelState.IsValid)
-                {
-                    return BadRequest();
-                }
-
-                var users = Context.EndUsers
-                    .Where(user => user.Username == newUser.Username)
-                    .ToList();
-                
-                var userDAL = users.FirstOrDefault(user => HashVerifier(newUser.Password, user.Password)
-                                                           && UsernameComparison(newUser.Username, user.Username));
-
-                if (userDAL != null)
-                {
-                    return Ok(CreateToken(userDAL.Id));
-                }
-
-                return NotFound("This user doesn't exist.");
-            }
-            catch (DbUpdateException ex)
-            {
-                return BadRequest("A DbUpdateException has occurred: " + ex);
-            }
-            catch (InvalidOperationException ex)
-            {
-                return BadRequest("An exception has occurred: " + ex);
-            }
-            catch (Exception ex)
-            {
-                return BadRequest("An exception has occurred: " + ex);
-            }
+            return BadRequest();
         }
+
+        var users = Context.EndUsers
+            .Where(user => user.Username == newUser.Username)
+            .ToList();
+
+        var userDAL = users.FirstOrDefault(user => HashVerifier(newUser.Password, user.Password)
+                                           && UsernameComparison(newUser.Username, user.Username));
+
+        if (userDAL != null)
+        {
+            return Ok(CreateToken(userDAL.Id));
+        }
+
+        return NotFound("This user doesn't exist.");
+    }
+    catch (DbUpdateException ex)
+    {
+        return BadRequest("A DbUpdateException has occurred: " + ex);
+    }
+    catch (InvalidOperationException ex)
+    {
+        return BadRequest("An exception has occurred: " + ex);
+    }
+    catch (Exception ex)
+    {
+        return BadRequest("An exception has occurred: " + ex);
+    }
+}
 ```
 
 
@@ -501,103 +501,103 @@ Regarding the use of the cache system. Every value that is requested by the clie
 A book is comprised of a JSON, and an image being its cover. When its creation is requested, both the JSON, and the image file are handled by the `Custom Model Binder`, that ensures both are loaded deserialized properly into C# objects, for its respective `Custom Data Validation`, besides of the book meeting the requirements, the image file also has to be based on the business criteria. After both being validated accordingly the rest of the pipeline can be executed. 
 
 ```c#
-        [HttpPost]
-        [Route("AddBook")]
-        [Authorize]
-        public async Task<IActionResult> CreateBook([ModelBinder(BinderType = typeof(CustomBinderService))] BookCoverService incomingBook)
+[HttpPost]
+[Route("AddBook")]
+[Authorize]
+public async Task<IActionResult> CreateBook([ModelBinder(BinderType = typeof(CustomBinderService))] BookCoverService incomingBook)
+{
+    try
+    {
+        if (!ClaimVerifier.ClaimValidation())
         {
-            try
-            {
-                if (!ClaimVerifier.ClaimValidation())
-                {
-                    return Unauthorized("This user doesn't exist.");
-                }
-
-                if (ClaimVerifier.ClaimID.StartsWith('L'))
-                {
-                    if (incomingBook == null || !ModelState.IsValid)
-                    {
-                        return BadRequest();
-                    }
-
-                    var bookDAL = await Context.Books.FirstOrDefaultAsync(book => book.Id == incomingBook.ID);
-
-                    if (bookDAL != null)
-                    {
-                        return BadRequest();
-                    }
-
-                    if (HelperService.CheckBookStorage(incomingBook.Title.Trim()) >= 3)
-                    {
-                        return BadRequest("The library is limited to 3 copies per book.");
-                    }
-
-                    Context.Books.Add(MappingBookCover(incomingBook));
-                    await Context.SaveChangesAsync();
-
-                    return Created("", $"\"{incomingBook.Title}\" has been added to the Library.");
-
-                }
-                if (Char.IsDigit(ClaimVerifier.ClaimID[0]))
-                {
-                    return Unauthorized("This user has no authorization to perform this action.");
-                }
-
-                return BadRequest("Invalid request.");
-            }
-            catch (Exception)
-            {
-                return StatusCode(500, "An unexpected error occurred. Please try again.");
-            }
+            return Unauthorized("This user doesn't exist.");
         }
+
+        if (ClaimVerifier.ClaimID.StartsWith('L'))
+        {
+            if (incomingBook == null || !ModelState.IsValid)
+            {
+                return BadRequest();
+            }
+
+            var bookDAL = await Context.Books.FirstOrDefaultAsync(book => book.Id == incomingBook.ID);
+
+            if (bookDAL != null)
+            {
+                return BadRequest();
+            }
+
+            if (HelperService.CheckBookStorage(incomingBook.Title.Trim()) >= 3)
+            {
+                return BadRequest("The library is limited to 3 copies per book.");
+            }
+
+            Context.Books.Add(MappingBookCover(incomingBook));
+            await Context.SaveChangesAsync();
+
+            return Created("", $"\"{incomingBook.Title}\" has been added to the Library.");
+
+        }
+        if (Char.IsDigit(ClaimVerifier.ClaimID[0]))
+        {
+            return Unauthorized("This user has no authorization to perform this action.");
+        }
+
+        return BadRequest("Invalid request.");
+    }
+    catch (Exception)
+    {
+        return StatusCode(500, "An unexpected error occurred. Please try again.");
+    }
+}
 ```
 
 Most of the endpoints have the same principle. We're gonna focus on this time on the cache management. `CacheManagerService` manipulate all the cache on every request, it's responsible for calling the cache methods, whether is setting a new memory space, getting an existing value, or removing a memory space.
 
 ```c#
-        [HttpGet("ViewBook/{ID}")]
-        [Authorize]
-        public async Task<ActionResult<BookService>> DisplayBook([FromRoute] String ID)
+[HttpGet("ViewBook/{ID}")]
+[Authorize]
+public async Task<ActionResult<BookService>> DisplayBook([FromRoute] String ID)
+{
+    try
+    {
+        if (!ClaimVerifier.ClaimValidation())
         {
-            try
-            {
-                if (!ClaimVerifier.ClaimValidation())
-                {
-                    return Unauthorized("This user doesn't exist.");
-                }
-
-                if (ClaimVerifier.ClaimID.StartsWith('L'))
-                {
-                    var isCacheBook = CacheManagerService.CacheService.Get<BookService>($"book:{ID}");
-
-                    if (isCacheBook != null)
-                    {
-                        return isCacheBook;
-                    }
-
-                    var bookDAL = await Context.Books.FirstOrDefaultAsync(book => book.Id == ID);
-
-                    if (bookDAL != null)
-                    {
-                        CacheManagerService.CacheService.Set(ID, MappingBook(bookDAL));
-
-                        return MappingBook(bookDAL);
-                    }
-
-                    return NotFound();
-                }
-                if (Char.IsDigit(ClaimVerifier.ClaimID[0]))
-                {
-                    return Unauthorized("This user has no authorization to perform this action.");
-                }
-
-                return BadRequest();
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, "An unexpected error occurred. Please try again.");
-            }
+            return Unauthorized("This user doesn't exist.");
         }
+
+        if (ClaimVerifier.ClaimID.StartsWith('L'))
+        {
+            var isCacheBook = CacheManagerService.CacheService.Get<BookService>($"book:{ID}");
+
+            if (isCacheBook != null)
+            {
+                return isCacheBook;
+            }
+
+            var bookDAL = await Context.Books.FirstOrDefaultAsync(book => book.Id == ID);
+
+            if (bookDAL != null)
+            {
+                CacheManagerService.CacheService.Set(ID, MappingBook(bookDAL));
+
+                return MappingBook(bookDAL);
+            }
+
+            return NotFound();
+        }
+        if (Char.IsDigit(ClaimVerifier.ClaimID[0]))
+        {
+            return Unauthorized("This user has no authorization to perform this action.");
+        }
+
+        return BadRequest();
+    }
+    catch (Exception ex)
+    {
+        return StatusCode(500, "An unexpected error occurred. Please try again.");
+    }
+}
 ```
 
 #### 3. Book Loan: `LibrarianLoanController`
@@ -618,112 +618,350 @@ On this controller, he is able to do two major things. One, is to list every sin
 On this method call. As every endpoint, it does a claim validation, and a user authentication. If they are any loans, it will return a list of every single one of them, otherwise, it will return a message indication that is no loan available to show given that no reader has borrowed a book so far. Its functioning is not rocket science.
 
 ```c#
-        [HttpGet]
-        [Route("ViewLoans")]
-        [Authorize]
-        public async Task<ActionResult<List<BorrowInformationService>>> DisplayLoans()
+[HttpGet]
+[Route("ViewLoans")]
+[Authorize]
+public async Task<ActionResult<List<BorrowInformationService>>> DisplayLoans()
+{
+    try
+    {
+        if (!ClaimVerifier.ClaimValidation())
         {
-            try
-            {
-                if (!ClaimVerifier.ClaimValidation())
-                {
-                    return Unauthorized("This user doesn't exist.");
-                }
-
-                if (ClaimVerifier.ClaimID.StartsWith('L'))
-                {
-                    var checkLoan = CacheManagerService.CacheService.Get<List<BorrowInformationService>>("book:loans");
-
-                    if (checkLoan != null)
-                    {
-                        return checkLoan;
-                    }
-
-                    var allLoans = await Context.Borrows.ToListAsync();
-
-                    if (allLoans.Any())
-                    {
-                        var allBooksLoan = MappingAllLoans(allLoans);
-
-                        CacheManagerService.CacheService.Set("loans", allBooksLoan);
-
-                        return allBooksLoan;
-                    }
-
-                    return NotFound("Readers haven't requested a book.");
-                }
-                if (Char.IsDigit(ClaimVerifier.ClaimID[0]))
-                {
-                    return Unauthorized("This user has no authorization to perform this action.");
-                }
-
-                return BadRequest();
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, "An unexpected error occurred. Please try again.");
-
-            }
+            return Unauthorized("This user doesn't exist.");
         }
+
+        if (ClaimVerifier.ClaimID.StartsWith('L'))
+        {
+            var checkLoan = CacheManagerService.CacheService.Get<List<BorrowInformationService>>("book:loans");
+
+            if (checkLoan != null)
+            {
+                return checkLoan;
+            }
+
+            var allLoans = await Context.Borrows.ToListAsync();
+
+            if (allLoans.Any())
+            {
+                var allBooksLoan = MappingAllLoans(allLoans);
+
+                CacheManagerService.CacheService.Set("loans", allBooksLoan);
+
+                return allBooksLoan;
+            }
+
+            return NotFound("Readers haven't requested a book.");
+        }
+        if (Char.IsDigit(ClaimVerifier.ClaimID[0]))
+        {
+            return Unauthorized("This user has no authorization to perform this action.");
+        }
+
+        return BadRequest();
+    }
+    catch (Exception ex)
+    {
+        return StatusCode(500, "An unexpected error occurred. Please try again.");
+
+    }
+}
 ```
 
 As for the book loan update. The Librarian, must submit the reader's ID, and the book name that is being returned. With those two entry parameters, this method checks for any matches on the context, if it does find any matches, it will set the current date to the return date attribute of the Borrow (Loan) model, saying, that this book was returned that same day.
 
 ```c#
-        [HttpPut("UpdateLoan/{bookReturned}, {reader}")]
-        [Authorize]
-        public async Task<IActionResult> ReturnBook([FromRoute] String bookReturned, [FromRoute] String reader)
+[HttpPut("UpdateLoan/{bookReturned}, {reader}")]
+[Authorize]
+public async Task<IActionResult> ReturnBook([FromRoute] String bookReturned, [FromRoute] String reader)
+{
+    try
+    {
+        if (!ClaimVerifier.ClaimValidation())
         {
-            try
-            {
-                if (!ClaimVerifier.ClaimValidation())
-                {
-                    return Unauthorized("This user doesn't exist.");
-                }
-
-                if (ClaimVerifier.ClaimID.StartsWith('L'))
-                {
-                    if (CheckLoans() == 0)
-                    {
-                        return NotFound("Readers haven't requested any book.");
-                    }
-
-                    var borrowDAL = await Context.Borrows.FirstOrDefaultAsync(borrow => borrow.Id.Trim() == 
-                        BorrowID(CleanedReturnedBook(bookReturned).Trim(),
-                        reader + "-Reader").Trim() && borrow.Reader.Trim() == reader + "-Reader".Trim());
-
-                    if (borrowDAL != null)
-                    {
-                        borrowDAL.ReturnDate = DateTime.Now;
-
-                        AvailableAgain(ReadyBookAvailable(borrowDAL.Id.Trim()));
-                        
-                        CacheManagerService.IsLoan(MappingLoan(borrowDAL));
-
-                        await Context.SaveChangesAsync();
-
-                        return NoContent();
-                    }
-
-                    return Conflict();
-
-                }
-                if (Char.IsDigit(ClaimVerifier.ClaimID[0]))
-                {
-                    return Unauthorized("This user has no authorization to perform this action.");
-                }
-
-                return BadRequest("Invalid request.");
-
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(400, "An unexpected error occurred. Please try again.");
-            }
+            return Unauthorized("This user doesn't exist.");
         }
+
+        if (ClaimVerifier.ClaimID.StartsWith('L'))
+        {
+            if (CheckLoans() == 0)
+            {
+                return NotFound("Readers haven't requested any book.");
+            }
+
+            var borrowDAL = await Context.Borrows.FirstOrDefaultAsync(borrow => borrow.Id.Trim() == 
+                                                                      BorrowID(CleanedReturnedBook(bookReturned).Trim(),
+                                                                               reader + "-Reader").Trim() && borrow.Reader.Trim() == reader + "-Reader".Trim());
+
+            if (borrowDAL != null)
+            {
+                borrowDAL.ReturnDate = DateTime.Now;
+
+                AvailableAgain(ReadyBookAvailable(borrowDAL.Id.Trim()));
+
+                CacheManagerService.IsLoan(MappingLoan(borrowDAL));
+
+                await Context.SaveChangesAsync();
+
+                return NoContent();
+            }
+
+            return Conflict();
+
+        }
+        if (Char.IsDigit(ClaimVerifier.ClaimID[0]))
+        {
+            return Unauthorized("This user has no authorization to perform this action.");
+        }
+
+        return BadRequest("Invalid request.");
+
+    }
+    catch (Exception ex)
+    {
+        return StatusCode(400, "An unexpected error occurred. Please try again.");
+    }
+}
 ```
 
 #### 4. Librarian-Reader: `LibrarianReaderController`
 
 ##### Overview
 
+This is another relevant task on the Librarian's duty, keeping the Library uncluttered from readers that are no longer a user of this service. A Library is a large, and massive system that holds thousand, or even millions of readers, so to keep its database free from remnants users, a deletion method was assigned to his role.
+
+##### Key Components
+
+- Claim Validation
+
+##### Important Method
+
+A user removal is doing by submitting his ID. The system will check on every model that is related to that ID, and remove them accordingly to their FK relationship until there is no trace of that user data. This action can't be undone.
+
+```c#
+[HttpDelete("DeleteReader/{ID}")]
+[Authorize]
+public async Task<IActionResult> DeleteReader([FromRoute] String ID)
+{
+    try
+    {
+        if (!ClaimVerifier.ClaimValidation())
+        {
+            return Unauthorized("This user doesn't exist.");
+        }
+
+        if (ClaimVerifier.ClaimID.StartsWith('L'))
+        {
+            RemoveBorrows(ID + "-Reader");
+            RemoveReader(ID + "-Reader");
+            RemoveEndUser(ID + "-EndUser");
+            RemoveMember(MemberIDClear(ID));
+
+            return NoContent();
+
+        }
+        if (Char.IsDigit(ClaimVerifier.ClaimID[0]))
+        {
+            return Unauthorized("This user has no authorization to perform this action.");
+        }
+
+        return BadRequest();
+
+    }
+    catch (DbUpdateException ex)
+    {
+        return StatusCode(500, "An unexpected error occurred. Please try again.");
+    }
+    catch (InvalidOperationException ex)
+    {
+        return StatusCode(500, "An unexpected error occurred. Please try again.");
+    }
+    catch (Exception)
+    {
+        return StatusCode(500, "An unexpected error occurred. Please try again.");
+    }
+}
+```
+
+#### 5. Reader: `ReaderBookController`
+
+##### Overview
+
+We've talking about the Librarian job on this API so far. The Reader is also an important piece of the API. Here he is able to borrow a book, list all books, and search for a book.
+
+##### Key Components
+
+- Claim Validation
+- Cache
+
+##### Important Methods
+
+The Reader by submitting the book name that he wants to borrow, the endpoint will look up for the book availability. Being the book available for the Reader, a message containing the book description, and the borrow crucial data for the Reader to be aware of, like the borrow, and the return date.
+
+Whether the book doesn't exist in the database yet, the Reader already requested the book or the book is not available due to all its copies are taken, the Reader will get a message with the corresponding information of the case.
+
+```c#
+[HttpGet("BorrowBook/{bookToBorrow}")]
+[Authorize]
+public async Task<ActionResult<BorrowedBookService>> AcquireBook(String bookToBorrow)
+{
+    try
+    {
+        if (!ClaimVerifier.ClaimValidation())
+        {
+            return Unauthorized("This user doesn't exist.");
+        }
+
+        if (Char.IsDigit(ClaimVerifier.ClaimID[0]))
+        {
+            if (HelperService.CheckBookStorage(bookToBorrow.Trim()) == 0)
+            {
+                return NotFound("This book is not available in the library, yet.");
+            }
+
+            var copiesUnavailable = Context.Books.Where(book =>
+                                                        book.Title.Trim() == bookToBorrow.Trim() && book.Available == false).ToList();
+
+            if (IsAlreadyRequested(copiesUnavailable))
+            {
+                return BadRequest($"You already borrowed the book \"{bookToBorrow}\".");
+            }
+            
+            var bookDAL = await Context.Books.FirstOrDefaultAsync(book =>
+                                                                  book.Title.Trim() == bookToBorrow.Trim() && book.Available);
+
+            if (bookDAL.Available)
+            {
+                //LoadBorrowInformation(bookDAL, Context);
+                LoadBorrowInformation(bookDAL);
+
+                bookDAL.Available = false;
+                Context.SaveChanges();
+
+                return MapDALToServiceBook(bookDAL);
+            }
+
+            return NotFound($"\"{bookToBorrow}\" is not available. You have to wait until a reader returns a copy.");
+
+        }
+        if (ClaimVerifier.ClaimID.StartsWith('L'))
+        {
+            return Unauthorized("Only readers can borrow books.");
+        }
+
+        return BadRequest();
+    }
+    catch (Exception ex)
+    {
+        return StatusCode(500, "An unexpected error occurred. Please try again.");
+    }
+}
+```
+
+On each call, the endpoint will check the cache first, before going into the context, if the cache has already the list updated, the cache will take place as the returner, if not, all books will be fetched as a list, returned as a response, and loaded into the cache for the next call.
+
+```c#
+[HttpGet]
+[Route("ViewBooks")]
+[Authorize]
+public async Task<ActionResult<List<BookService>>> DisplayBooks()
+{
+    try
+    {
+        if (!ClaimVerifier.ClaimValidation())
+        {
+            return Unauthorized("This user doesn't exist.");
+        }
+
+        if (Char.IsDigit(ClaimVerifier.ClaimID[0]))
+        {
+            var cacheBooks = CacheManagerService.CacheService.Get<List<BookService>>($"book:all");
+
+            if (cacheBooks != null)
+            {
+                return cacheBooks;
+            }
+
+            var allBooks = await Context.Books.ToListAsync();
+
+            if (allBooks.Any())
+            {
+                var allBooksList = MappingAllBooks(allBooks);
+
+                CacheManagerService.CacheService.Set("all", allBooksList);
+
+                return allBooksList;
+            }
+
+            return NotFound();
+        }
+        if (ClaimVerifier.ClaimID.StartsWith('L'))
+        {
+            return Unauthorized("This user has no authorization to perform this action.");
+        }
+
+        return BadRequest();
+    }
+    catch (Exception ex)
+    {
+        return StatusCode(500, "An unexpected error occurred. Please try again.");
+    }
+}
+```
+
+Like every search engine on any kind of service, an input has to enter, and received as a parameter on the endpoint. Every GET endpoint has a cache verification that runs before any context interaction for the book data. If the book is already in the memory, the cache will return the book, if not, the context will do it, reloading at the the time the cache with the updated book.
+
+The Reader can only search a book by title, author, genre and editorial. The endpoint automatically will look into the context if the input parameter is on any of those conditions.
+
+```c#
+[HttpGet("FindBook/{toSearch}")]
+[Authorize]
+public async Task<ActionResult<List<BookService>>> SearchBook(String toSearch)
+{
+    try
+    {
+        if (!ClaimVerifier.ClaimValidation())
+        {
+            return Unauthorized("This user doesn't exist.");
+        }
+
+        if (Char.IsDigit(ClaimVerifier.ClaimID[0]))
+        {
+            var searchBookCache = CacheManagerService.CacheService.Get<List<BookService>>($"book:{toSearch}");
+
+            if (searchBookCache != null)
+            {
+                return searchBookCache;
+            }
+
+            var allBooks = await Context.Books.ToListAsync();
+
+            if (allBooks.Any())
+            {
+                var filteredBooks = allBooks.Where(book =>
+                                                   book.Title.Contains(toSearch.Trim()) ||
+                                                   book.Author.Contains(toSearch.Trim()) ||
+                                                   book.Genre.Contains(toSearch.Trim()) ||
+                                                   book.Editorial.Contains(toSearch.Trim())).ToList();
+
+                var allBooksList = MappingAllBooksSearch(filteredBooks);
+
+                CacheManagerService.CacheService.Set(toSearch.Trim(), allBooksList);
+
+                return allBooksList;
+            }
+
+            return NotFound();
+        }
+        if (ClaimVerifier.ClaimID.StartsWith('L'))
+        {
+            return Unauthorized("This user has no authorization to perform this action.");
+        }
+
+        return BadRequest();
+    }
+    catch (Exception ex)
+    {
+        return StatusCode(500, "An unexpected error occurred. Please try again.");
+    }
+}
+```
