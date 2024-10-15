@@ -969,3 +969,15 @@ public async Task<ActionResult<List<BookService>>> SearchBook(String toSearch)
 
 ## Usage
 
+The back-end nature of an API implies the use of a client sending HTTP requests such as POST, GET, PUT and DELETE. For this case, 'Insomnia' is used for this purpose.
+
+On this section it will be explained how to use 'Insomnia' to tryout every aspect of the API.
+
+### Loading Requests into Insomnia
+
+1. Create a new workspace on Insomnia
+2. Select Workspace name![Select Workspace](F:\Downloads\Select Workspace.png)
+
+3. Select "From File" to import the HTTP requests ![From File](F:\Downloads\From File.png)
+4. Select, "Choose a file" from: Project's name (Library) → Scripts → Insomnia_Library.json
+5. After loading successfully the HTTP requests JSON file, Insomnia is ready to start requesting the server.

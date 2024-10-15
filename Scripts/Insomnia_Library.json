@@ -1,1 +1,712 @@
-{"_type":"export","__export_format":4,"__export_date":"2024-10-14T20:22:36.640Z","__export_source":"insomnia.desktop.app:v10.0.0","resources":[{"_id":"req_9e1cd7a8079043da9487858ec7702583","parentId":"fld_2638f0f02c2f48c5b7bc0fc8e4cded28","modified":1728937137886,"created":1717697356726,"url":"https://localhost:7009/api/Member/LogIn","name":"Authentication","description":"","method":"POST","body":{"mimeType":"application/json","text":"{\n  \"username\": \"JaD1964\",\n  \"password\": \"SuperRea1964\"\n}"},"parameters":[],"headers":[{"name":"Content-Type","value":"application/json"},{"name":"User-Agent","value":"insomnia/9.2.0"}],"authentication":{"type":"bearer","token":""},"preRequestScript":"","metaSortKey":-1724293085577,"isPrivate":false,"pathParameters":[],"settingStoreCookies":true,"settingSendCookies":true,"settingDisableRenderRequestBody":false,"settingEncodeUrl":true,"settingRebuildPath":true,"settingFollowRedirects":"global","_type":"request"},{"_id":"fld_2638f0f02c2f48c5b7bc0fc8e4cded28","parentId":"wrk_144585a6a75943658f25d351dde54366","modified":1728937105619,"created":1724293050123,"name":"Librarian-Reader","description":"","environment":{},"environmentPropertyOrder":null,"metaSortKey":-1724293050123,"_type":"request_group"},{"_id":"wrk_144585a6a75943658f25d351dde54366","parentId":null,"modified":1717431991455,"created":1717431991455,"name":"Library","description":"","scope":"collection","_type":"workspace"},{"_id":"req_a639f373ed1a4e7ab658c251fc021b96","parentId":"fld_25c36f07e8474306806a085c631f5103","modified":1728937168772,"created":1718128998408,"url":"https://localhost:7009/api/LibrarianBook/AddBook","name":"Add a New Book","description":"","method":"POST","body":{"mimeType":"multipart/form-data","params":[{"id":"pair_d9ff6704166941b29f3243a07b7dee42","name":"incomingBook","value":"{\n  \"id\": \"ThinkingFast&Slow-DavidKahneman-2020-Productivity-N°1\",\n  \"title\": \"Thinking, Fast & Slow\",\n  \"author\": \"David Kahneman\",\n  \"genre\": \"Improvement\",\n  \"year\": 2020,\n  \"editorial\": \"Do Better, Do Fast\",\n  \"available\": true\n}","description":"","type":"text","multiline":"application/json","disabled":false},{"id":"pair_9860f8bc717b44629a0815e1db8f2164","name":"incomingCover","value":"","description":"","disabled":false,"type":"file","fileName":"E:\\Programming\\API\\Books Lender_Borrower\\Covers\\Thinking, Fast & Slow.jpg"}]},"parameters":[{"id":"pair_517ee79106dd4138b62c8633781ddcdc","name":"","value":"","description":""}],"headers":[{"name":"Content-Type","value":"multipart/form-data","id":"pair_9188eb8d14cf4f75b44abc334b83700b"},{"name":"User-Agent","value":"insomnia/9.2.0","id":"pair_8ad910758b074538a1b44f47c54c5b75"}],"authentication":{"type":"bearer","token":""},"preRequestScript":"","metaSortKey":-1724293390190,"isPrivate":false,"pathParameters":[],"settingStoreCookies":true,"settingSendCookies":true,"settingDisableRenderRequestBody":false,"settingEncodeUrl":true,"settingRebuildPath":true,"settingFollowRedirects":"global","_type":"request"},{"_id":"fld_25c36f07e8474306806a085c631f5103","parentId":"fld_fb246f0961254208aa65d604edd962e3","modified":1727807273184,"created":1724293387045,"name":"POST","description":"","environment":{},"environmentPropertyOrder":null,"metaSortKey":-1724293480555,"_type":"request_group"},{"_id":"fld_fb246f0961254208aa65d604edd962e3","parentId":"wrk_144585a6a75943658f25d351dde54366","modified":1728423573437,"created":1724292843989,"name":"Librarian","description":"","environment":{},"environmentPropertyOrder":null,"metaSortKey":-1724292843989,"_type":"request_group"},{"_id":"req_6aa138e49f584d8fa6876e04a59393a3","parentId":"fld_25c36f07e8474306806a085c631f5103","modified":1728937192630,"created":1717648792925,"url":"https://localhost:7009/api/Member/Hire","name":"Sign Up Librarian","description":"","method":"POST","body":{"mimeType":"application/json","text":"{\n  \"idLibrarian\": \"L8.847.632-9\",\n  \"username\": \"JaD2024\",\n  \"password\": \"SuperLib2024\"\n}"},"parameters":[],"headers":[{"name":"Content-Type","value":"application/json"},{"name":"User-Agent","value":"insomnia/9.2.0"}],"authentication":{"type":"bearer"},"preRequestScript":"","metaSortKey":-1724293390090,"isPrivate":false,"pathParameters":[],"settingStoreCookies":true,"settingSendCookies":true,"settingDisableRenderRequestBody":false,"settingEncodeUrl":true,"settingRebuildPath":true,"settingFollowRedirects":"global","_type":"request"},{"_id":"req_e9f40d4163724e39b8fba6b812909c2e","parentId":"fld_84ff9e018c6846658c860a790dfbf84f","modified":1728937197154,"created":1721861122469,"url":"https://localhost:7009/api/LibrarianLoan/UpdateLoan/UNSCRIPTED, 175487230","name":"Update a Loan","description":"","method":"PUT","body":{"mimeType":"application/json","text":""},"parameters":[],"headers":[{"name":"Content-Type","value":"application/json"},{"name":"User-Agent","value":"insomnia/9.3.2"}],"authentication":{"type":"bearer","token":""},"metaSortKey":-1724293493860,"isPrivate":false,"pathParameters":[],"settingStoreCookies":true,"settingSendCookies":true,"settingDisableRenderRequestBody":false,"settingEncodeUrl":true,"settingRebuildPath":true,"settingFollowRedirects":"global","_type":"request"},{"_id":"fld_84ff9e018c6846658c860a790dfbf84f","parentId":"fld_fb246f0961254208aa65d604edd962e3","modified":1724293501661,"created":1724293480455,"name":"PUT","description":"","environment":{},"environmentPropertyOrder":null,"metaSortKey":-1724293480455,"_type":"request_group"},{"_id":"req_5167553304e64f4f9d72374b2070b093","parentId":"fld_84ff9e018c6846658c860a790dfbf84f","modified":1728937200312,"created":1720492876782,"url":"https://localhost:7009/api/LibrarianBook/UpdateBook","name":"Update a Book","description":"","method":"PUT","body":{"mimeType":"multipart/form-data","params":[{"id":"pair-empty","name":"incomingBook","value":"{\n  \"id\": \"ThinkingFast&Slow-DavidKahneman-2020-Productivity-N°1\",\n  \"title\": \"Thinking, Fast & Slow\",\n  \"author\": \"David Kahneman\",\n  \"genre\": \"Improvement\",\n  \"year\": 2007,\n  \"editorial\": \"Do Better, Do Fast\",\n  \"available\": true\n}","description":"","disabled":false,"type":"text","multiline":"application/json"},{"id":"pair_7965a11e503a420a812312c6eaf47d92","name":"incomingCover","value":"","description":"","disabled":false,"type":"file","fileName":"E:\\Programming\\API\\Books Lender_Borrower\\Covers\\Thinking, Fast & Slow.jpg"}]},"parameters":[],"headers":[{"name":"Content-Type","value":"multipart/form-data"},{"name":"User-Agent","value":"insomnia/9.3.2"}],"authentication":{"type":"bearer","token":""},"metaSortKey":-1724293493760,"isPrivate":false,"pathParameters":[],"settingStoreCookies":true,"settingSendCookies":true,"settingDisableRenderRequestBody":false,"settingEncodeUrl":true,"settingRebuildPath":true,"settingFollowRedirects":"global","_type":"request"},{"_id":"req_9502ad90ba7b4013a1594d9c3bea0add","parentId":"fld_c90f81fcda15477d8f7be800be7ecd5f","modified":1728937206471,"created":1720587854166,"url":"https://localhost:7009/api/LibrarianBook/ViewBook/ThinkingFast&Slow-DavidKahneman-2020-Productivity-N°1","name":"View a Book","description":"","method":"GET","body":{"mimeType":"application/json","text":""},"parameters":[],"headers":[{"name":"Content-Type","value":"application/json"},{"name":"User-Agent","value":"insomnia/9.3.2"}],"authentication":{"type":"bearer","token":""},"metaSortKey":-1724293428914,"isPrivate":false,"pathParameters":[],"settingStoreCookies":true,"settingSendCookies":true,"settingDisableRenderRequestBody":false,"settingEncodeUrl":true,"settingRebuildPath":true,"settingFollowRedirects":"global","_type":"request"},{"_id":"fld_c90f81fcda15477d8f7be800be7ecd5f","parentId":"fld_fb246f0961254208aa65d604edd962e3","modified":1726017432946,"created":1724293405751,"name":"GET","description":"","environment":{},"environmentPropertyOrder":null,"metaSortKey":-1724293465125.5,"_type":"request_group"},{"_id":"req_a5cbc91779084e1685889c4d69ac381c","parentId":"fld_c90f81fcda15477d8f7be800be7ecd5f","modified":1728937209080,"created":1721774331877,"url":"https://localhost:7009/api/LibrarianLoan/ViewLoans/","name":"View Loans","description":"","method":"GET","body":{},"parameters":[],"headers":[{"name":"User-Agent","value":"insomnia/9.3.2"}],"authentication":{"type":"bearer","token":""},"metaSortKey":-1724293428814,"isPrivate":false,"pathParameters":[],"settingStoreCookies":true,"settingSendCookies":true,"settingDisableRenderRequestBody":false,"settingEncodeUrl":true,"settingRebuildPath":true,"settingFollowRedirects":"global","_type":"request"},{"_id":"req_98338e6a1bd548ee9d7fbaf332115e88","parentId":"fld_ba3102840a42422a95c5adf728f34370","modified":1728937212928,"created":1722476296355,"url":"https://localhost:7009/api/LibrarianReader/DeleteReader/18852157K","name":"Remove Reader","description":"","method":"DELETE","body":{"mimeType":"application/json","text":""},"parameters":[],"headers":[{"name":"Content-Type","value":"application/json"},{"name":"User-Agent","value":"insomnia/9.3.3"}],"authentication":{"type":"bearer","token":""},"metaSortKey":-1724293461379,"isPrivate":false,"pathParameters":[],"settingStoreCookies":true,"settingSendCookies":true,"settingDisableRenderRequestBody":false,"settingEncodeUrl":true,"settingRebuildPath":true,"settingFollowRedirects":"global","_type":"request"},{"_id":"fld_ba3102840a42422a95c5adf728f34370","parentId":"fld_fb246f0961254208aa65d604edd962e3","modified":1724293449796,"created":1724293449796,"name":"DELETE","description":"","environment":{},"environmentPropertyOrder":null,"metaSortKey":-1724293449796,"_type":"request_group"},{"_id":"req_0f819f00fb414274a2eca2c936466b9a","parentId":"fld_ba3102840a42422a95c5adf728f34370","modified":1728937215658,"created":1720563015255,"url":"https://localhost:7009/api/LibrarianBook/DeleteBook/UNSCRIPTED-MJDeMarco-2023-TheReal1%-N°1","name":"Delete a Book","description":"","method":"DELETE","body":{},"parameters":[],"headers":[{"name":"User-Agent","value":"insomnia/9.3.2"}],"authentication":{"type":"bearer","token":""},"metaSortKey":-1724293461279,"isPrivate":false,"pathParameters":[],"settingStoreCookies":true,"settingSendCookies":true,"settingDisableRenderRequestBody":false,"settingEncodeUrl":true,"settingRebuildPath":true,"settingFollowRedirects":"global","_type":"request"},{"_id":"req_4d49b445ef9a48c8a675977af9a1b894","parentId":"fld_e03a7e8b880f4bc5abbbb33d75ebb758","modified":1727980564517,"created":1717432146842,"url":"https://localhost:7009/api/Member/SignUp","name":"Sign Up Reader","description":"","method":"POST","body":{"mimeType":"application/json","text":"{\n  \"idMember\": \"17.548.723-0\",\n  \"name\": \"Jane Doe\",\n  \"phone\": \"805412365\",\n  \"email\": \"example@hotmail.com\",\n  \"age\": 30,\n  \"username\": \"JaD1964\",\n  \"password\": \"SuperRea1964\"\n}"},"parameters":[],"headers":[{"name":"Content-Type","value":"application/json"},{"name":"User-Agent","value":"insomnia/9.2.0"}],"authentication":{"type":"bearer","disabled":true},"preRequestScript":"","metaSortKey":-1724293558239,"isPrivate":false,"pathParameters":[],"settingStoreCookies":true,"settingSendCookies":true,"settingDisableRenderRequestBody":false,"settingEncodeUrl":true,"settingRebuildPath":true,"settingFollowRedirects":"global","_type":"request"},{"_id":"fld_e03a7e8b880f4bc5abbbb33d75ebb758","parentId":"fld_9cfad261ac4a430bbd49a9e4edfa1cd9","modified":1724293572936,"created":1724293553610,"name":"POST","description":"","environment":{},"environmentPropertyOrder":null,"metaSortKey":-1724293570142,"_type":"request_group"},{"_id":"fld_9cfad261ac4a430bbd49a9e4edfa1cd9","parentId":"wrk_144585a6a75943658f25d351dde54366","modified":1728423204877,"created":1724292991764,"name":"Reader","description":"","environment":{},"environmentPropertyOrder":null,"metaSortKey":-1717432146742,"_type":"request_group"},{"_id":"req_eabcbd803a234fd8ba51bd631d7db0bb","parentId":"fld_bdbd0362dd3641029b960206678a42b3","modified":1728937225400,"created":1721358279160,"url":"https://localhost:7009/api/ReaderBook/ViewBooks/","name":"View Books","description":"","method":"GET","body":{},"parameters":[],"headers":[{"name":"User-Agent","value":"insomnia/9.3.2"}],"authentication":{"type":"bearer","token":""},"metaSortKey":-1724293579288,"isPrivate":false,"pathParameters":[],"settingStoreCookies":true,"settingSendCookies":true,"settingDisableRenderRequestBody":false,"settingEncodeUrl":true,"settingRebuildPath":true,"settingFollowRedirects":"global","_type":"request"},{"_id":"fld_bdbd0362dd3641029b960206678a42b3","parentId":"fld_9cfad261ac4a430bbd49a9e4edfa1cd9","modified":1724293570042,"created":1724293570042,"name":"GET","description":"","environment":{},"environmentPropertyOrder":null,"metaSortKey":-1724293570042,"_type":"request_group"},{"_id":"req_497b7b36fb5d415e968ca3259fd2ebad","parentId":"fld_bdbd0362dd3641029b960206678a42b3","modified":1728937227965,"created":1721684341921,"url":"https://localhost:7009/api/ReaderBook/FindBook/Can't Hurt Me","name":"Search a Book","description":"","method":"GET","body":{},"parameters":[],"headers":[{"name":"User-Agent","value":"insomnia/9.3.2"}],"authentication":{"type":"bearer","token":""},"metaSortKey":-1724293579188,"isPrivate":false,"pathParameters":[],"settingStoreCookies":true,"settingSendCookies":true,"settingDisableRenderRequestBody":false,"settingEncodeUrl":true,"settingRebuildPath":true,"settingFollowRedirects":"global","_type":"request"},{"_id":"req_c81bfe6fd97b4cab955e08b8d44215f3","parentId":"fld_bdbd0362dd3641029b960206678a42b3","modified":1728937231143,"created":1720730086022,"url":"  https://localhost:7009/api/ReaderBook/BorrowBook/No More Mr.Nice Guy","name":"Borrow a Book","description":"","method":"GET","body":{},"parameters":[],"headers":[{"name":"User-Agent","value":"insomnia/9.3.2"}],"authentication":{"type":"bearer","token":""},"metaSortKey":-1724293579088,"isPrivate":false,"pathParameters":[],"settingStoreCookies":true,"settingSendCookies":true,"settingDisableRenderRequestBody":false,"settingEncodeUrl":true,"settingRebuildPath":true,"settingFollowRedirects":"global","_type":"request"},{"_id":"env_d3ffbbf57362c8fc9151c647310cb380d7cbb074","parentId":"wrk_144585a6a75943658f25d351dde54366","modified":1719544623098,"created":1717431991458,"name":"Base Environment","data":{},"dataPropertyOrder":{},"color":null,"isPrivate":false,"metaSortKey":1717431991458,"_type":"environment"},{"_id":"jar_d3ffbbf57362c8fc9151c647310cb380d7cbb074","parentId":"wrk_144585a6a75943658f25d351dde54366","modified":1719544623096,"created":1717431991459,"name":"Default Jar","cookies":[],"_type":"cookie_jar"}]}
+{
+  "_type": "export",
+  "__export_format": 4,
+  "__export_date": "2024-10-14T20:22:36.640Z",
+  "__export_source": "insomnia.desktop.app:v10.0.0",
+  "resources": [
+    {
+      "_id": "req_9e1cd7a8079043da9487858ec7702583",
+      "parentId": "fld_2638f0f02c2f48c5b7bc0fc8e4cded28",
+      "modified": 1728937137886,
+      "created": 1717697356726,
+      "url": "https://localhost:7009/api/Member/LogIn",
+      "name": "Authentication",
+      "description": "",
+      "method": "POST",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"username\": \"JaD1964\",\n  \"password\": \"SuperRea1964\"\n}"
+      },
+      "parameters": [
+      ],
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        },
+        {
+          "name": "User-Agent",
+          "value": "insomnia/9.2.0"
+        }
+      ],
+      "authentication": {
+        "type": "bearer",
+        "token": ""
+      },
+      "preRequestScript": "",
+      "metaSortKey": -1724293085577,
+      "isPrivate": false,
+      "pathParameters": [
+      ],
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "_type": "request"
+    },
+    {
+      "_id": "fld_2638f0f02c2f48c5b7bc0fc8e4cded28",
+      "parentId": "wrk_144585a6a75943658f25d351dde54366",
+      "modified": 1728937105619,
+      "created": 1724293050123,
+      "name": "Librarian-Reader",
+      "description": "",
+      "environment": {
+      },
+      "environmentPropertyOrder": null,
+      "metaSortKey": -1724293050123,
+      "_type": "request_group"
+    },
+    {
+      "_id": "wrk_144585a6a75943658f25d351dde54366",
+      "parentId": null,
+      "modified": 1717431991455,
+      "created": 1717431991455,
+      "name": "Library",
+      "description": "",
+      "scope": "collection",
+      "_type": "workspace"
+    },
+    {
+      "_id": "req_a639f373ed1a4e7ab658c251fc021b96",
+      "parentId": "fld_25c36f07e8474306806a085c631f5103",
+      "modified": 1728937168772,
+      "created": 1718128998408,
+      "url": "https://localhost:7009/api/LibrarianBook/AddBook",
+      "name": "Add a New Book",
+      "description": "",
+      "method": "POST",
+      "body": {
+        "mimeType": "multipart/form-data",
+        "params": [
+          {
+            "id": "pair_d9ff6704166941b29f3243a07b7dee42",
+            "name": "incomingBook",
+            "value": "{\n  \"id\": \"ThinkingFast&Slow-DavidKahneman-2020-Productivity-N°1\",\n  \"title\": \"Thinking, Fast & Slow\",\n  \"author\": \"David Kahneman\",\n  \"genre\": \"Improvement\",\n  \"year\": 2020,\n  \"editorial\": \"Do Better, Do Fast\",\n  \"available\": true\n}",
+            "description": "",
+            "type": "text",
+            "multiline": "application/json",
+            "disabled": false
+          },
+          {
+            "id": "pair_9860f8bc717b44629a0815e1db8f2164",
+            "name": "incomingCover",
+            "value": "",
+            "description": "",
+            "disabled": false,
+            "type": "file",
+            "fileName": "E:\\Programming\\API\\Books Lender_Borrower\\Covers\\Thinking, Fast & Slow.jpg"
+          }
+        ]
+      },
+      "parameters": [
+        {
+          "id": "pair_517ee79106dd4138b62c8633781ddcdc",
+          "name": "",
+          "value": "",
+          "description": ""
+        }
+      ],
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "multipart/form-data",
+          "id": "pair_9188eb8d14cf4f75b44abc334b83700b"
+        },
+        {
+          "name": "User-Agent",
+          "value": "insomnia/9.2.0",
+          "id": "pair_8ad910758b074538a1b44f47c54c5b75"
+        }
+      ],
+      "authentication": {
+        "type": "bearer",
+        "token": ""
+      },
+      "preRequestScript": "",
+      "metaSortKey": -1724293390190,
+      "isPrivate": false,
+      "pathParameters": [
+      ],
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "_type": "request"
+    },
+    {
+      "_id": "fld_25c36f07e8474306806a085c631f5103",
+      "parentId": "fld_fb246f0961254208aa65d604edd962e3",
+      "modified": 1727807273184,
+      "created": 1724293387045,
+      "name": "POST",
+      "description": "",
+      "environment": {
+      },
+      "environmentPropertyOrder": null,
+      "metaSortKey": -1724293480555,
+      "_type": "request_group"
+    },
+    {
+      "_id": "fld_fb246f0961254208aa65d604edd962e3",
+      "parentId": "wrk_144585a6a75943658f25d351dde54366",
+      "modified": 1728423573437,
+      "created": 1724292843989,
+      "name": "Librarian",
+      "description": "",
+      "environment": {
+      },
+      "environmentPropertyOrder": null,
+      "metaSortKey": -1724292843989,
+      "_type": "request_group"
+    },
+    {
+      "_id": "req_6aa138e49f584d8fa6876e04a59393a3",
+      "parentId": "fld_25c36f07e8474306806a085c631f5103",
+      "modified": 1728937192630,
+      "created": 1717648792925,
+      "url": "https://localhost:7009/api/Member/Hire",
+      "name": "Sign Up Librarian",
+      "description": "",
+      "method": "POST",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"idLibrarian\": \"L8.847.632-9\",\n  \"username\": \"JaD2024\",\n  \"password\": \"SuperLib2024\"\n}"
+      },
+      "parameters": [
+      ],
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        },
+        {
+          "name": "User-Agent",
+          "value": "insomnia/9.2.0"
+        }
+      ],
+      "authentication": {
+        "type": "bearer"
+      },
+      "preRequestScript": "",
+      "metaSortKey": -1724293390090,
+      "isPrivate": false,
+      "pathParameters": [
+      ],
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "_type": "request"
+    },
+    {
+      "_id": "req_e9f40d4163724e39b8fba6b812909c2e",
+      "parentId": "fld_84ff9e018c6846658c860a790dfbf84f",
+      "modified": 1728937197154,
+      "created": 1721861122469,
+      "url": "https://localhost:7009/api/LibrarianLoan/UpdateLoan/UNSCRIPTED, 175487230",
+      "name": "Update a Loan",
+      "description": "",
+      "method": "PUT",
+      "body": {
+        "mimeType": "application/json",
+        "text": ""
+      },
+      "parameters": [
+      ],
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        },
+        {
+          "name": "User-Agent",
+          "value": "insomnia/9.3.2"
+        }
+      ],
+      "authentication": {
+        "type": "bearer",
+        "token": ""
+      },
+      "metaSortKey": -1724293493860,
+      "isPrivate": false,
+      "pathParameters": [
+      ],
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "_type": "request"
+    },
+    {
+      "_id": "fld_84ff9e018c6846658c860a790dfbf84f",
+      "parentId": "fld_fb246f0961254208aa65d604edd962e3",
+      "modified": 1724293501661,
+      "created": 1724293480455,
+      "name": "PUT",
+      "description": "",
+      "environment": {
+      },
+      "environmentPropertyOrder": null,
+      "metaSortKey": -1724293480455,
+      "_type": "request_group"
+    },
+    {
+      "_id": "req_5167553304e64f4f9d72374b2070b093",
+      "parentId": "fld_84ff9e018c6846658c860a790dfbf84f",
+      "modified": 1728937200312,
+      "created": 1720492876782,
+      "url": "https://localhost:7009/api/LibrarianBook/UpdateBook",
+      "name": "Update a Book",
+      "description": "",
+      "method": "PUT",
+      "body": {
+        "mimeType": "multipart/form-data",
+        "params": [
+          {
+            "id": "pair-empty",
+            "name": "incomingBook",
+            "value": "{\n  \"id\": \"ThinkingFast&Slow-DavidKahneman-2020-Productivity-N°1\",\n  \"title\": \"Thinking, Fast & Slow\",\n  \"author\": \"David Kahneman\",\n  \"genre\": \"Improvement\",\n  \"year\": 2007,\n  \"editorial\": \"Do Better, Do Fast\",\n  \"available\": true\n}",
+            "description": "",
+            "disabled": false,
+            "type": "text",
+            "multiline": "application/json"
+          },
+          {
+            "id": "pair_7965a11e503a420a812312c6eaf47d92",
+            "name": "incomingCover",
+            "value": "",
+            "description": "",
+            "disabled": false,
+            "type": "file",
+            "fileName": "E:\\Programming\\API\\Books Lender_Borrower\\Covers\\Thinking, Fast & Slow.jpg"
+          }
+        ]
+      },
+      "parameters": [
+      ],
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "multipart/form-data"
+        },
+        {
+          "name": "User-Agent",
+          "value": "insomnia/9.3.2"
+        }
+      ],
+      "authentication": {
+        "type": "bearer",
+        "token": ""
+      },
+      "metaSortKey": -1724293493760,
+      "isPrivate": false,
+      "pathParameters": [
+      ],
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "_type": "request"
+    },
+    {
+      "_id": "req_9502ad90ba7b4013a1594d9c3bea0add",
+      "parentId": "fld_c90f81fcda15477d8f7be800be7ecd5f",
+      "modified": 1728937206471,
+      "created": 1720587854166,
+      "url": "https://localhost:7009/api/LibrarianBook/ViewBook/ThinkingFast&Slow-DavidKahneman-2020-Productivity-N°1",
+      "name": "View a Book",
+      "description": "",
+      "method": "GET",
+      "body": {
+        "mimeType": "application/json",
+        "text": ""
+      },
+      "parameters": [
+      ],
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        },
+        {
+          "name": "User-Agent",
+          "value": "insomnia/9.3.2"
+        }
+      ],
+      "authentication": {
+        "type": "bearer",
+        "token": ""
+      },
+      "metaSortKey": -1724293428914,
+      "isPrivate": false,
+      "pathParameters": [
+      ],
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "_type": "request"
+    },
+    {
+      "_id": "fld_c90f81fcda15477d8f7be800be7ecd5f",
+      "parentId": "fld_fb246f0961254208aa65d604edd962e3",
+      "modified": 1726017432946,
+      "created": 1724293405751,
+      "name": "GET",
+      "description": "",
+      "environment": {
+      },
+      "environmentPropertyOrder": null,
+      "metaSortKey": -1724293465125.5,
+      "_type": "request_group"
+    },
+    {
+      "_id": "req_a5cbc91779084e1685889c4d69ac381c",
+      "parentId": "fld_c90f81fcda15477d8f7be800be7ecd5f",
+      "modified": 1728937209080,
+      "created": 1721774331877,
+      "url": "https://localhost:7009/api/LibrarianLoan/ViewLoans/",
+      "name": "View Loans",
+      "description": "",
+      "method": "GET",
+      "body": {
+      },
+      "parameters": [
+      ],
+      "headers": [
+        {
+          "name": "User-Agent",
+          "value": "insomnia/9.3.2"
+        }
+      ],
+      "authentication": {
+        "type": "bearer",
+        "token": ""
+      },
+      "metaSortKey": -1724293428814,
+      "isPrivate": false,
+      "pathParameters": [
+      ],
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "_type": "request"
+    },
+    {
+      "_id": "req_98338e6a1bd548ee9d7fbaf332115e88",
+      "parentId": "fld_ba3102840a42422a95c5adf728f34370",
+      "modified": 1728937212928,
+      "created": 1722476296355,
+      "url": "https://localhost:7009/api/LibrarianReader/DeleteReader/18852157K",
+      "name": "Remove Reader",
+      "description": "",
+      "method": "DELETE",
+      "body": {
+        "mimeType": "application/json",
+        "text": ""
+      },
+      "parameters": [
+      ],
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        },
+        {
+          "name": "User-Agent",
+          "value": "insomnia/9.3.3"
+        }
+      ],
+      "authentication": {
+        "type": "bearer",
+        "token": ""
+      },
+      "metaSortKey": -1724293461379,
+      "isPrivate": false,
+      "pathParameters": [
+      ],
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "_type": "request"
+    },
+    {
+      "_id": "fld_ba3102840a42422a95c5adf728f34370",
+      "parentId": "fld_fb246f0961254208aa65d604edd962e3",
+      "modified": 1724293449796,
+      "created": 1724293449796,
+      "name": "DELETE",
+      "description": "",
+      "environment": {
+      },
+      "environmentPropertyOrder": null,
+      "metaSortKey": -1724293449796,
+      "_type": "request_group"
+    },
+    {
+      "_id": "req_0f819f00fb414274a2eca2c936466b9a",
+      "parentId": "fld_ba3102840a42422a95c5adf728f34370",
+      "modified": 1728937215658,
+      "created": 1720563015255,
+      "url": "https://localhost:7009/api/LibrarianBook/DeleteBook/UNSCRIPTED-MJDeMarco-2023-TheReal1%-N°1",
+      "name": "Delete a Book",
+      "description": "",
+      "method": "DELETE",
+      "body": {
+      },
+      "parameters": [
+      ],
+      "headers": [
+        {
+          "name": "User-Agent",
+          "value": "insomnia/9.3.2"
+        }
+      ],
+      "authentication": {
+        "type": "bearer",
+        "token": ""
+      },
+      "metaSortKey": -1724293461279,
+      "isPrivate": false,
+      "pathParameters": [
+      ],
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "_type": "request"
+    },
+    {
+      "_id": "req_4d49b445ef9a48c8a675977af9a1b894",
+      "parentId": "fld_e03a7e8b880f4bc5abbbb33d75ebb758",
+      "modified": 1727980564517,
+      "created": 1717432146842,
+      "url": "https://localhost:7009/api/Member/SignUp",
+      "name": "Sign Up Reader",
+      "description": "",
+      "method": "POST",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"idMember\": \"17.548.723-0\",\n  \"name\": \"Jane Doe\",\n  \"phone\": \"805412365\",\n  \"email\": \"example@hotmail.com\",\n  \"age\": 30,\n  \"username\": \"JaD1964\",\n  \"password\": \"SuperRea1964\"\n}"
+      },
+      "parameters": [
+      ],
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        },
+        {
+          "name": "User-Agent",
+          "value": "insomnia/9.2.0"
+        }
+      ],
+      "authentication": {
+        "type": "bearer",
+        "disabled": true
+      },
+      "preRequestScript": "",
+      "metaSortKey": -1724293558239,
+      "isPrivate": false,
+      "pathParameters": [
+      ],
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "_type": "request"
+    },
+    {
+      "_id": "fld_e03a7e8b880f4bc5abbbb33d75ebb758",
+      "parentId": "fld_9cfad261ac4a430bbd49a9e4edfa1cd9",
+      "modified": 1724293572936,
+      "created": 1724293553610,
+      "name": "POST",
+      "description": "",
+      "environment": {
+      },
+      "environmentPropertyOrder": null,
+      "metaSortKey": -1724293570142,
+      "_type": "request_group"
+    },
+    {
+      "_id": "fld_9cfad261ac4a430bbd49a9e4edfa1cd9",
+      "parentId": "wrk_144585a6a75943658f25d351dde54366",
+      "modified": 1728423204877,
+      "created": 1724292991764,
+      "name": "Reader",
+      "description": "",
+      "environment": {
+      },
+      "environmentPropertyOrder": null,
+      "metaSortKey": -1717432146742,
+      "_type": "request_group"
+    },
+    {
+      "_id": "req_eabcbd803a234fd8ba51bd631d7db0bb",
+      "parentId": "fld_bdbd0362dd3641029b960206678a42b3",
+      "modified": 1728937225400,
+      "created": 1721358279160,
+      "url": "https://localhost:7009/api/ReaderBook/ViewBooks/",
+      "name": "View Books",
+      "description": "",
+      "method": "GET",
+      "body": {
+      },
+      "parameters": [
+      ],
+      "headers": [
+        {
+          "name": "User-Agent",
+          "value": "insomnia/9.3.2"
+        }
+      ],
+      "authentication": {
+        "type": "bearer",
+        "token": ""
+      },
+      "metaSortKey": -1724293579288,
+      "isPrivate": false,
+      "pathParameters": [
+      ],
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "_type": "request"
+    },
+    {
+      "_id": "fld_bdbd0362dd3641029b960206678a42b3",
+      "parentId": "fld_9cfad261ac4a430bbd49a9e4edfa1cd9",
+      "modified": 1724293570042,
+      "created": 1724293570042,
+      "name": "GET",
+      "description": "",
+      "environment": {
+      },
+      "environmentPropertyOrder": null,
+      "metaSortKey": -1724293570042,
+      "_type": "request_group"
+    },
+    {
+      "_id": "req_497b7b36fb5d415e968ca3259fd2ebad",
+      "parentId": "fld_bdbd0362dd3641029b960206678a42b3",
+      "modified": 1728937227965,
+      "created": 1721684341921,
+      "url": "https://localhost:7009/api/ReaderBook/FindBook/Can't Hurt Me",
+      "name": "Search a Book",
+      "description": "",
+      "method": "GET",
+      "body": {
+      },
+      "parameters": [
+      ],
+      "headers": [
+        {
+          "name": "User-Agent",
+          "value": "insomnia/9.3.2"
+        }
+      ],
+      "authentication": {
+        "type": "bearer",
+        "token": ""
+      },
+      "metaSortKey": -1724293579188,
+      "isPrivate": false,
+      "pathParameters": [
+      ],
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "_type": "request"
+    },
+    {
+      "_id": "req_c81bfe6fd97b4cab955e08b8d44215f3",
+      "parentId": "fld_bdbd0362dd3641029b960206678a42b3",
+      "modified": 1728937231143,
+      "created": 1720730086022,
+      "url": "  https://localhost:7009/api/ReaderBook/BorrowBook/No More Mr.Nice Guy",
+      "name": "Borrow a Book",
+      "description": "",
+      "method": "GET",
+      "body": {
+      },
+      "parameters": [
+      ],
+      "headers": [
+        {
+          "name": "User-Agent",
+          "value": "insomnia/9.3.2"
+        }
+      ],
+      "authentication": {
+        "type": "bearer",
+        "token": ""
+      },
+      "metaSortKey": -1724293579088,
+      "isPrivate": false,
+      "pathParameters": [
+      ],
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "_type": "request"
+    },
+    {
+      "_id": "env_d3ffbbf57362c8fc9151c647310cb380d7cbb074",
+      "parentId": "wrk_144585a6a75943658f25d351dde54366",
+      "modified": 1719544623098,
+      "created": 1717431991458,
+      "name": "Base Environment",
+      "data": {
+      },
+      "dataPropertyOrder": {
+      },
+      "color": null,
+      "isPrivate": false,
+      "metaSortKey": 1717431991458,
+      "_type": "environment"
+    },
+    {
+      "_id": "jar_d3ffbbf57362c8fc9151c647310cb380d7cbb074",
+      "parentId": "wrk_144585a6a75943658f25d351dde54366",
+      "modified": 1719544623096,
+      "created": 1717431991459,
+      "name": "Default Jar",
+      "cookies": [
+      ],
+      "_type": "cookie_jar"
+    }
+  ]
+}
