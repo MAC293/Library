@@ -984,3 +984,182 @@ On this section it will be explained how to use 'Insomnia' to tryout every aspec
 
 ### HTTP Requests
 
+#### Librarian-Reader
+
+#####     POST
+
+​    **Authentication**
+
+1. URL: https://localhost:7009/api/Member/LogIn
+2. Body: it's the JSON object that contains the credentials either of the Librarian or the reader Reader for their authentication into the Library.
+
+​	Reader
+
+```json
+{ 
+  "username": "JaD1964",
+  "password": "SuperRea1964"
+}
+```
+
+​	Librarian
+
+```json
+{
+  "username": "JaD2024",
+  "password": "SuperLib2024"
+}
+```
+
+3. Response: once the body within the request is send, the server should return a JWT.
+
+#### Librarian
+
+   #####    POST
+
+   **Add a New Book**
+
+1. URL: https://localhost:7009/api/LibrarianBook/AddBook
+
+2. Body: it's comprised by two parameters. The Book itself being a JSON, and an image file being attached.
+
+   Book: this object is mandatory to be named, "incomingBook".
+
+   ```json
+   {
+     "id": "UNSCRIPTED-MJDeMarco-2023-TheReal1%-N°1",
+     "title": "UNSCRIPTED",
+     "author": "MJ DeMarco",
+     "genre": "Money",
+     "year": 2023,
+     "editorial": "The Real 1%",
+     "available": true
+   }
+   ```
+
+   Image: this attachment is also mandatory to be named, "incomingCover".
+
+3. Response: as the Librarian wants to create a new book, **the JWT returned as response at the login request must be pasted on the Auth tab on the Token field, so the server validates first the identity of the user before continue with the request.**
+
+ **Sign Up Librarian**
+
+1. URL: https://localhost:7009/api/Member/Hire
+
+2. Body: it's the JSON object that holds the information of the new Librarian that's about to sign up to the Library system as administrator.
+
+```json
+{
+  "idLibrarian": "L8.847.632-9",
+  "username": "JaD2024",
+  "password": "SuperLib2024"
+}
+```
+
+3. Response: either the request body meets or not the requirements, a message is returned on the right panel of the API client.
+
+  ##### PUT
+
+  **Update a Loan**
+
+1. URL: https://localhost:7009/api/LibrarianLoan/UpdateLoan/
+2. Parameters: to update the status of a loan to "returned". Two parameters must be typed on the URL. The exact name of the book (Lowercase, uppercase, symbols, punctuation, etc), and the Reader ID number (Without hyphen and periods).
+3. Response: the user will get a positive or negative message coming from the server based on the result.
+
+  **Update a Book**
+
+1. URL: https://localhost:7009/api/LibrarianBook/UpdateBook
+
+2. Body: it has the same criteria as, "Add a New Book". A JSON object, and an attached image, keeping the Book, and Image variables name. For the Book update, the same creation JSON object must be entered, with the difference that an attribute has to change, to represent the update process. On the other hand, a new image must be selected. 
+
+   ```json
+   {
+     "id": "UNSCRIPTED-MJDeMarco-2023-TheReal1%-N°1",
+     "title": "UNSCRIPTED",
+     "author": "MJ DeMarco",
+     "genre": "Money",
+     "year": 2023,
+     "editorial": "The Real 1%",
+     "available": true
+   }
+   ```
+
+   If we want to change a book, we just replace the old value with the new one, and leave the rest intact.
+
+3. Response: the user will get a positive or negative message coming from the server based on the result.
+
+##### GET
+
+   **View a Book**
+
+1. URL: https://localhost:7009/api/LibrarianBook/ViewBook/
+2. Parameter: for searching any specific book, and getting all its information. The entire book ID (Ex. ThinkingFast&Slow-DavidKahneman-2020-Productivity-N°1) has to be typed on the URL.
+3. Response: if the book exists, a JSON book object will be returned including the Cover attribute being the image as base64 encoded data. The client side is responsible on converting the base64 into an image for a human understanding.
+
+   **View Loans**
+
+1. URL: https://localhost:7009/api/LibrarianLoan/ViewLoans/
+2. Auth: as was mentioned before, the JWT from the Login request must be pasted on the Auth tab for prior authentication.
+3. Response: there are no parameters involved on this request, by sending the request is enough to get a positive or negative response from the server.
+
+##### DELETE
+
+   **Remove Reader**
+
+1. URL: https://localhost:7009/api/LibrarianReader/DeleteReader/
+2. Auth: as we already know, the JWT from the Login request must be pasted onto the Auth tab for prior authentication.
+3. Parameter:  in order to wipe out a Reader, and everything related to it from the Library, his ID with no hyphen must be typed on the URL.
+4. Response: if there are any error on the deletion, the Librarian will be notified.
+
+   **Delete a Book**
+
+1. URL: https://localhost:7009/api/LibrarianReader/DeleteReader/
+2. Auth: the JWT from the Login request must be pasted onto the Auth tab for prior authentication.
+3. Parameter: the Librarian must look up for the Book he needs to remove from the inventory, and type its ID on the URL.
+4. Response: if there are any error on the removal, the Librarian will be notified.
+
+#### Reader
+
+##### POST
+
+  **Sign Up Reader**
+
+1. URL: https://localhost:7009/api/Member/SignUp
+
+2. Body: it's the JSON object that holds the information of the new Reader that's about to sign up to the Library system as client.
+
+   ```json
+   {
+     "idMember": "17.548.723-0",
+     "name": "Jane Doe",
+     "phone": "805412365",
+     "email": "example@hotmail.com",
+     "age": 30,
+     "username": "JaD1964",
+     "password": "SuperRea1964"
+   }
+   ```
+
+3. Response: either the request body meets or not the requirements, a message is returned on the right panel of the API client.
+
+##### GET
+
+   **View Books**
+
+1. URL: https://localhost:7009/api/ReaderBook/ViewBooks/
+
+2. Parameter: given that not a specific list is being called, there is no parameter involved.
+
+3. Response: the entire unfiltered book collection will be displayed as JSON object separately from each other.
+
+   **Search a Book**
+
+1. URL: https://localhost:7009/api/ReaderBook/FindBook/
+2. Parameter: for searching any specific book, and getting all its information. The exact Book name has to be entered as parameter on the URL.
+3. Response: if the book exists, a list of books matching the name will be returned as JSON.
+
+   **Borrow a Book**
+
+1. URL: https://localhost:7009/api/ReaderBook/BorrowBook/
+2. Parameter: for borrowing any desired Book. The exact Book name has to be entered as parameter on the URL.
+3. Response: if the book is available, a borrow information JSON object will be returned indication the Book information, the day that was borrowed, and the due 
+
