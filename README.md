@@ -976,8 +976,11 @@ On this section it will be explained how to use 'Insomnia' to tryout every aspec
 ### Loading Requests into Insomnia
 
 1. Create a new workspace on Insomnia
-2. Select Workspace name![Select Workspace](F:\Downloads\Select Workspace.png)
+2. Select Workspace name![Select Workspace](E:\Programming\API\Books Lender_Borrower\Library\Resources\Select Workspace.png)
 
-3. Select "From File" to import the HTTP requests ![From File](F:\Downloads\From File.png)
+3. Select "From File" to import the HTTP requests ![From File](E:\Programming\API\Books Lender_Borrower\Library\Resources\From File.png)
 4. Select, "Choose a file" from: Project's name (Library) → Scripts → Insomnia_Library.json
 5. After loading successfully the HTTP requests JSON file, Insomnia is ready to start requesting the server.
+
+### HTTP Requests
+
