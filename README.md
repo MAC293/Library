@@ -45,7 +45,7 @@ Given that a Library is being simulated.  The relationships were modeled as fait
 
 Assuming a Library can store three copies of each book, the quantity was limited to that number. Allowing a Book to be borrowed up to three times. The Member (Person) can have only one unique account called, Reader, allowing it to borrow as many books as he wants as long a copy is available. On the other hand we have the Librarian, whose role is not directly related to the tables relationships, neither the EndUser. Reader, and Librarian are an unique EndUser, it's just a separation of concerns, otherwise, Reader, and Librarian would have been on the same table, which can't be, due to the design. Only a Reader can borrow books not a Librarian.
 
-![Database Diagram](E:\Programming\API\Books Lender_Borrower\Library\Resources\Database Diagram.png)
+![Database Diagram](https://github.com/MAC293/Library/blob/improvement/Resources/Database%20Diagram.png?raw=true)
 
 #### 2. Database Source Code
 
@@ -350,7 +350,7 @@ app.Run();
 ## Business
 ### Use Cases
 
-![Use Cases](E:\Programming\API\Books Lender_Borrower\Use Cases.png)
+![Use Cases](https://github.com/MAC293/Library/blob/improvement/Resources/Use%20Cases.png?raw=true)
 
 A Library system is too big to replicate it on an API just for showcasing, so, it opted to illustrate the main function of it, the borrow, and the user management systems accordingly.
 
@@ -974,9 +974,9 @@ On this section it will be explained how to use 'Insomnia' to tryout every aspec
 ### Loading Requests into Insomnia
 
 1. Create a new workspace on Insomnia
-2. Select Workspace name![Select Workspace](E:\Programming\API\Books Lender_Borrower\Library\Resources\Select Workspace.png)
+2. Select Workspace name![Select Workspace](https://github.com/MAC293/Library/blob/improvement/Resources/Select%20Workspace.png?raw=true)
 
-3. Select "From File" to import the HTTP requests ![From File](E:\Programming\API\Books Lender_Borrower\Library\Resources\From File.png)
+3. Select "From File" to import the HTTP requests ![From File](https://github.com/MAC293/Library/blob/improvement/Resources/From%20File.png?raw=true)
 4. Select, "Choose a file" from: Project's name (Library) → Scripts → Insomnia_Library.json
 5. After loading successfully the HTTP requests JSON file, Insomnia is ready to start requesting the server.
 
