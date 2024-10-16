@@ -12,6 +12,7 @@ This is a RESTful API project developed entirely upon C# on the Visual Studio ID
 1. [Getting Started](#Getting-Started)
 1. [Business](#Business)
 1. [Usage](#Usage)
+1. [License](#License)
 
 ## Features
 
@@ -1155,3 +1156,10 @@ If we want to change a book, we just replace the old value with the new one, and
 2. Parameter: for borrowing any desired Book. The exact Book name has to be entered as parameter on the URL.
 3. Response: if the book is available, a borrow information JSON object will be returned indication the Book information, the day that was borrowed, and the due date.
 
+## License
+
+This project is licensed under the MIT License.
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files, to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software.
+
+This project is mostly aimed at employers who are interested in my worth as a C# developer.
